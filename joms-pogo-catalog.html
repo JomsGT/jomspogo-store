@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joms PoGo Store — Catálogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#e3350d;--gold:#f5c518;--blue:#1a73e8;--teal:#00b4a0;
+  --dark:#0d0d1a;--dark2:#13132b;--dark3:#1c1c3a;--card:#1a1a35;
+  --border:rgba(245,197,24,.18);--text:#e8e8f0;--muted:#8888aa;
+  --green:#4caf50;--sidebar-w:224px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Exo 2',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;display:flex;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(227,53,13,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(26,115,232,.06) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--dark2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;overflow-y:auto;transition:transform .3s}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:22px 18px 18px;border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer}
+.pokeball{width:32px;height:32px;border-radius:50%;background:linear-gradient(180deg,var(--red) 50%,#fff 50%);border:2.5px solid var(--gold);position:relative;box-shadow:0 0 12px rgba(227,53,13,.5);flex-shrink:0}
+.pokeball::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid var(--dark);z-index:1}
+.pokeball::after{content:'';position:absolute;top:calc(50% - 1.5px);left:0;right:0;height:3px;background:var(--dark)}
+.brand{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:1px;line-height:1.2}
+.brand small{display:block;font-family:'Exo 2',sans-serif;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.5px;margin-top:1px}
+.nav-section{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;padding:16px 18px 6px;font-family:'Rajdhani',sans-serif;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 18px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.3px;border-left:3px solid transparent}
+.nav-item:hover{color:var(--text);background:rgba(245,197,24,.06);border-left-color:rgba(245,197,24,.3)}
+.nav-item.active{color:var(--gold);background:rgba(245,197,24,.1);border-left-color:var(--gold)}
+.ni-icon{font-size:15px;flex-shrink:0;width:20px;text-align:center}
+.ni-count{margin-left:auto;background:rgba(245,197,24,.15);color:var(--gold);padding:1px 7px;border-radius:50px;font-size:10px;font-family:'Exo 2',sans-serif;font-weight:700}
+.nav-item.admin-nav{border-top:1px solid var(--border);margin-top:auto;color:rgba(227,53,13,.7)}
+.nav-item.admin-nav:hover{color:var(--red);background:rgba(227,53,13,.08);border-left-color:var(--red)}
+.nav-item.admin-nav.active{color:var(--red);background:rgba(227,53,13,.12);border-left-color:var(--red)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(13,13,26,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;gap:14px}
+.search-wrap{flex:1;max-width:480px;position:relative}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-input{width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 14px 9px 36px;border-radius:9px;font-family:'Exo 2',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.search-input::placeholder{color:var(--muted)}
+.search-input:focus{border-color:rgba(245,197,24,.5)}
+.count-pill{background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:7px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;white-space:nowrap}
+.count-pill span{color:var(--gold)}
+.mobile-toggle{display:none;background:none;border:none;color:var(--gold);font-size:22px;cursor:pointer;padding:4px 8px}
+.content{padding:28px;flex:1}
+.page-header{margin-bottom:24px}
+.page-title{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:4px}
+.page-sub{color:var(--muted);font-size:12px}
+
+/* LOADING SPINNER */
+.db-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px;color:var(--muted)}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PRODUCT GRID */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .3s;display:flex;flex-direction:column}
+.pcard:hover{transform:translateY(-5px);border-color:var(--gold);box-shadow:0 14px 36px rgba(0,0,0,.4),0 0 16px rgba(245,197,24,.12)}
+.card-img-wrap{position:relative;aspect-ratio:1;overflow:hidden;background:linear-gradient(135deg,#1a1a35,#0d0d1a);flex-shrink:0}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.pcard:hover .card-img-wrap img{transform:scale(1.07)}
+.card-badge{position:absolute;top:8px;left:8px;padding:2px 9px;border-radius:50px;font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff}
+.badge-shiny{background:#9333ea}.badge-hot{background:var(--red)}.badge-new{background:var(--teal)}.badge-rare{background:var(--blue)}.badge-hundo{background:var(--gold);color:var(--dark)}.badge-sale{background:var(--green)}
+.card-body{padding:13px 13px 12px;flex:1;display:flex;flex-direction:column;gap:6px}
+.card-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:#fff;line-height:1.2}
+.card-tags{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tag-cat{display:inline-flex;align-items:center;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:2px 8px;border-radius:50px;font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:600;text-transform:uppercase}
+.tag-event{display:inline-flex;align-items:center;background:rgba(0,180,160,.12);border:1px solid rgba(0,180,160,.3);color:var(--teal);padding:2px 8px;border-radius:50px;font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase}
+.card-wa{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;border-radius:8px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;transition:all .2s;margin-top:auto}
+.card-wa:hover{opacity:.9;transform:translateY(-1px)}
+
+/* EVENTS */
+.events-list{display:flex;flex-direction:column;gap:14px}
+.ev-card{display:grid;grid-template-columns:220px 1fr;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .3s;min-height:110px}
+.ev-card:hover{border-color:var(--teal);box-shadow:0 6px 28px rgba(0,180,160,.18);transform:translateY(-2px)}
+.ev-img{width:220px;min-height:110px;object-fit:cover;display:block}
+.ev-img-placeholder{width:220px;min-height:110px;display:flex;align-items:center;justify-content:center;font-size:54px;background:linear-gradient(135deg,rgba(0,180,160,.18),rgba(26,115,232,.15))}
+.ev-content{display:flex;flex-direction:column;overflow:hidden}
+.ev-header{padding:7px 16px 6px;display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,#1a8fd1,#2bbce0 55%,#1dd6c0)}
+.ev-header.ev-green{background:linear-gradient(90deg,#14a879,#1ad1a5 55%,#1dd6c0)}
+.ev-header.ev-purple{background:linear-gradient(90deg,#6b3fa0,#9b59b6 55%,#8e44ad)}
+.ev-header.ev-orange{background:linear-gradient(90deg,#e07b1d,#e3a21a 55%,#f0c020)}
+.ev-type-badge{background:rgba(255,255,255,.22);color:#fff;padding:2px 9px;border-radius:50px;font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.ev-title-text{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:#fff;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-body{padding:10px 16px 12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;flex:1}
+.ev-dates{display:flex;flex-direction:column;gap:5px}
+.ev-date-row{display:flex;align-items:baseline;gap:7px;font-size:12px}
+.ev-date-lbl{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--teal);font-size:12px;min-width:42px}
+.ev-date-val{color:var(--text);font-size:12px}
+.ev-right{text-align:right;min-width:140px}
+.ev-cd-lbl{font-size:11px;color:var(--muted);margin-bottom:3px}
+.ev-cd-val{font-family:'Orbitron',monospace;font-size:19px;font-weight:900;color:#fff;line-height:1;letter-spacing:.5px}
+.ev-cd-val.live{color:var(--green)}
+.ev-cd-val.ended{color:var(--muted);font-size:13px;font-family:'Rajdhani',sans-serif;font-weight:700}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);animation:pdot 1.4s ease infinite;margin-right:4px;vertical-align:middle}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+
+/* EVENT DETAIL */
+.evd-wrap{max-width:880px;margin:0 auto;padding:28px}
+.evd-back{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:8px 16px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;letter-spacing:.5px;transition:all .2s}
+.evd-back:hover{background:rgba(245,197,24,.16)}
+.evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px}
+.evd-banner{background:linear-gradient(120deg,#1a8fd1,#1dd6c0);padding:28px;display:flex;align-items:center;gap:18px}
+.evd-banner.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
+.evd-banner.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad)}
+.evd-banner.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020)}
+.evd-icon{font-size:58px;line-height:1;flex-shrink:0}
+.evd-banner-info{flex:1;min-width:0}
+.evd-banner-type{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:2px;margin-bottom:3px}
+.evd-banner-title{font-family:'Orbitron',monospace;font-size:clamp(15px,3vw,22px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px}
+.evd-badges{display:flex;gap:7px;flex-wrap:wrap}
+.evd-badge{padding:3px 11px;border-radius:50px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.evd-badge.live{background:rgba(76,175,80,.25);color:var(--green);border:1px solid rgba(76,175,80,.5)}
+.evd-badge.upcoming{background:rgba(26,115,232,.2);color:#64b5f6;border:1px solid rgba(26,115,232,.4)}
+.evd-badge.ended{background:rgba(136,136,170,.15);color:var(--muted);border:1px solid rgba(136,136,170,.3)}
+.evd-dates-row{background:var(--dark3);padding:14px 28px;display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:center;border-top:1px solid rgba(255,255,255,.07)}
+.evd-date-lbl{font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.evd-date-val{font-size:13px;color:var(--text)}
+.evd-cd-block{text-align:right}
+.evd-cd-lbl2{font-size:11px;color:var(--muted);margin-bottom:2px}
+.evd-cd-val2{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#fff;letter-spacing:1px}
+.evd-cd-val2.live{color:var(--green)}
+.evd-cd-val2.ended{color:var(--muted);font-size:14px;font-family:'Rajdhani',sans-serif;font-weight:700}
+.evd-body{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 26px;margin-bottom:16px}
+.evd-section{margin-bottom:22px}
+.evd-section:last-child{margin-bottom:0}
+.evd-sec-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;border-bottom:1px solid rgba(0,180,160,.2);padding-bottom:7px}
+.evd-desc{color:var(--muted);font-size:13px;line-height:1.8}
+.evd-poke-pills{display:flex;gap:7px;flex-wrap:wrap}
+.evd-poke-pill{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.25);color:var(--gold);padding:4px 12px;border-radius:50px;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:600}
+.evd-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.evd-feature{background:var(--dark3);border-radius:10px;padding:13px;display:flex;gap:10px;align-items:flex-start}
+.evd-feature-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.evd-feature-text strong{display:block;font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--text);margin-bottom:2px}
+.evd-feature-text span{font-size:12px;color:var(--muted);line-height:1.5}
+.evd-tz-list{display:flex;flex-direction:column;gap:9px}
+.evd-tz-card{background:var(--dark3);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden}
+.evd-tz-card.is-live{border-color:rgba(76,175,80,.4)}
+.evd-tz-gmt{background:rgba(255,255,255,.04);padding:6px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.evd-tz-gmt-lbl{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--muted);letter-spacing:.5px;font-style:italic}
+.evd-tz-body{display:grid;grid-template-columns:170px 1fr auto;align-items:center}
+.evd-tz-col{padding:11px 16px}
+.evd-tz-col-mid{padding:11px 16px;border-left:1px solid rgba(255,255,255,.07);border-right:1px solid rgba(255,255,255,.07)}
+.evd-tz-place{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:2px}
+.evd-tz-time{font-family:'Orbitron',monospace;font-size:21px;font-weight:900;color:var(--gold);line-height:1;letter-spacing:1px}
+.evd-tz-mid-inner{display:flex}
+.evd-tz-block{flex:1}
+.evd-tz-block+.evd-tz-block{border-left:1px solid rgba(255,255,255,.07);padding-left:12px}
+.evd-tz-lbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.evd-tz-val{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;color:var(--text)}
+.evd-tz-hhmm{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--teal);margin-top:1px}
+.evd-tz-cd-col{padding:11px 16px;min-width:145px;text-align:center}
+.evd-tz-cd-lbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.evd-tz-cd-val{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:var(--green);line-height:1}
+.evd-tz-cd-val.ns{color:var(--gold)}
+.evd-tz-cd-val.ended{color:var(--muted);font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700}
+
+/* ADMIN LOGIN */
+.admin-login-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.admin-login-box{background:var(--dark2);border:1px solid var(--border);border-radius:20px;padding:36px 40px;width:100%;max-width:380px;text-align:center}
+.admin-login-logo{font-size:40px;margin-bottom:12px}
+.admin-login-title{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:var(--gold);letter-spacing:1px;margin-bottom:4px}
+.admin-login-sub{color:var(--muted);font-size:12px;margin-bottom:28px}
+.adm-label{display:block;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;text-align:left}
+.adm-input,.adm-select,.adm-textarea{width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:10px 13px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.adm-input:focus,.adm-select:focus,.adm-textarea:focus{border-color:rgba(245,197,24,.5)}
+.adm-textarea{min-height:80px;resize:vertical}
+.adm-select option{background:var(--dark3)}
+.login-group{margin-bottom:14px;text-align:left}
+.login-err{color:var(--red);font-size:12px;margin-top:6px;display:none;text-align:left}
+.login-btn{width:100%;margin-top:8px;background:linear-gradient(135deg,var(--red),#c02a00);color:#fff;border:none;padding:13px;border-radius:9px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .2s}
+.login-btn:hover{opacity:.9;transform:translateY(-1px)}
+.login-cancel{display:block;margin-top:14px;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px;transition:color .2s}
+.login-cancel:hover{color:var(--text)}
+
+/* ADMIN PANEL */
+.admin-wrap{max-width:900px;margin:0 auto;padding:28px}
+.admin-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.admin-header-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--red),#c02a00);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.admin-header-title{font-family:'Orbitron',monospace;font-size:17px;color:#fff;font-weight:700}
+.admin-header-sub{color:var(--muted);font-size:12px;margin-top:2px}
+.admin-logout{margin-left:auto;background:rgba(227,53,13,.12);border:1px solid rgba(227,53,13,.3);color:var(--red);padding:7px 16px;border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;transition:all .2s}
+.admin-logout:hover{background:rgba(227,53,13,.2)}
+.admin-tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border)}
+.admin-tab{padding:10px 20px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;letter-spacing:.5px;transition:all .2s}
+.admin-tab:hover{color:var(--text)}
+.admin-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.admin-panel{display:none}
+.admin-panel.active{display:block}
+.adm-form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px}
+.adm-form-title{font-family:'Orbitron',monospace;font-size:14px;color:var(--gold);font-weight:700;letter-spacing:.5px;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.adm-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.adm-row{grid-template-columns:1fr}}
+.adm-group{margin-bottom:14px}
+.adm-img-preview{width:100%;max-height:160px;object-fit:cover;border-radius:8px;margin-top:8px;display:none}
+.adm-img-placeholder{background:var(--dark3);border:2px dashed var(--border);border-radius:8px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;margin-top:8px}
+.adm-img-placeholder:hover{border-color:var(--gold)}
+.adm-img-placeholder p{color:var(--muted);font-size:12px;margin-top:6px}
+.adm-btn{padding:11px 22px;border-radius:9px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border:none;transition:all .2s}
+.adm-btn-primary{background:linear-gradient(135deg,var(--teal),#007a6c);color:#fff}
+.adm-btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.adm-btn-red{background:linear-gradient(135deg,var(--red),#c02a00);color:#fff}
+.adm-btn-red:hover{opacity:.9;transform:translateY(-1px)}
+.adm-btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.adm-btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.adm-hint{font-size:11px;color:var(--muted);margin-top:4px}
+.edit-banner{background:rgba(26,115,232,.1);border:1px solid rgba(26,115,232,.3);border-radius:9px;padding:10px 16px;margin-bottom:16px;display:none;align-items:center;gap:10px;font-size:13px;color:#64b5f6;font-family:'Rajdhani',sans-serif;font-weight:600}
+.edit-banner.show{display:flex}
+.adm-list-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--text);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;display:flex;align-items:center;justify-content:space-between}
+.adm-list{display:flex;flex-direction:column;gap:8px}
+.adm-list-item{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.adm-list-img{width:44px;height:44px;border-radius:7px;object-fit:cover;flex-shrink:0;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:22px}
+.adm-list-info{flex:1;min-width:0}
+.adm-list-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-list-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.adm-list-actions{display:flex;gap:6px;flex-shrink:0}
+.adm-btn-edit{background:rgba(26,115,232,.15);border:1px solid rgba(26,115,232,.3);color:#64b5f6;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;transition:all .2s}
+.adm-btn-edit:hover{background:rgba(26,115,232,.25)}
+.adm-btn-del{background:rgba(227,53,13,.12);border:1px solid rgba(227,53,13,.3);color:var(--red);padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;transition:all .2s}
+.adm-btn-del:hover{background:rgba(227,53,13,.22)}
+
+/* Firebase status badge */
+.fb-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:600;padding:3px 10px;border-radius:50px;margin-left:auto}
+.fb-status.ok{background:rgba(76,175,80,.15);color:var(--green);border:1px solid rgba(76,175,80,.3)}
+.fb-status.err{background:rgba(227,53,13,.15);color:var(--red);border:1px solid rgba(227,53,13,.3)}
+.fb-status.loading{background:rgba(245,197,24,.1);color:var(--gold);border:1px solid rgba(245,197,24,.2)}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,var(--teal),#007a6c);color:#fff;padding:13px 20px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;z-index:9999;box-shadow:0 8px 28px rgba(0,180,160,.4);transform:translateY(100px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{background:linear-gradient(135deg,var(--red),#c02a00)}
+
+.empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-state h3{font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--text);margin-bottom:6px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--dark2)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+@media(max-width:700px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mobile-toggle{display:block}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+  .content,.admin-wrap,.evd-wrap{padding:16px}
+  .topbar{padding:0 14px}
+  .ev-card{grid-template-columns:120px 1fr}
+  .ev-img,.ev-img-placeholder{width:120px}
+  .evd-dates-row{grid-template-columns:1fr 1fr}
+  .evd-tz-body{grid-template-columns:1fr 1fr}
+  .evd-tz-cd-col{border-top:1px solid rgba(255,255,255,.07);grid-column:1/-1;text-align:left;padding:10px 16px}
+  .sidebar-overlay{display:block!important}
+}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo" onclick="showSection('catalog','all',document.getElementById('nav-all'))">
+    <div class="pokeball"></div>
+    <div class="brand">JOMS POGO<small>Digital Store GT</small></div>
+  </div>
+  <div class="nav-section">Catálogo</div>
+  <div class="nav-item active" id="nav-all" onclick="showSection('catalog','all',this)"><span class="ni-icon">🏠</span>Todos<span class="ni-count" id="count-all">0</span></div>
+  <div class="nav-section">Categorías</div>
+  <div class="nav-item" id="nav-pokemon" onclick="showSection('catalog','pokemon',this)"><span class="ni-icon">⚡</span>Pokémon<span class="ni-count" id="count-pokemon">0</span></div>
+  <div class="nav-item" id="nav-cuenta" onclick="showSection('catalog','cuenta',this)"><span class="ni-icon">🎮</span>Cuentas<span class="ni-count" id="count-cuenta">0</span></div>
+  <div class="nav-item" id="nav-servicio" onclick="showSection('catalog','servicio',this)"><span class="ni-icon">⚔️</span>Servicios<span class="ni-count" id="count-servicio">0</span></div>
+  <div class="nav-item" id="nav-item-cat" onclick="showSection('catalog','item',this)"><span class="ni-icon">🎒</span>Items<span class="ni-count" id="count-item">0</span></div>
+  <div class="nav-section">Eventos</div>
+  <div class="nav-item" id="nav-ev-all" onclick="showSection('events','all',this)"><span class="ni-icon">📅</span>Todos los Eventos<span class="ni-count" id="count-ev-all">0</span></div>
+  <div class="nav-item" id="nav-ev-cd" onclick="showSection('events','Community Day',this)"><span class="ni-icon">🦕</span>Community Day</div>
+  <div class="nav-item" id="nav-ev-rh" onclick="showSection('events','Raid Hour',this)"><span class="ni-icon">⚔️</span>Raid Hour</div>
+  <div class="nav-item" id="nav-ev-gf" onclick="showSection('events','GO Fest',this)"><span class="ni-icon">🎉</span>GO Fest</div>
+  <div class="nav-item" id="nav-ev-gt" onclick="showSection('events','GO Tour',this)"><span class="ni-icon">🌍</span>GO Tour</div>
+  <div class="nav-item" id="nav-ev-wa" onclick="showSection('events','Wild Area',this)"><span class="ni-icon">🌿</span>Wild Area</div>
+  <div class="nav-item" id="nav-ev-sc" onclick="showSection('events','Safari City',this)"><span class="ni-icon">🏙️</span>Safari City</div>
+  <div class="nav-item" id="nav-ev-sh" onclick="showSection('events','Spotlight Hour',this)"><span class="ni-icon">🔦</span>Spotlight Hour</div>
+  <div class="nav-item admin-nav" id="nav-admin" style="display:none" onclick="showSection('admin','',this)"><span class="ni-icon">⚙️</span>Panel Admin</div>
+</aside>
+<div class="sidebar-overlay" id="overlay" onclick="closeMobile()"></div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <button class="mobile-toggle" onclick="toggleMobile()">☰</button>
+    <div class="search-wrap">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="Buscar productos, eventos..." oninput="onSearch()">
+    </div>
+    <div class="count-pill" id="countPill"><span>–</span> items</div>
+  </div>
+
+  <div id="page-catalog" class="content">
+    <div class="page-header">
+      <div class="page-title" id="catTitle">🛒 Todos los Productos</div>
+      <div class="page-sub">Catálogo completo · Entrega inmediata vía WhatsApp</div>
+    </div>
+    <div class="prod-grid" id="prodGrid"><div class="db-loading"><div class="spinner"></div><span>Cargando catálogo...</span></div></div>
+  </div>
+
+  <div id="page-events" class="content" style="display:none">
+    <div class="page-header">
+      <div class="page-title" id="evTitle">📅 Todos los Eventos</div>
+      <div class="page-sub">Eventos activos y próximos de Pokémon GO</div>
+    </div>
+    <div class="events-list" id="eventsList"><div class="db-loading"><div class="spinner"></div><span>Cargando eventos...</span></div></div>
+  </div>
+
+  <div id="page-evdetail" class="content" style="display:none">
+    <div class="evd-wrap" id="evdWrap"></div>
+  </div>
+
+  <div id="page-admin" class="content" style="display:none">
+    <div class="admin-wrap">
+      <div class="admin-header">
+        <div class="admin-header-icon">⚙️</div>
+        <div>
+          <div class="admin-header-title">Panel Admin</div>
+          <div class="admin-header-sub">Gestionar productos y eventos · Firebase Cloud</div>
+        </div>
+        <span class="fb-status loading" id="fbStatus">⏳ Conectando...</span>
+        <button class="admin-logout" onclick="adminLogout()">⏻ Salir</button>
+      </div>
+      <div class="admin-tabs">
+        <div class="admin-tab active" id="atab-prod" onclick="switchAdminTab('prod')">🛒 Productos</div>
+        <div class="admin-tab" id="atab-ev" onclick="switchAdminTab('ev')">📅 Eventos</div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="admin-panel active" id="apanel-prod">
+        <div class="adm-form-card">
+          <div class="adm-form-title" id="prod-form-title">➕ Nuevo Producto</div>
+          <div class="edit-banner" id="prod-edit-banner">
+            <span>✏️ Modo edición</span>
+            <button class="adm-btn adm-btn-ghost" style="margin-left:auto;padding:4px 12px;font-size:12px" onclick="cancelEditProd()">Cancelar</button>
+          </div>
+          <div class="adm-group">
+            <label class="adm-label">Imagen del producto</label>
+            <input type="file" id="p-img-file" accept="image/*" style="display:none" onchange="previewImg('p')">
+            <div class="adm-img-placeholder" onclick="document.getElementById('p-img-file').click()" id="p-img-ph"><div style="font-size:28px">📷</div><p>Click para subir imagen (JPG, PNG, WEBP)</p></div>
+            <img id="p-img-prev" class="adm-img-preview" src="" alt="">
+            <input type="hidden" id="p-img-data">
+          </div>
+          <div class="adm-row">
+            <div class="adm-group"><label class="adm-label">Nombre</label><input class="adm-input" id="p-name" placeholder="Pikachu Ash Hat ✨"></div>
+            <div class="adm-group"><label class="adm-label">Precio (Q)</label><input class="adm-input" type="number" id="p-price" placeholder="75"></div>
+          </div>
+          <div class="adm-row">
+            <div class="adm-group"><label class="adm-label">Categoría</label><select class="adm-select" id="p-cat"><option value="pokemon">⚡ Pokémon</option><option value="cuenta">🎮 Cuenta</option><option value="servicio">⚔️ Servicio</option><option value="item">🎒 Item</option></select></div>
+            <div class="adm-group"><label class="adm-label">Badge</label><select class="adm-select" id="p-tag"><option>HOT</option><option>NEW</option><option>SHINY</option><option>RARE</option><option>HUNDO</option><option>SALE</option></select></div>
+          </div>
+          <div class="adm-group"><label class="adm-label">Evento asociado (opcional)</label><input class="adm-input" id="p-event" placeholder="Community Day, GO Fest..."></div>
+          <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="p-short" placeholder="CP 514 | Shiny | Team Valor"></div>
+          <div class="adm-group"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="p-desc" placeholder="Descripción detallada..."></textarea></div>
+          <input type="hidden" id="p-edit-id">
+          <button class="adm-btn adm-btn-red" id="p-save-btn" onclick="saveProd()">🚀 Publicar Producto</button>
+        </div>
+        <div class="adm-list-title"><span>Productos publicados</span><span style="font-size:11px;color:var(--muted);font-weight:400" id="prod-list-count"></span></div>
+        <div class="adm-list" id="adm-prod-list"></div>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="admin-panel" id="apanel-ev">
+        <div class="adm-form-card">
+          <div class="adm-form-title" id="ev-form-title">➕ Nuevo Evento</div>
+          <div class="edit-banner" id="ev-edit-banner">
+            <span>✏️ Modo edición</span>
+            <button class="adm-btn adm-btn-ghost" style="margin-left:auto;padding:4px 12px;font-size:12px" onclick="cancelEditEv()">Cancelar</button>
+          </div>
+          <div class="adm-group">
+            <label class="adm-label">Imagen del evento (opcional)</label>
+            <input type="file" id="ev-img-file" accept="image/*" style="display:none" onchange="previewImg('ev')">
+            <div class="adm-img-placeholder" onclick="document.getElementById('ev-img-file').click()" id="ev-img-ph"><div style="font-size:28px">🖼️</div><p>Click para subir imagen</p></div>
+            <img id="ev-img-prev" class="adm-img-preview" src="" alt="">
+            <input type="hidden" id="ev-img-data">
+          </div>
+          <div class="adm-row">
+            <div class="adm-group"><label class="adm-label">Nombre del evento</label><input class="adm-input" id="ev-name" placeholder="Community Day: Gible"></div>
+            <div class="adm-group"><label class="adm-label">Tipo</label><select class="adm-select" id="ev-type"><option>Community Day</option><option>Raid Hour</option><option>Spotlight Hour</option><option>GO Fest</option><option>GO Tour</option><option>Wild Area</option><option>Safari City</option><option>Evento Especial</option></select></div>
+          </div>
+          <div class="adm-row">
+            <div class="adm-group"><label class="adm-label">Color encabezado</label><select class="adm-select" id="ev-color"><option value="">🔵 Azul</option><option value="ev-green">🟢 Verde</option><option value="ev-purple">🟣 Morado</option><option value="ev-orange">🟠 Naranja</option></select></div>
+            <div class="adm-group"><label class="adm-label">Icono (emoji)</label><input class="adm-input" id="ev-icon" placeholder="🦕"></div>
+          </div>
+          <div class="adm-row">
+            <div class="adm-group"><label class="adm-label">Texto inicio (mostrar)</label><input class="adm-input" id="ev-start-str" placeholder="sáb. 14 abr. 2026 - 10:00 am"></div>
+            <div class="adm-group"><label class="adm-label">Texto fin (mostrar)</label><input class="adm-input" id="ev-end-str" placeholder="sáb. 14 abr. 2026 - 05:00 pm"></div>
+          </div>
+          <div class="adm-row">
+            <div class="adm-group"><label class="adm-label">Fecha inicio UTC</label><input class="adm-input" type="datetime-local" id="ev-start-utc"><div class="adm-hint">Guatemala = UTC−6 → 10am GT = 16:00 UTC</div></div>
+            <div class="adm-group"><label class="adm-label">Fecha fin UTC</label><input class="adm-input" type="datetime-local" id="ev-end-utc"></div>
+          </div>
+          <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="ev-desc-short" placeholder="Gible masivo con shiny disponible..."></div>
+          <div class="adm-group"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="ev-desc-full" placeholder="Descripción detallada del evento..."></textarea></div>
+          <div class="adm-group"><label class="adm-label">Pokémon destacados (separados por coma)</label><input class="adm-input" id="ev-pokemon" placeholder="Gible ✨, Gabite, Garchomp"></div>
+          <div class="adm-group"><label class="adm-label">Características (una por línea: 🎁 | Título | Descripción)</label><textarea class="adm-textarea" id="ev-features" placeholder="⭐ | XP Triple | XP x3 al capturar&#10;✨ | Shiny | Mayor tasa shiny"></textarea><div class="adm-hint">Formato: emoji | Título | Descripción</div></div>
+          <input type="hidden" id="ev-edit-id">
+          <button class="adm-btn adm-btn-red" id="ev-save-btn" onclick="saveEv()">🚀 Publicar Evento</button>
+        </div>
+        <div class="adm-list-title"><span>Eventos publicados</span><span style="font-size:11px;color:var(--muted);font-weight:400" id="ev-list-count"></span></div>
+        <div class="adm-list" id="adm-ev-list"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ADMIN LOGIN OVERLAY -->
+<div class="admin-login-overlay" id="adminLoginOverlay" style="display:none">
+  <div class="admin-login-box">
+    <div class="admin-login-logo">⚙️</div>
+    <div class="admin-login-title">Panel Admin</div>
+    <div class="admin-login-sub">Acceso restringido · Solo administradores</div>
+    <div class="login-group"><label class="adm-label">Usuario</label><input class="adm-input" id="login-user" type="text" placeholder="usuario" autocomplete="username"></div>
+    <div class="login-group"><label class="adm-label">Contraseña</label><input class="adm-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="login-err" id="login-err">Usuario o contraseña incorrectos</div>
+    <button class="login-btn" onclick="doLogin()">🔓 Ingresar</button>
+    <span class="login-cancel" onclick="cancelLogin()">← Volver al catálogo</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════
+     FIREBASE SDK (module)
+═══════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* ── CONFIG ── */
+const firebaseConfig = {
+  apiKey: "AIzaSyBmbz7zI-FXOiR8bVgtb3RUIKs1jRoxeIg",
+  authDomain: "jomspogo-store.firebaseapp.com",
+  projectId: "jomspogo-store",
+  storageBucket: "jomspogo-store.firebasestorage.app",
+  messagingSenderId: "575211613864",
+  appId: "1:575211613864:web:9e196685cc0a413c9d5c9d",
+  measurementId: "G-4J96SGE4JP"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+/* ── CREDENTIALS (cámbialos aquí) ── */
+const ADMIN_USER = 'jomspogo';
+const ADMIN_PASS = 'JomsPogo2024!';
+const WA         = '50255555555';
+
+/* ── STATE ── */
+let products = [];
+let events   = [];
+let isAdmin  = sessionStorage.getItem('jp_admin') === 'true';
+let currentSection = 'catalog';
+let activeCat      = 'all';
+let activeEvType   = 'all';
+let cdIntervals    = [];
+
+/* ── FIREBASE HELPERS ── */
+async function fbLoad(col) {
+  const q = query(collection(db, col), orderBy('createdAt','desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({...d.data(), _id: d.id}));
+}
+
+async function fbSave(col, data) {
+  if (data._id) {
+    const {_id, ...rest} = data;
+    await setDoc(doc(db, col, _id), {...rest, updatedAt: Date.now()});
+    return _id;
+  } else {
+    const ref = await addDoc(collection(db, col), {...data, createdAt: Date.now()});
+    return ref.id;
+  }
+}
+
+async function fbDel(col, id) {
+  await deleteDoc(doc(db, col, id));
+}
+
+/* ── INIT DATA ── */
+async function loadAll() {
+  try {
+    products = await fbLoad('products');
+    events   = await fbLoad('events');
+    updateCounts();
+    if (currentSection === 'catalog') renderProducts();
+    else if (currentSection === 'events') renderEvents();
+    if (isAdmin) renderAdminLists();
+    setFbStatus('ok');
+  } catch(e) {
+    console.error(e);
+    setFbStatus('err');
+    showToast('⚠️ Error al conectar con Firebase','error');
+  }
+}
+
+function setFbStatus(s) {
+  const el = document.getElementById('fbStatus');
+  if(!el) return;
+  el.className = 'fb-status ' + s;
+  el.textContent = s==='ok' ? '🟢 Conectado' : s==='err' ? '🔴 Sin conexión' : '⏳ Conectando...';
+}
+
+/* ── AUTH ── */
+window.checkHashForAdmin = () => {
+  if (window.location.hash === '#admin') {
+    history.replaceState(null,'',window.location.pathname);
+    if (!isAdmin) showAdminLogin(); else goAdmin();
+  }
+};
+window.addEventListener('hashchange', window.checkHashForAdmin);
+
+function showAdminLogin() {
+  document.getElementById('adminLoginOverlay').style.display = 'flex';
+  setTimeout(()=>document.getElementById('login-user').focus(), 100);
+}
+window.cancelLogin = () => {
+  document.getElementById('adminLoginOverlay').style.display = 'none';
+  document.getElementById('login-err').style.display = 'none';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+};
+window.doLogin = () => {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    isAdmin = true;
+    sessionStorage.setItem('jp_admin','true');
+    document.getElementById('adminLoginOverlay').style.display = 'none';
+    document.getElementById('nav-admin').style.display = 'flex';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-err').style.display = 'none';
+    goAdmin();
+    showToast('✅ Bienvenido, ' + ADMIN_USER + '!');
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-pass').focus();
+  }
+};
+window.adminLogout = () => {
+  isAdmin = false;
+  sessionStorage.removeItem('jp_admin');
+  document.getElementById('nav-admin').style.display = 'none';
+  showSection('catalog','all',document.getElementById('nav-all'));
+  showToast('👋 Sesión cerrada');
+};
+function goAdmin() {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('nav-admin').style.display = 'flex';
+  document.getElementById('nav-admin').classList.add('active');
+  ['catalog','events','evdetail'].forEach(p=>document.getElementById('page-'+p).style.display='none');
+  document.getElementById('page-admin').style.display = 'block';
+  currentSection = 'admin';
+  renderAdminLists();
+  closeMobile(); window.scrollTo(0,0);
+}
+
+/* ── NAV ── */
+window.showSection = (section, filter, navEl) => {
+  currentSection = section;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  ['catalog','events','evdetail','admin'].forEach(p=>{
+    document.getElementById('page-'+p).style.display = p===section ? 'block' : 'none';
+  });
+  document.getElementById('searchInput').value = '';
+  cdIntervals.forEach(clearInterval); cdIntervals = [];
+  if (section==='catalog') {
+    activeCat = filter;
+    const t={all:'🛒 Todos los Productos',pokemon:'⚡ Pokémon',cuenta:'🎮 Cuentas',servicio:'⚔️ Servicios',item:'🎒 Items'};
+    document.getElementById('catTitle').textContent = t[filter]||'🛒 Catálogo';
+    renderProducts();
+  } else if (section==='events') {
+    activeEvType = filter;
+    const t={'all':'📅 Todos los Eventos','Community Day':'🦕 Community Day','Raid Hour':'⚔️ Raid Hour','GO Fest':'🎉 GO Fest','GO Tour':'🌍 GO Tour','Wild Area':'🌿 Wild Area','Safari City':'🏙️ Safari City','Spotlight Hour':'🔦 Spotlight Hour'};
+    document.getElementById('evTitle').textContent = t[filter]||'📅 Eventos';
+    renderEvents();
+  } else if (section==='admin') {
+    if (!isAdmin) { showAdminLogin(); return; }
+    renderAdminLists();
+  }
+  closeMobile(); window.scrollTo(0,0);
+};
+
+window.openEventDetail = (id) => {
+  const ev = events.find(e=>e._id===id||e.id===id);
+  if(!ev) return;
+  cdIntervals.forEach(clearInterval); cdIntervals=[];
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  ['catalog','events','admin'].forEach(p=>document.getElementById('page-'+p).style.display='none');
+  document.getElementById('page-evdetail').style.display = 'block';
+  currentSection = 'evdetail';
+  renderEventDetail(ev);
+  window.scrollTo(0,0);
+};
+
+/* ── COUNTS ── */
+function updateCounts() {
+  ['all','pokemon','cuenta','servicio','item'].forEach(c=>{
+    const el=document.getElementById('count-'+c);
+    if(el) el.textContent = c==='all' ? products.length : products.filter(p=>p.category===c).length;
+  });
+  document.getElementById('count-ev-all').textContent = events.length;
+}
+
+const BADGE_CLASS={SHINY:'badge-shiny',HOT:'badge-hot',NEW:'badge-new',RARE:'badge-rare',HUNDO:'badge-hundo',SALE:'badge-sale'};
+const CAT_LABEL={pokemon:'⚡ Pokémon',cuenta:'🎮 Cuenta',servicio:'⚔️ Servicio',item:'🎒 Item'};
+
+/* ── RENDER PRODUCTS ── */
+function renderProducts() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const f = products.filter(p=>{
+    const mc = activeCat==='all'||p.category===activeCat;
+    const mq = !q||p.name.toLowerCase().includes(q)||(p.descShort||'').toLowerCase().includes(q)||(p.event||'').toLowerCase().includes(q);
+    return mc&&mq;
+  });
+  document.getElementById('countPill').innerHTML = '<span>'+f.length+'</span> producto'+(f.length!==1?'s':'');
+  const grid = document.getElementById('prodGrid');
+  if(!f.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><h3>Sin resultados</h3><p>Intenta con otra búsqueda</p></div>';return;}
+  grid.innerHTML = f.map(p=>{
+    const bc=BADGE_CLASS[p.tag]||'badge-hot', cl=CAT_LABEL[p.category]||p.category;
+    const eb=p.event?`<span class="tag-event">📅 ${p.event}</span>`:'';
+    const pid = p._id||p.id;
+    return `<div class="pcard">
+      <div class="card-img-wrap"><img src="${p.img||''}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div></div>
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-tags"><span class="tag-cat">${cl}</span>${eb}</div>
+        <button class="card-wa" onclick="event.stopPropagation();openWA('${(p.name||'').replace(/'/g,"\\'")}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
+          Comprar por WhatsApp
+        </button>
+      </div></div>`;
+  }).join('');
+}
+
+/* ── RENDER EVENTS ── */
+function getStatus(ev){const n=Date.now();if(n<ev.startUTC)return'upcoming';if(n<=ev.endUTC)return'live';return'ended';}
+function fmtCd(ms){if(ms<=0)return null;const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60),sec=s%60;let o='';if(d)o+=d+'d ';if(h||d)o+=h+'h ';if(m||h||d)o+=m+'m ';o+=sec+'s';return o.trim();}
+
+function renderEvents() {
+  cdIntervals.forEach(clearInterval); cdIntervals=[];
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const f=events.filter(ev=>{
+    const mt=activeEvType==='all'||ev.type===activeEvType;
+    const mq=!q||ev.name.toLowerCase().includes(q)||(ev.type||'').toLowerCase().includes(q)||(ev.descShort||'').toLowerCase().includes(q);
+    return mt&&mq;
+  });
+  document.getElementById('countPill').innerHTML='<span>'+f.length+'</span> evento'+(f.length!==1?'s':'');
+  const list=document.getElementById('eventsList');
+  if(!f.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div><h3>Sin eventos</h3></div>';return;}
+  list.innerHTML=f.map(ev=>{
+    const st=getStatus(ev),cc=ev.color||'',eid=ev._id||ev.id;
+    const imgH=ev.img?`<img class="ev-img" src="${ev.img}" alt="${ev.name}">`:`<div class="ev-img-placeholder">${ev.icon||'📅'}</div>`;
+    const rH=st==='live'?`<div class="ev-cd-lbl"><span class="live-dot"></span>EN VIVO — Finaliza en:</div><div class="ev-cd-val live" id="ecd-${eid}">–</div>`:st==='upcoming'?`<div class="ev-cd-lbl">Inicia en:</div><div class="ev-cd-val" id="ecd-${eid}">–</div>`:`<div class="ev-cd-lbl">Estado:</div><div class="ev-cd-val ended">Finalizado</div>`;
+    return `<div class="ev-card" onclick="openEventDetail('${eid}')">${imgH}<div class="ev-content"><div class="ev-header ${cc}"><span class="ev-type-badge">${ev.type}</span><span class="ev-title-text">${ev.name}</span></div><div class="ev-body"><div class="ev-dates"><div class="ev-date-row"><span class="ev-date-lbl">Inicio:</span><span class="ev-date-val">${ev.startStr}</span></div><div class="ev-date-row"><span class="ev-date-lbl">Fin:</span><span class="ev-date-val">${ev.endStr}</span></div></div><div class="ev-right">${rH}</div></div></div></div>`;
+  }).join('');
+  f.forEach(ev=>{const st=getStatus(ev);if(st==='ended')return;const eid=ev._id||ev.id;const el=document.getElementById('ecd-'+eid);if(!el)return;const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const r=t-Date.now();el.textContent=r>0?fmtCd(r):'–';};tick();cdIntervals.push(setInterval(tick,1000));});
+}
+
+/* ── EVENT DETAIL ── */
+const TZ_GROUPS=[
+  {gmt:'GMT-6:00',offset:-6,countries:[{flag:'🇬🇹',name:'Guatemala'},{flag:'🇲🇽',name:'México (Centro)'},{flag:'🇸🇻',name:'El Salvador'}]},
+  {gmt:'GMT-5:00',offset:-5,countries:[{flag:'🇺🇸',name:'EE.UU. (Este)'},{flag:'🇨🇴',name:'Colombia'},{flag:'🇵🇪',name:'Perú'}]},
+  {gmt:'GMT-4:00',offset:-4,countries:[{flag:'🇻🇪',name:'Venezuela'},{flag:'🇨🇱',name:'Chile'}]},
+  {gmt:'GMT-3:00',offset:-3,countries:[{flag:'🇧🇷',name:'Brasil'},{flag:'🇦🇷',name:'Argentina'}]},
+  {gmt:'GMT+0:00',offset:0,countries:[{flag:'🇬🇧',name:'Reino Unido'},{flag:'🇵🇹',name:'Portugal'}]},
+  {gmt:'GMT+1:00',offset:1,countries:[{flag:'🇪🇸',name:'España'},{flag:'🇫🇷',name:'Francia'}]},
+  {gmt:'GMT+9:00',offset:9,countries:[{flag:'🇯🇵',name:'Japón'},{flag:'🇰🇷',name:'Corea'}]},
+];
+
+function renderEventDetail(ev) {
+  const st=getStatus(ev),cc=ev.color||'';
+  const bH={live:`<span class="evd-badge live"><span class="live-dot"></span> En Vivo</span>`,upcoming:`<span class="evd-badge upcoming">📅 Próximo</span>`,ended:`<span class="evd-badge ended">✓ Finalizado</span>`}[st];
+  const cdL=st==='live'?'Finaliza en:':st==='upcoming'?'Inicia en:':'Estado:';
+  const cdC=st==='live'?'live':st==='ended'?'ended':'',cdI=st==='ended'?'Finalizado':'–';
+  const tzR=TZ_GROUPS.map((g,gi)=>{
+    const sL=new Date(ev.startUTC+g.offset*3600000),eL=new Date(ev.endUTC+g.offset*3600000);
+    const fmt=d=>d.toLocaleDateString('es',{weekday:'short',day:'2-digit',month:'short'});
+    const fmtT=d=>d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',hour12:true});
+    return `<div class="evd-tz-card ${st==='live'?'is-live':''}"><div class="evd-tz-gmt"><span class="evd-tz-gmt-lbl">${g.gmt}</span><span style="font-size:15px">${g.countries.map(c=>c.flag).join('')}</span><span style="font-size:11px;color:var(--muted);margin-left:6px">${g.countries.map(c=>c.name).join(', ')}</span></div><div class="evd-tz-body"><div class="evd-tz-col"><div class="evd-tz-place">Hora local ahora</div><div class="evd-tz-time" id="tzt-${gi}">–</div></div><div class="evd-tz-col-mid"><div class="evd-tz-mid-inner"><div class="evd-tz-block"><div class="evd-tz-lbl">Inicio</div><div class="evd-tz-val">${fmt(sL)}</div><div class="evd-tz-hhmm">${fmtT(sL)}</div></div><div class="evd-tz-block"><div class="evd-tz-lbl">Fin</div><div class="evd-tz-val">${fmt(eL)}</div><div class="evd-tz-hhmm">${fmtT(eL)}</div></div></div></div><div class="evd-tz-cd-col"><div class="evd-tz-cd-lbl">${cdL.replace(':','')}</div><div class="evd-tz-cd-val ${cdC} ${st==='upcoming'?'ns':''}" id="tzcd-${gi}">${cdI}</div></div></div></div>`;
+  }).join('');
+  const fH=(ev.features||[]).map(f=>`<div class="evd-feature"><div class="evd-feature-icon">${f.icon}</div><div class="evd-feature-text"><strong>${f.title}</strong><span>${f.desc}</span></div></div>`).join('');
+  const pP=(ev.pokemon||[]).map(p=>`<span class="evd-poke-pill">${p}</span>`).join('');
+  document.getElementById('evdWrap').innerHTML=`
+    <button class="evd-back" onclick="showSection('events',activeEvType,document.getElementById('nav-ev-all'))">← Volver a Eventos</button>
+    <div class="evd-hero"><div class="evd-banner ${cc}"><div class="evd-icon">${ev.icon||'📅'}</div><div class="evd-banner-info"><div class="evd-banner-type">${ev.type}</div><div class="evd-banner-title">${ev.name}</div><div class="evd-badges">${bH}</div></div></div><div class="evd-dates-row"><div><div class="evd-date-lbl">Inicio</div><div class="evd-date-val">${ev.startStr}</div></div><div><div class="evd-date-lbl">Fin</div><div class="evd-date-val">${ev.endStr}</div></div><div class="evd-cd-block"><div class="evd-cd-lbl2">${cdL}</div><div class="evd-cd-val2 ${cdC}" id="evd-cd">${cdI}</div></div></div></div>
+    <div class="evd-body"><div class="evd-section"><div class="evd-sec-title">📋 Descripción</div><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>${pP?`<div class="evd-section"><div class="evd-sec-title">⚡ Pokémon Destacados</div><div class="evd-poke-pills">${pP}</div></div>`:''}${fH?`<div class="evd-section"><div class="evd-sec-title">⭐ Características</div><div class="evd-features">${fH}</div></div>`:''}</div>
+    <div class="evd-body"><div class="evd-section" style="margin-bottom:0"><div class="evd-sec-title">🌎 Horarios por Zona Horaria</div><div class="evd-tz-list">${tzR}</div></div></div>`;
+  if(st!=='ended'){const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const el=document.getElementById('evd-cd');if(el){const r=t-Date.now();el.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));}
+  TZ_GROUPS.forEach((g,gi)=>{const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const now=Date.now(),loc=new Date(now+g.offset*3600000),h=loc.getUTCHours(),m=loc.getUTCMinutes(),s=loc.getUTCSeconds(),ap=h>=12?'pm':'am',h12=h%12||12;const tEl=document.getElementById('tzt-'+gi);if(tEl)tEl.textContent=`${h12}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;const cdEl=document.getElementById('tzcd-'+gi);if(cdEl&&st!=='ended'){const r=t-now;cdEl.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));});
+}
+
+/* ── ADMIN IMAGE PREVIEW ── */
+window.previewImg = (prefix) => {
+  const file = document.getElementById(prefix+'-img-file').files[0];
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const prev=document.getElementById(prefix+'-img-prev');
+    const ph=document.getElementById(prefix+'-img-ph');
+    prev.src=e.target.result; prev.style.display='block'; ph.style.display='none';
+    document.getElementById(prefix+'-img-data').value=e.target.result;
+  };
+  r.readAsDataURL(file);
+};
+
+function resetImgUI(prefix) {
+  document.getElementById(prefix+'-img-prev').style.display='none';
+  document.getElementById(prefix+'-img-prev').src='';
+  document.getElementById(prefix+'-img-ph').style.display='block';
+  document.getElementById(prefix+'-img-data').value='';
+  document.getElementById(prefix+'-img-file').value='';
+}
+
+/* ── ADMIN PRODUCTS CRUD ── */
+window.saveProd = async () => {
+  const name=document.getElementById('p-name').value.trim();
+  const descShort=document.getElementById('p-short').value.trim();
+  if(!name||!descShort){showToast('⚠️ Nombre y descripción requeridos','error');return;}
+  const editId=document.getElementById('p-edit-id').value;
+  const imgData=document.getElementById('p-img-data').value;
+  let existingImg='';
+  if(editId){const ex=products.find(p=>p._id===editId);if(ex)existingImg=ex.img||'';}
+  const obj={
+    _id:editId||undefined,
+    name, category:document.getElementById('p-cat').value,
+    price:parseFloat(document.getElementById('p-price').value)||0,
+    tag:document.getElementById('p-tag').value,
+    event:document.getElementById('p-event').value.trim(),
+    descShort, desc:document.getElementById('p-desc').value.trim(),
+    img:imgData||existingImg
+  };
+  try {
+    const savedId = await fbSave('products', obj);
+    products = await fbLoad('products');
+    updateCounts(); clearProdForm(); renderProducts(); renderAdminLists();
+    showToast(editId?'✅ Producto actualizado!':'🚀 Producto publicado!');
+  } catch(e) { showToast('❌ Error al guardar: '+e.message,'error'); }
+};
+
+window.cancelEditProd = clearProdForm;
+function clearProdForm() {
+  ['p-name','p-price','p-short','p-desc','p-event'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-cat').value='pokemon';
+  document.getElementById('p-tag').value='HOT';
+  document.getElementById('p-edit-id').value='';
+  document.getElementById('prod-form-title').textContent='➕ Nuevo Producto';
+  document.getElementById('p-save-btn').textContent='🚀 Publicar Producto';
+  document.getElementById('prod-edit-banner').classList.remove('show');
+  resetImgUI('p');
+}
+
+window.editProd = (id) => {
+  const p=products.find(x=>x._id===id);
+  if(!p) return;
+  document.getElementById('p-name').value=p.name||'';
+  document.getElementById('p-price').value=p.price||'';
+  document.getElementById('p-short').value=p.descShort||'';
+  document.getElementById('p-desc').value=p.desc||'';
+  document.getElementById('p-event').value=p.event||'';
+  document.getElementById('p-cat').value=p.category||'pokemon';
+  document.getElementById('p-tag').value=p.tag||'HOT';
+  document.getElementById('p-edit-id').value=p._id;
+  document.getElementById('prod-form-title').textContent='✏️ Editar Producto';
+  document.getElementById('p-save-btn').textContent='💾 Guardar Cambios';
+  document.getElementById('prod-edit-banner').classList.add('show');
+  if(p.img){document.getElementById('p-img-prev').src=p.img;document.getElementById('p-img-prev').style.display='block';document.getElementById('p-img-ph').style.display='none';}
+  else resetImgUI('p');
+  document.getElementById('apanel-prod').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+window.delProd = async (id) => {
+  if(!confirm('¿Eliminar este producto?')) return;
+  try {
+    await fbDel('products', id);
+    products = await fbLoad('products');
+    updateCounts(); renderProducts(); renderAdminLists();
+    showToast('🗑️ Producto eliminado');
+  } catch(e) { showToast('❌ Error: '+e.message,'error'); }
+};
+
+/* ── ADMIN EVENTS CRUD ── */
+window.saveEv = async () => {
+  const name=document.getElementById('ev-name').value.trim();
+  const descShort=document.getElementById('ev-desc-short').value.trim();
+  const startStr=document.getElementById('ev-start-str').value.trim();
+  const endStr=document.getElementById('ev-end-str').value.trim();
+  if(!name||!descShort||!startStr||!endStr){showToast('⚠️ Nombre, descripción y fechas requeridos','error');return;}
+  const startUTCval=document.getElementById('ev-start-utc').value;
+  const endUTCval=document.getElementById('ev-end-utc').value;
+  const startUTC=startUTCval?new Date(startUTCval+'Z').getTime():Date.now();
+  const endUTC=endUTCval?new Date(endUTCval+'Z').getTime():Date.now()+3600000;
+  const features=document.getElementById('ev-features').value.trim().split('\n').filter(l=>l.trim()).map(line=>{const p=line.split('|');return{icon:(p[0]||'').trim(),title:(p[1]||'').trim(),desc:(p[2]||'').trim()};}).filter(f=>f.title);
+  const pokemon=document.getElementById('ev-pokemon').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
+  const editId=document.getElementById('ev-edit-id').value;
+  const imgData=document.getElementById('ev-img-data').value;
+  let existingImg='';
+  if(editId){const ex=events.find(e=>e._id===editId);if(ex)existingImg=ex.img||'';}
+  const obj={
+    _id:editId||undefined,
+    name, type:document.getElementById('ev-type').value,
+    color:document.getElementById('ev-color').value,
+    icon:document.getElementById('ev-icon').value.trim()||'📅',
+    startStr, endStr, startUTC, endUTC,
+    descShort, descFull:document.getElementById('ev-desc-full').value.trim(),
+    pokemon, features, img:imgData||existingImg
+  };
+  try {
+    await fbSave('events', obj);
+    events = await fbLoad('events');
+    updateCounts(); clearEvForm(); renderEvents(); renderAdminLists();
+    showToast(editId?'✅ Evento actualizado!':'🚀 Evento publicado!');
+  } catch(e) { showToast('❌ Error al guardar: '+e.message,'error'); }
+};
+
+window.cancelEditEv = clearEvForm;
+function clearEvForm() {
+  ['ev-name','ev-desc-short','ev-desc-full','ev-start-str','ev-end-str','ev-start-utc','ev-end-utc','ev-icon','ev-pokemon','ev-features'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ev-type').value='Community Day';
+  document.getElementById('ev-color').value='';
+  document.getElementById('ev-edit-id').value='';
+  document.getElementById('ev-form-title').textContent='➕ Nuevo Evento';
+  document.getElementById('ev-save-btn').textContent='🚀 Publicar Evento';
+  document.getElementById('ev-edit-banner').classList.remove('show');
+  resetImgUI('ev');
+}
+
+window.editEv = (id) => {
+  const ev=events.find(e=>e._id===id);
+  if(!ev) return;
+  document.getElementById('ev-name').value=ev.name||'';
+  document.getElementById('ev-type').value=ev.type||'Community Day';
+  document.getElementById('ev-color').value=ev.color||'';
+  document.getElementById('ev-icon').value=ev.icon||'';
+  document.getElementById('ev-start-str').value=ev.startStr||'';
+  document.getElementById('ev-end-str').value=ev.endStr||'';
+  const toLocal=ms=>{if(!ms)return'';return new Date(ms).toISOString().slice(0,16);};
+  document.getElementById('ev-start-utc').value=toLocal(ev.startUTC);
+  document.getElementById('ev-end-utc').value=toLocal(ev.endUTC);
+  document.getElementById('ev-desc-short').value=ev.descShort||'';
+  document.getElementById('ev-desc-full').value=ev.descFull||'';
+  document.getElementById('ev-pokemon').value=(ev.pokemon||[]).join(', ');
+  document.getElementById('ev-features').value=(ev.features||[]).map(f=>`${f.icon} | ${f.title} | ${f.desc}`).join('\n');
+  document.getElementById('ev-edit-id').value=ev._id;
+  document.getElementById('ev-form-title').textContent='✏️ Editar Evento';
+  document.getElementById('ev-save-btn').textContent='💾 Guardar Cambios';
+  document.getElementById('ev-edit-banner').classList.add('show');
+  if(ev.img){document.getElementById('ev-img-prev').src=ev.img;document.getElementById('ev-img-prev').style.display='block';document.getElementById('ev-img-ph').style.display='none';}
+  else resetImgUI('ev');
+  document.getElementById('apanel-ev').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+window.delEv = async (id) => {
+  if(!confirm('¿Eliminar este evento?')) return;
+  try {
+    await fbDel('events', id);
+    events = await fbLoad('events');
+    updateCounts(); renderEvents(); renderAdminLists();
+    showToast('🗑️ Evento eliminado');
+  } catch(e) { showToast('❌ Error: '+e.message,'error'); }
+};
+
+/* ── ADMIN LISTS ── */
+function renderAdminLists() {
+  const pl=document.getElementById('adm-prod-list');
+  document.getElementById('prod-list-count').textContent=products.length+' publicados';
+  pl.innerHTML=products.length?products.map(p=>`
+    <div class="adm-list-item">
+      ${p.img?`<img class="adm-list-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='.3'">`:`<div class="adm-list-img">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':p.category==='servicio'?'⚔️':'🎒'}</div>`}
+      <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price} · ${p.tag}${p.event?' · 📅 '+p.event:''}</div></div>
+      <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editProd('${p._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delProd('${p._id}')">🗑️</button></div>
+    </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay productos publicados aún.</div>';
+
+  const el=document.getElementById('adm-ev-list');
+  document.getElementById('ev-list-count').textContent=events.length+' publicados';
+  el.innerHTML=events.length?events.map(ev=>`
+    <div class="adm-list-item">
+      <div class="adm-list-img">${ev.icon||'📅'}</div>
+      <div class="adm-list-info"><div class="adm-list-name">${ev.name}</div><div class="adm-list-meta">${ev.type} · ${ev.startStr}</div></div>
+      <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editEv('${ev._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delEv('${ev._id}')">🗑️</button></div>
+    </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay eventos publicados aún.</div>';
+}
+
+window.switchAdminTab = (tab) => {
+  ['prod','ev'].forEach(t=>{
+    document.getElementById('atab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('apanel-'+t).classList.toggle('active',t===tab);
+  });
+};
+
+/* ── UTILS ── */
+window.onSearch = () => { if(currentSection==='catalog')renderProducts(); else if(currentSection==='events')renderEvents(); };
+window.openWA = (name) => { window.open('https://wa.me/'+WA+'?text='+encodeURIComponent('Hola! Me interesa: '+name+' 🎮'),'_blank'); };
+window.toggleMobile = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').style.display=document.getElementById('sidebar').classList.contains('open')?'block':'none'; };
+window.closeMobile = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').style.display='none'; };
+window.showToast = (msg,type='') => { const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200); };
+
+/* ── START ── */
+if(isAdmin) document.getElementById('nav-admin').style.display='flex';
+loadAll();
+checkHashForAdmin();
+
+</script>
+</body>
+</html>
