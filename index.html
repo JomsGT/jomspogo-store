@@ -237,6 +237,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .empty-icon{font-size:48px;margin-bottom:12px}
 .empty-state h3{font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--text);margin-bottom:6px}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--dark2)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+/* ── PRODUCT DETAIL PAGE ── */
+.prod-detail-wrap{max-width:900px;margin:0 auto;padding:28px}
+.prod-detail-back{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:8px 16px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;letter-spacing:.5px;transition:all .2s}
+.prod-detail-back:hover{background:rgba(245,197,24,.16)}
+.prod-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px}
+@media(max-width:640px){.prod-detail-grid{grid-template-columns:1fr}}
+/* gallery reuse same classes as modal */
+.prod-detail-gallery{background:var(--dark3);border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.prod-detail-info{display:flex;flex-direction:column;gap:14px}
+.pdi-badge{display:inline-block;padding:3px 11px;border-radius:50px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;width:fit-content}
+.pdi-name{font-family:'Orbitron',monospace;font-size:clamp(16px,3vw,24px);font-weight:700;color:#fff;line-height:1.25}
+.pdi-tags{display:flex;gap:6px;flex-wrap:wrap}
+.pdi-price{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--gold)}
+.pdi-divider{border:none;border-top:1px solid var(--border);margin:0}
+.pdi-short{color:var(--muted);font-size:14px;line-height:1.7}
+.pdi-desc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.pdi-desc-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.pdi-desc-text{color:var(--muted);font-size:13px;line-height:1.8}
+.pdi-wa{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;transition:all .2s}
+.pdi-wa:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.35)}
+
 /* ── PRODUCT MODAL ── */
 .prod-modal-overlay{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s}
 .prod-modal-overlay.open{opacity:1;pointer-events:all}
@@ -356,6 +377,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   <div id="page-evdetail" class="content" style="display:none">
     <div class="evd-wrap" id="evdWrap"></div>
+  </div>
+
+  <!-- PRODUCT DETAIL PAGE -->
+  <div id="page-proddetail" class="content" style="display:none">
+    <div class="prod-detail-wrap" id="prodDetailWrap"></div>
   </div>
 
   <div id="page-admin" class="content" style="display:none">
@@ -482,35 +508,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </main>
 
-<!-- PRODUCT MODAL -->
-<div class="prod-modal-overlay" id="prodModalOverlay" onclick="closeProdModal(event)">
-  <div class="prod-modal" id="prodModal" onclick="event.stopPropagation()">
-    <button class="prod-modal-close" onclick="closeProdModalDirect()">✕</button>
-    <!-- Gallery -->
-    <div class="prod-modal-gallery">
-      <div class="gallery-main" id="galleryMain" onclick="toggleZoom(event)">
-        <img id="galleryMainImg" src="" alt="">
-        <div class="gallery-zoom-hint">🔍 Click para zoom</div>
-        <button class="gallery-nav prev" id="galleryPrev" onclick="event.stopPropagation();galleryNav(-1)" style="display:none">‹</button>
-        <button class="gallery-nav next" id="galleryNext" onclick="event.stopPropagation();galleryNav(1)" style="display:none">›</button>
-      </div>
-      <div class="gallery-thumbs" id="galleryThumbs"></div>
-    </div>
-    <!-- Info -->
-    <div class="prod-modal-info">
-      <div class="prod-modal-badge" id="modalBadge"></div>
-      <div class="prod-modal-name" id="modalName"></div>
-      <div class="prod-modal-tags" id="modalTags"></div>
-      <div class="prod-modal-price" id="modalPrice"></div>
-      <div class="prod-modal-short" id="modalShort"></div>
-      <div class="prod-modal-desc" id="modalDesc"></div>
-      <button class="prod-modal-wa" id="modalWaBtn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
-        Comprar por WhatsApp
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- ADMIN LOGIN OVERLAY -->
 <div class="admin-login-overlay" id="adminLoginOverlay" style="display:none">
@@ -533,7 +530,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 ═══════════════════════════════════════════════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, setDoc, deleteDoc, doc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, setDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* ── CONFIG ── */
 const firebaseConfig = {
@@ -565,17 +562,19 @@ let cdIntervals    = [];
 
 /* ── FIREBASE HELPERS ── */
 async function fbLoad(col) {
-  const q = query(collection(db, col), orderBy('createdAt','desc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({...d.data(), _id: d.id}));
+  const snap = await getDocs(collection(db, col));
+  return snap.docs.map(d => ({...d.data(), _id: d.id}))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
 }
 
 async function fbSave(col, data) {
   const {_id, ...rest} = data;
   if (_id) {
-    await setDoc(doc(db, col, _id), {...rest, updatedAt: Date.now()});
+    // UPDATE — merge so createdAt and other fields are preserved
+    await setDoc(doc(db, col, _id), {...rest, updatedAt: Date.now()}, {merge: true});
     return _id;
   } else {
+    // CREATE — add new document with createdAt
     const ref = await addDoc(collection(db, col), {...rest, createdAt: Date.now()});
     return ref.id;
   }
@@ -675,7 +674,7 @@ window.showSection = (section, filter, navEl) => {
   currentSection = section;
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   if (navEl) navEl.classList.add('active');
-  ['catalog','events','evdetail','admin'].forEach(p=>{
+  ['catalog','events','evdetail','proddetail','admin'].forEach(p=>{
     document.getElementById('page-'+p).style.display = p===section ? 'block' : 'none';
   });
   document.getElementById('searchInput').value = '';
@@ -702,7 +701,7 @@ window.openEventDetail = (id) => {
   if(!ev) return;
   cdIntervals.forEach(clearInterval); cdIntervals=[];
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  ['catalog','events','admin'].forEach(p=>document.getElementById('page-'+p).style.display='none');
+  ['catalog','events','proddetail','admin'].forEach(p=>document.getElementById('page-'+p).style.display='none');
   document.getElementById('page-evdetail').style.display = 'block';
   currentSection = 'evdetail';
   renderEventDetail(ev);
@@ -737,7 +736,7 @@ function renderProducts() {
     const eb=p.event?`<span class="tag-event">📅 ${p.event}</span>`:'';
     const pid = p._id||p.id;
     const mainImg = p.img || '';
-    return `<div class="pcard" onclick="openProdModal('${pid}')">
+    return `<div class="pcard" onclick="openProdDetail('${pid}')">
       <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div></div>
       <div class="card-body">
         <div class="card-name">${p.name}</div>
@@ -919,96 +918,104 @@ function resetImgUI(prefix) {
 
 window.previewImg = () => {};
 
-window.openProdModal = (pid) => {
+/* ── PRODUCT DETAIL PAGE ── */
+let detailGalleryImgs = [];
+let detailGalleryIdx  = 0;
+let detailPrevSection = 'catalog';
+let detailPrevCat     = 'all';
+
+window.openProdDetail = (pid) => {
   const p = products.find(x=>(x._id||x.id)===pid||(x._id||x.id)==String(pid));
   if(!p) return;
-  const imgs = p.imgs && p.imgs.length ? p.imgs : (p.img ? [p.img] : []);
-  galleryImages = imgs;
-  galleryIndex  = 0;
-
-  // Badge color
-  const bc = BADGE_CLASS[p.tag]||'badge-hot';
-  const badgeEl = document.getElementById('modalBadge');
-  badgeEl.textContent = p.tag||'NEW';
-  badgeEl.className = 'prod-modal-badge ' + bc;
-
-  document.getElementById('modalName').textContent  = p.name||'';
-  document.getElementById('modalPrice').textContent = p.price ? 'Q '+p.price : '';
-  document.getElementById('modalShort').textContent = p.descShort||'';
-  document.getElementById('modalDesc').textContent  = p.desc||'';
-
-  // Tags
-  const cl = CAT_LABEL[p.category]||p.category;
-  const eb = p.event ? `<span class="tag-event">📅 ${p.event}</span>` : '';
-  document.getElementById('modalTags').innerHTML = `<span class="tag-cat">${cl}</span>${eb}`;
-
-  // WA button
-  document.getElementById('modalWaBtn').onclick = () => openWA(p.name||'');
-
-  updateGallery();
-
-  document.getElementById('prodModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  // Remember where we came from
+  detailPrevSection = currentSection;
+  detailPrevCat     = activeCat;
+  // Switch page
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  ['catalog','events','evdetail','admin'].forEach(pg=>document.getElementById('page-'+pg).style.display='none');
+  document.getElementById('page-proddetail').style.display='block';
+  currentSection = 'proddetail';
+  renderProdDetail(p);
+  window.scrollTo(0,0);
 };
 
-function updateGallery() {
-  const imgs = galleryImages;
-  const img  = document.getElementById('galleryMainImg');
-  img.src = imgs[galleryIndex] || '';
-  img.classList.remove('zoomed');
+function renderProdDetail(p) {
+  const imgs = p.imgs&&p.imgs.length ? p.imgs : (p.img ? [p.img] : []);
+  detailGalleryImgs = imgs;
+  detailGalleryIdx  = 0;
+  const bc  = BADGE_CLASS[p.tag]||'badge-hot';
+  const cl  = CAT_LABEL[p.category]||p.category;
+  const evB = p.event ? `<span class="tag-event">📅 ${p.event}</span>` : '';
+  const mainImg = imgs[0]||'';
 
-  // Thumbs
-  const thumbsEl = document.getElementById('galleryThumbs');
-  if (imgs.length > 1) {
-    thumbsEl.style.display = 'flex';
-    thumbsEl.innerHTML = imgs.map((src,i)=>`
-      <img class="gallery-thumb ${i===galleryIndex?'active':''}" src="${src}" onclick="setGalleryIndex(${i})">`
-    ).join('');
-  } else {
-    thumbsEl.style.display = 'none';
-  }
+  const thumbsHtml = imgs.length>1 ? `
+    <div class="gallery-thumbs" id="dtGalleryThumbs">
+      ${imgs.map((src,i)=>`<img class="gallery-thumb ${i===0?'active':''}" src="${src}" onclick="dtSetImg(${i})">`).join('')}
+    </div>` : '';
 
-  // Nav arrows
-  document.getElementById('galleryPrev').style.display = imgs.length>1?'flex':'none';
-  document.getElementById('galleryNext').style.display = imgs.length>1?'flex':'none';
+  const navBtns = imgs.length>1 ? `
+    <button class="gallery-nav prev" onclick="dtNav(-1)">‹</button>
+    <button class="gallery-nav next" onclick="dtNav(1)">›</button>` : '';
+
+  document.getElementById('prodDetailWrap').innerHTML = `
+    <button class="prod-detail-back" onclick="closeProdDetail()">← Volver al catálogo</button>
+    <div class="prod-detail-grid">
+      <!-- Gallery -->
+      <div class="prod-detail-gallery">
+        <div class="gallery-main" style="min-height:300px" onclick="dtToggleZoom(event)">
+          <img id="dtMainImg" src="${mainImg}" alt="${p.name}" style="max-height:400px" onerror="this.style.display='none'">
+          <div class="gallery-zoom-hint">🔍 Click para zoom</div>
+          ${navBtns}
+        </div>
+        ${thumbsHtml}
+      </div>
+      <!-- Info -->
+      <div class="prod-detail-info">
+        <div class="pdi-badge ${bc}">${p.tag||'NEW'}</div>
+        <div class="pdi-name">${p.name}</div>
+        <div class="pdi-tags"><span class="tag-cat">${cl}</span>${evB}</div>
+        ${p.price ? `<div class="pdi-price">Q ${p.price}</div>` : ''}
+        <hr class="pdi-divider">
+        ${p.descShort ? `<div class="pdi-short">${p.descShort}</div>` : ''}
+        <button class="pdi-wa" onclick="openWA('${(p.name||'').replace(/'/g,"\\'")}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
+          Comprar por WhatsApp
+        </button>
+      </div>
+    </div>
+    ${p.desc ? `
+    <div class="pdi-desc-card">
+      <div class="pdi-desc-title">📋 Descripción</div>
+      <div class="pdi-desc-text">${p.desc}</div>
+    </div>` : ''}`;
 }
 
-window.setGalleryIndex = (i) => {
-  galleryIndex = i;
-  updateGallery();
+window.closeProdDetail = () => {
+  const navEl = document.getElementById('nav-' + (detailPrevCat==='all' ? 'all' : detailPrevCat));
+  showSection('catalog', detailPrevCat, navEl||document.getElementById('nav-all'));
 };
 
-window.galleryNav = (dir) => {
-  galleryIndex = (galleryIndex + dir + galleryImages.length) % galleryImages.length;
-  updateGallery();
+window.dtSetImg = (i) => {
+  detailGalleryIdx = i;
+  const img = document.getElementById('dtMainImg');
+  if(img){ img.src=detailGalleryImgs[i]||''; img.classList.remove('zoomed'); }
+  document.querySelectorAll('#dtGalleryThumbs .gallery-thumb').forEach((t,ti)=>t.classList.toggle('active',ti===i));
+};
+window.dtNav = (dir) => {
+  const n = (detailGalleryIdx+dir+detailGalleryImgs.length)%detailGalleryImgs.length;
+  dtSetImg(n);
+};
+window.dtToggleZoom = (e) => {
+  const img = document.getElementById('dtMainImg');
+  if(!img) return;
+  if(img.classList.contains('zoomed')){ img.classList.remove('zoomed'); return; }
+  const rect=img.getBoundingClientRect();
+  img.style.setProperty('--ox',((e.clientX-rect.left)/rect.width*100).toFixed(1)+'%');
+  img.style.setProperty('--oy',((e.clientY-rect.top)/rect.height*100).toFixed(1)+'%');
+  img.classList.add('zoomed');
 };
 
-window.toggleZoom = (e) => {
-  const img = document.getElementById('galleryMainImg');
-  if (img.classList.contains('zoomed')) {
-    img.classList.remove('zoomed');
-  } else {
-    const rect = img.getBoundingClientRect();
-    const ox = ((e.clientX - rect.left) / rect.width * 100).toFixed(1)+'%';
-    const oy = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1)+'%';
-    img.style.setProperty('--ox', ox);
-    img.style.setProperty('--oy', oy);
-    img.classList.add('zoomed');
-  }
-};
 
-window.closeProdModal = (e) => {
-  if (e && e.target !== document.getElementById('prodModalOverlay')) return;
-  closeProdModalDirect();
-};
-window.closeProdModalDirect = () => {
-  document.getElementById('prodModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-};
-// Close with Escape key
-document.addEventListener('keydown', e => {
-  if (e.key==='Escape') closeProdModalDirect();
-});
 
 /* ── ADMIN PRODUCTS CRUD ── */
 window.saveProd = async () => {
