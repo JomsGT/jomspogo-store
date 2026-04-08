@@ -384,10 +384,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           <div class="adm-group">
             <label class="adm-label">Imágenes del producto <span style="color:var(--muted);font-weight:400;font-size:10px">(primera = principal · máx 6)</span></label>
-            <input type="file" id="p-img-file" accept="image/*" multiple style="display:none" onchange="addProdImgs(this)">
+            <div class="adm-hint" style="margin-bottom:8px">Sube tu imagen a <strong style="color:var(--gold)">OneDrive, Google Drive, Imgur, o cualquier hosting</strong> y pega el link directo aquí</div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <input class="adm-input" id="p-img-url-input" placeholder="https://i.imgur.com/ejemplo.jpg  ó  link de OneDrive..." style="flex:1">
+              <button class="adm-btn adm-btn-primary" onclick="addProdImgUrl()" style="padding:10px 16px;font-size:13px;white-space:nowrap">+ Agregar</button>
+            </div>
+            <div class="adm-hint" style="margin-bottom:10px">
+              💡 <strong>OneDrive:</strong> click derecho en la imagen → "Compartir" → "Copiar link" → pégalo aquí y lo convertimos automáticamente.<br>
+              💡 <strong>Google Drive:</strong> click derecho → "Obtener link" → asegúrate que sea público → pegar aquí.<br>
+              💡 <strong>Imgur.com:</strong> sube gratis en segundos, copia el "Direct link".
+            </div>
             <div class="gallery-upload-grid" id="p-gallery-grid">
-              <div class="gallery-add-btn" onclick="document.getElementById('p-img-file').click()">
-                <span>📷</span><span>Agregar</span>
+              <div style="grid-column:1/-1;color:var(--muted);font-size:12px;padding:12px;text-align:center;background:var(--dark3);border-radius:8px;border:1px dashed var(--border)">
+                📷 Agrega imágenes usando el campo de arriba
               </div>
             </div>
             <input type="hidden" id="p-img-data">
@@ -420,10 +429,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <button class="adm-btn adm-btn-ghost" style="margin-left:auto;padding:4px 12px;font-size:12px" onclick="cancelEditEv()">Cancelar</button>
           </div>
           <div class="adm-group">
-            <label class="adm-label">Imagen del evento (opcional)</label>
-            <input type="file" id="ev-img-file" accept="image/*" style="display:none" onchange="previewImg('ev')">
-            <div class="adm-img-placeholder" onclick="document.getElementById('ev-img-file').click()" id="ev-img-ph"><div style="font-size:28px">🖼️</div><p>Click para subir imagen</p></div>
-            <img id="ev-img-prev" class="adm-img-preview" src="" alt="">
+            <label class="adm-label">Imagen del evento <span style="color:var(--muted);font-weight:400;font-size:10px">(opcional)</span></label>
+            <div style="display:flex;gap:8px;margin-bottom:6px">
+              <input class="adm-input" id="ev-img-url-input" placeholder="https://link-directo-a-tu-imagen.jpg" style="flex:1">
+              <button class="adm-btn adm-btn-primary" onclick="addEvImgUrl()" style="padding:10px 16px;font-size:13px;white-space:nowrap">+ Agregar</button>
+            </div>
+            <div id="ev-img-preview-wrap" style="display:none;position:relative;margin-top:6px">
+              <img id="ev-img-prev" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;display:block">
+              <button onclick="removeEvImg()" style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(227,53,13,.85);border:none;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+            </div>
             <input type="hidden" id="ev-img-data">
           </div>
           <div class="adm-row">
@@ -776,9 +790,112 @@ function renderEventDetail(ev) {
   TZ_GROUPS.forEach((g,gi)=>{const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const now=Date.now(),loc=new Date(now+g.offset*3600000),h=loc.getUTCHours(),m=loc.getUTCMinutes(),s=loc.getUTCSeconds(),ap=h>=12?'pm':'am',h12=h%12||12;const tEl=document.getElementById('tzt-'+gi);if(tEl)tEl.textContent=`${h12}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;const cdEl=document.getElementById('tzcd-'+gi);if(cdEl&&st!=='ended'){const r=t-now;cdEl.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));});
 }
 
-/* ── PRODUCT MODAL ── */
-let galleryImages = [];
-let galleryIndex  = 0;
+/* ── ADMIN MULTI-IMAGE (URL based) ── */
+let prodImgList = []; // [{url, isMain}]
+
+// Convert OneDrive/Google Drive share links to direct image links
+function toDirectImgUrl(url) {
+  url = url.trim();
+  // OneDrive share link → direct
+  if (url.includes('1drv.ms') || url.includes('onedrive.live.com')) {
+    // Convert to direct download: replace with embed/download param
+    if (url.includes('1drv.ms')) {
+      return url; // 1drv.ms short links work as-is for img src in most cases
+    }
+    // onedrive.live.com/embed → direct
+    return url.replace('redir?', 'download?').replace('view.aspx?', 'download.aspx?');
+  }
+  // Google Drive: https://drive.google.com/file/d/FILE_ID/view → direct
+  const gdMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (gdMatch) return `https://drive.google.com/uc?export=view&id=${gdMatch[1]}`;
+  // Google Drive alternate format
+  const gdMatch2 = url.match(/drive\.google\.com\/open\?id=([^&]+)/);
+  if (gdMatch2) return `https://drive.google.com/uc?export=view&id=${gdMatch2[1]}`;
+  // Already a direct link
+  return url;
+}
+
+window.addProdImgUrl = () => {
+  const input = document.getElementById('p-img-url-input');
+  const raw = input.value.trim();
+  if (!raw) { showToast('⚠️ Pega un link de imagen primero','error'); return; }
+  if (prodImgList.length >= 6) { showToast('⚠️ Máximo 6 imágenes','error'); return; }
+  const url = toDirectImgUrl(raw);
+  prodImgList.push({url, isMain: prodImgList.length===0});
+  input.value = '';
+  renderProdGalleryAdmin();
+  showToast('✅ Imagen agregada');
+};
+
+// Allow pressing Enter in URL input
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('p-img-url-input');
+  if (inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') addProdImgUrl(); });
+});
+
+function renderProdGalleryAdmin() {
+  const grid = document.getElementById('p-gallery-grid');
+  if (!prodImgList.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;color:var(--muted);font-size:12px;padding:12px;text-align:center;background:var(--dark3);border-radius:8px;border:1px dashed var(--border)">📷 Agrega imágenes usando el campo de arriba</div>`;
+    document.getElementById('p-img-data').value = '';
+    document.getElementById('p-imgs-data').value = '[]';
+    return;
+  }
+  grid.innerHTML = prodImgList.map((item,i)=>`
+    <div class="gallery-upload-item ${item.isMain?'is-main':''}">
+      <img src="${item.url}" alt="" onerror="this.parentElement.style.opacity='.5'">
+      ${!item.isMain?`<button class="set-main" onclick="setProdMainImg(${i})">⭐ Principal</button>`:''}
+      ${item.isMain?`<div class="main-label">PRINCIPAL</div>`:''}
+      <button class="del-img" onclick="delProdImg(${i})">✕</button>
+    </div>`).join('');
+  const main = prodImgList.find(x=>x.isMain)||prodImgList[0];
+  document.getElementById('p-img-data').value  = main ? main.url : '';
+  document.getElementById('p-imgs-data').value = JSON.stringify(prodImgList.map(x=>x.url));
+}
+
+window.setProdMainImg = (i) => {
+  prodImgList.forEach((x,idx)=>x.isMain=idx===i);
+  renderProdGalleryAdmin();
+};
+window.delProdImg = (i) => {
+  const wasMain = prodImgList[i].isMain;
+  prodImgList.splice(i,1);
+  if (wasMain && prodImgList.length) prodImgList[0].isMain=true;
+  renderProdGalleryAdmin();
+};
+
+/* ── EVENT IMAGE (URL based) ── */
+window.addEvImgUrl = () => {
+  const input = document.getElementById('ev-img-url-input');
+  const raw = input.value.trim();
+  if (!raw) { showToast('⚠️ Pega un link de imagen primero','error'); return; }
+  const url = toDirectImgUrl(raw);
+  document.getElementById('ev-img-data').value = url;
+  document.getElementById('ev-img-prev').src = url;
+  document.getElementById('ev-img-preview-wrap').style.display = 'block';
+  input.value = '';
+  showToast('✅ Imagen agregada');
+};
+window.removeEvImg = () => {
+  document.getElementById('ev-img-data').value = '';
+  document.getElementById('ev-img-prev').src = '';
+  document.getElementById('ev-img-preview-wrap').style.display = 'none';
+};
+
+function resetImgUI(prefix) {
+  if (prefix === 'p') {
+    prodImgList = [];
+    renderProdGalleryAdmin();
+    document.getElementById('p-img-url-input').value = '';
+  } else {
+    document.getElementById('ev-img-data').value='';
+    document.getElementById('ev-img-prev').src='';
+    document.getElementById('ev-img-preview-wrap').style.display='none';
+    document.getElementById('ev-img-url-input').value='';
+  }
+}
+
+window.previewImg = () => {}; // no-op, kept for safety
 
 window.openProdModal = (pid) => {
   const p = products.find(x=>(x._id||x.id)===pid||(x._id||x.id)==String(pid));
@@ -960,8 +1077,7 @@ window.saveProd = async () => {
     const ex=products.find(p=>p._id===editId);
     if(ex){ imgMain=ex.img||''; imgsAll=ex.imgs||[imgMain].filter(Boolean); }
   }
-  if (!imgsAll.length && imgMain) imgsAll = [imgMain];
-  const obj={
+  if (!imgsAll.length && imgMain) imgsAll = [imgMain];  const obj={
     ...(editId && {_id: editId}),
     name, category:document.getElementById('p-cat').value,
     price:parseFloat(document.getElementById('p-price').value)||0,
@@ -1004,9 +1120,9 @@ window.editProd = (id) => {
   document.getElementById('prod-form-title').textContent='✏️ Editar Producto';
   document.getElementById('p-save-btn').textContent='💾 Guardar Cambios';
   document.getElementById('prod-edit-banner').classList.add('show');
-  // Load existing images into gallery
-  const existingImgs = p.imgs && p.imgs.length ? p.imgs : (p.img ? [p.img] : []);
-  prodImgList = existingImgs.map((src, i) => ({data: src, isMain: i===0}));
+  // Load existing image URLs into gallery
+  const existingUrls = p.imgs && p.imgs.length ? p.imgs : (p.img ? [p.img] : []);
+  prodImgList = existingUrls.map((url, i) => ({url, isMain: i===0}));
   renderProdGalleryAdmin();
   document.getElementById('apanel-prod').scrollIntoView({behavior:'smooth',block:'start'});
 };
@@ -1066,7 +1182,6 @@ function clearEvForm() {
   document.getElementById('ev-edit-banner').classList.remove('show');
   resetImgUI('ev');
 }
-
 window.editEv = (id) => {
   const ev=events.find(e=>e._id===id);
   if(!ev) return;
@@ -1087,8 +1202,14 @@ window.editEv = (id) => {
   document.getElementById('ev-form-title').textContent='✏️ Editar Evento';
   document.getElementById('ev-save-btn').textContent='💾 Guardar Cambios';
   document.getElementById('ev-edit-banner').classList.add('show');
-  if(ev.img){document.getElementById('ev-img-prev').src=ev.img;document.getElementById('ev-img-prev').style.display='block';document.getElementById('ev-img-ph').style.display='none';}
-  else resetImgUI('ev');
+  // Load existing image URL
+  if(ev.img){
+    document.getElementById('ev-img-data').value=ev.img;
+    document.getElementById('ev-img-prev').src=ev.img;
+    document.getElementById('ev-img-preview-wrap').style.display='block';
+  } else {
+    removeEvImg();
+  }
   document.getElementById('apanel-ev').scrollIntoView({behavior:'smooth',block:'start'});
 };
 
