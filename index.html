@@ -40,13 +40,13 @@
 /* Nav sections — hidden when collapsed */
 .nav-section{
   font-size:10px;color:var(--muted);text-transform:uppercase;
-  letter-spacing:1.5px;padding:14px 18px 5px;
+  letter-spacing:1.5px;
   font-family:'Rajdhani',sans-serif;font-weight:700;
   white-space:nowrap;overflow:hidden;
-  opacity:0;height:0;padding-top:0;padding-bottom:0;
-  transition:opacity .2s, height .2s, padding .2s;
+  opacity:0;max-height:0;padding:0 18px;
+  transition:opacity .2s, max-height .25s ease, padding .2s;
 }
-.sidebar:hover .nav-section{opacity:1;height:auto;padding:14px 18px 5px}
+.sidebar:hover .nav-section{opacity:1;max-height:40px;padding:12px 18px 4px}
 
 /* Nav items */
 .nav-item{
@@ -362,7 +362,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .sidebar{transform:translateX(-100%);width:var(--sidebar-expanded)!important}
   .sidebar.open{transform:translateX(0)}
   .sidebar.open .ni-label,.sidebar.open .brand,.sidebar.open .ni-count{opacity:1}
-  .sidebar.open .nav-section{opacity:1;height:auto;padding:14px 18px 5px}
+  .sidebar.open .nav-section{opacity:1;max-height:40px;padding:12px 18px 4px}
   .main{margin-left:0!important}
   .mobile-toggle{display:block}
   .prod-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
@@ -373,10 +373,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .evd-dates-row{grid-template-columns:1fr 1fr}
   .evd-tz-body{grid-template-columns:1fr 1fr}
   .evd-tz-cd-col{border-top:1px solid rgba(255,255,255,.07);grid-column:1/-1;text-align:left;padding:10px 16px}
-  .sidebar-overlay{display:block!important;pointer-events:none}
 }
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;pointer-events:none}
-.sidebar.open~.sidebar-overlay,.sidebar-overlay.visible{display:block!important;pointer-events:all}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:199;pointer-events:none}
+.sidebar-overlay.visible{display:block;pointer-events:all}
 
 /* ── BANNER ADS ── */
 .banner-slot{width:100%;margin-bottom:20px;border-radius:12px;overflow:hidden;position:relative}
