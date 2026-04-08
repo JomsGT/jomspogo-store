@@ -601,7 +601,12 @@ function setFbStatus(s) {
 window.checkHashForAdmin = () => {
   if (window.location.hash === '#admin') {
     history.replaceState(null,'',window.location.pathname);
-    if (!isAdmin) showAdminLogin(); else goAdmin();
+    if (!isAdmin) {
+      // Show login immediately — don't wait for Firebase
+      showAdminLogin();
+    } else {
+      goAdmin();
+    }
   }
 };
 window.addEventListener('hashchange', window.checkHashForAdmin);
@@ -827,11 +832,7 @@ window.addProdImgUrl = () => {
   showToast('✅ Imagen agregada');
 };
 
-// Allow pressing Enter in URL input
-document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('p-img-url-input');
-  if (inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') addProdImgUrl(); });
-});
+// Enter key on URL input — wired up in init below
 
 function renderProdGalleryAdmin() {
   const grid = document.getElementById('p-gallery-grid');
@@ -987,81 +988,6 @@ window.closeProdModalDirect = () => {
 document.addEventListener('keydown', e => {
   if (e.key==='Escape') closeProdModalDirect();
 });
-
-/* ── ADMIN MULTI-IMAGE GALLERY ── */
-let prodImgList = []; // [{data, isMain}]
-
-window.addProdImgs = (input) => {
-  const files = Array.from(input.files);
-  const remaining = 6 - prodImgList.length;
-  files.slice(0, remaining).forEach(file => {
-    const r = new FileReader();
-    r.onload = e => {
-      prodImgList.push({data: e.target.result, isMain: prodImgList.length===0});
-      renderProdGalleryAdmin();
-    };
-    r.readAsDataURL(file);
-  });
-  input.value = '';
-};
-
-function renderProdGalleryAdmin() {
-  const grid = document.getElementById('p-gallery-grid');
-  let html = prodImgList.map((item,i)=>`
-    <div class="gallery-upload-item ${item.isMain?'is-main':''}">
-      <img src="${item.data}" alt="">
-      ${!item.isMain?`<button class="set-main" onclick="setProdMainImg(${i})">⭐ Principal</button>`:''}
-      ${item.isMain?`<div class="main-label">PRINCIPAL</div>`:''}
-      <button class="del-img" onclick="delProdImg(${i})">✕</button>
-    </div>`).join('');
-  if (prodImgList.length < 6) {
-    html += `<div class="gallery-add-btn" onclick="document.getElementById('p-img-file').click()"><span>📷</span><span>Agregar</span></div>`;
-  }
-  grid.innerHTML = html;
-  // Update hidden fields
-  const main = prodImgList.find(x=>x.isMain)||prodImgList[0];
-  document.getElementById('p-img-data').value  = main ? main.data : '';
-  document.getElementById('p-imgs-data').value = JSON.stringify(prodImgList.map(x=>x.data));
-}
-
-window.setProdMainImg = (i) => {
-  prodImgList.forEach((x,idx)=>x.isMain = idx===i);
-  renderProdGalleryAdmin();
-};
-window.delProdImg = (i) => {
-  const wasMain = prodImgList[i].isMain;
-  prodImgList.splice(i,1);
-  if (wasMain && prodImgList.length) prodImgList[0].isMain = true;
-  renderProdGalleryAdmin();
-};
-
-function resetImgUI(prefix) {
-  if (prefix === 'p') {
-    prodImgList = [];
-    renderProdGalleryAdmin();
-  } else {
-    document.getElementById(prefix+'-img-prev').style.display='none';
-    document.getElementById(prefix+'-img-prev').src='';
-    document.getElementById(prefix+'-img-ph').style.display='block';
-    document.getElementById(prefix+'-img-data').value='';
-    document.getElementById(prefix+'-img-file').value='';
-  }
-}
-
-/* ── ADMIN IMAGE PREVIEW (events only) ── */
-window.previewImg = (prefix) => {
-  if (prefix === 'p') return; // handled by addProdImgs
-  const file = document.getElementById(prefix+'-img-file').files[0];
-  if(!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    const prev=document.getElementById(prefix+'-img-prev');
-    const ph=document.getElementById(prefix+'-img-ph');
-    prev.src=e.target.result; prev.style.display='block'; ph.style.display='none';
-    document.getElementById(prefix+'-img-data').value=e.target.result;
-  };
-  r.readAsDataURL(file);
-};
 
 /* ── ADMIN PRODUCTS CRUD ── */
 window.saveProd = async () => {
@@ -1260,8 +1186,17 @@ window.showToast = (msg,type='') => { const t=document.getElementById('toast');t
 
 /* ── START ── */
 if(isAdmin) document.getElementById('nav-admin').style.display='flex';
-loadAll();
+
+// Wire up Enter key on URL inputs
+const pUrlInp = document.getElementById('p-img-url-input');
+if(pUrlInp) pUrlInp.addEventListener('keydown', e=>{ if(e.key==='Enter') addProdImgUrl(); });
+const evUrlInp = document.getElementById('ev-img-url-input');
+if(evUrlInp) evUrlInp.addEventListener('keydown', e=>{ if(e.key==='Enter') addEvImgUrl(); });
+
+// Check for #admin FIRST so login shows immediately
 checkHashForAdmin();
+// Then load data from Firebase
+loadAll();
 
 </script>
 </body>
