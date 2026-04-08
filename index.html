@@ -468,12 +468,12 @@ async function fbLoad(col) {
 }
 
 async function fbSave(col, data) {
-  if (data._id) {
-    const {_id, ...rest} = data;
+  const {_id, ...rest} = data;
+  if (_id) {
     await setDoc(doc(db, col, _id), {...rest, updatedAt: Date.now()});
     return _id;
   } else {
-    const ref = await addDoc(collection(db, col), {...data, createdAt: Date.now()});
+    const ref = await addDoc(collection(db, col), {...rest, createdAt: Date.now()});
     return ref.id;
   }
 }
@@ -730,7 +730,7 @@ window.saveProd = async () => {
   let existingImg='';
   if(editId){const ex=products.find(p=>p._id===editId);if(ex)existingImg=ex.img||'';}
   const obj={
-    _id:editId||undefined,
+    ...(editId && {_id: editId}),
     name, category:document.getElementById('p-cat').value,
     price:parseFloat(document.getElementById('p-price').value)||0,
     tag:document.getElementById('p-tag').value,
@@ -805,7 +805,7 @@ window.saveEv = async () => {
   let existingImg='';
   if(editId){const ex=events.find(e=>e._id===editId);if(ex)existingImg=ex.img||'';}
   const obj={
-    _id:editId||undefined,
+    ...(editId && {_id: editId}),
     name, type:document.getElementById('ev-type').value,
     color:document.getElementById('ev-color').value,
     icon:document.getElementById('ev-icon').value.trim()||'📅',
