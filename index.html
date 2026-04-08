@@ -6,36 +6,92 @@
 <title>Joms PoGo Store — Catálogo</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
+/* SIDEBAR — icon-only collapsed, expands on hover */
 :root{
   --red:#e3350d;--gold:#f5c518;--blue:#1a73e8;--teal:#00b4a0;
   --dark:#0d0d1a;--dark2:#13132b;--dark3:#1c1c3a;--card:#1a1a35;
   --border:rgba(245,197,24,.18);--text:#e8e8f0;--muted:#8888aa;
-  --green:#4caf50;--sidebar-w:224px;
+  --green:#4caf50;
+  --sidebar-collapsed:58px;
+  --sidebar-expanded:224px;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Exo 2',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;display:flex;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(227,53,13,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(26,115,232,.06) 0%,transparent 50%);pointer-events:none;z-index:0}
-
-/* SIDEBAR */
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--dark2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;overflow-y:auto;transition:transform .3s}
-.sidebar-logo{display:flex;align-items:center;gap:10px;padding:22px 18px 18px;border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer}
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;
+  width:var(--sidebar-collapsed);
+  background:var(--dark2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;z-index:200;overflow:hidden;
+  transition:width .25s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+}
+.sidebar:hover{width:var(--sidebar-expanded)}
+.sidebar-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 13px 14px;border-bottom:1px solid var(--border);
+  flex-shrink:0;cursor:pointer;overflow:hidden;white-space:nowrap;
+  min-height:60px;
+}
 .pokeball{width:32px;height:32px;border-radius:50%;background:linear-gradient(180deg,var(--red) 50%,#fff 50%);border:2.5px solid var(--gold);position:relative;box-shadow:0 0 12px rgba(227,53,13,.5);flex-shrink:0}
 .pokeball::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid var(--dark);z-index:1}
 .pokeball::after{content:'';position:absolute;top:calc(50% - 1.5px);left:0;right:0;height:3px;background:var(--dark)}
-.brand{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:1px;line-height:1.2}
+.brand{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:1px;line-height:1.2;opacity:0;transition:opacity .2s;white-space:nowrap}
 .brand small{display:block;font-family:'Exo 2',sans-serif;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.5px;margin-top:1px}
-.nav-section{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;padding:16px 18px 6px;font-family:'Rajdhani',sans-serif;font-weight:700}
-.nav-item{display:flex;align-items:center;gap:9px;padding:9px 18px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.3px;border-left:3px solid transparent}
+.sidebar:hover .brand{opacity:1}
+
+/* Nav sections — hidden when collapsed */
+.nav-section{
+  font-size:10px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1.5px;padding:14px 18px 5px;
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  white-space:nowrap;overflow:hidden;
+  opacity:0;height:0;padding-top:0;padding-bottom:0;
+  transition:opacity .2s, height .2s, padding .2s;
+}
+.sidebar:hover .nav-section{opacity:1;height:auto;padding:14px 18px 5px}
+
+/* Nav items */
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 18px;
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;
+  color:var(--muted);cursor:pointer;transition:all .2s;
+  letter-spacing:.3px;border-left:3px solid transparent;
+  white-space:nowrap;overflow:hidden;min-height:42px;
+}
 .nav-item:hover{color:var(--text);background:rgba(245,197,24,.06);border-left-color:rgba(245,197,24,.3)}
 .nav-item.active{color:var(--gold);background:rgba(245,197,24,.1);border-left-color:var(--gold)}
-.ni-icon{font-size:15px;flex-shrink:0;width:20px;text-align:center}
-.ni-count{margin-left:auto;background:rgba(245,197,24,.15);color:var(--gold);padding:1px 7px;border-radius:50px;font-size:10px;font-family:'Exo 2',sans-serif;font-weight:700}
+
+/* Icon — always visible, centered when collapsed */
+.ni-icon{
+  font-size:18px;flex-shrink:0;
+  width:22px;text-align:center;
+  transition:transform .2s;
+}
+/* Label text — hidden when collapsed */
+.ni-label{
+  opacity:0;transition:opacity .15s;
+  overflow:hidden;white-space:nowrap;flex:1;
+}
+.sidebar:hover .ni-label{opacity:1}
+
+/* Count badge */
+.ni-count{
+  margin-left:auto;background:rgba(245,197,24,.15);color:var(--gold);
+  padding:1px 7px;border-radius:50px;font-size:10px;
+  font-family:'Exo 2',sans-serif;font-weight:700;
+  opacity:0;transition:opacity .15s;flex-shrink:0;
+}
+.sidebar:hover .ni-count{opacity:1}
+
 .nav-item.admin-nav{border-top:1px solid var(--border);margin-top:auto;color:rgba(227,53,13,.7)}
 .nav-item.admin-nav:hover{color:var(--red);background:rgba(227,53,13,.08);border-left-color:var(--red)}
 .nav-item.admin-nav.active{color:var(--red);background:rgba(227,53,13,.12);border-left-color:var(--red)}
 
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Exo 2',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;display:flex;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(227,53,13,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(26,115,232,.06) 0%,transparent 50%);pointer-events:none;z-index:0}
+
 /* MAIN */
-.main{margin-left:var(--sidebar-w);flex:1;position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-collapsed);flex:1;position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;transition:margin-left .25s cubic-bezier(.4,0,.2,1)}
 .topbar{position:sticky;top:0;z-index:100;background:rgba(13,13,26,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;gap:14px}
 .search-wrap{flex:1;max-width:480px;position:relative}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
@@ -303,21 +359,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .gallery-add-btn span{font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.3px}
 
 @media(max-width:700px){
-  .sidebar{transform:translateX(-100%)}
+  .sidebar{transform:translateX(-100%);width:var(--sidebar-expanded)!important}
   .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
+  .sidebar.open .ni-label,.sidebar.open .brand,.sidebar.open .ni-count{opacity:1}
+  .sidebar.open .nav-section{opacity:1;height:auto;padding:14px 18px 5px}
+  .main{margin-left:0!important}
   .mobile-toggle{display:block}
   .prod-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
-  .content,.admin-wrap,.evd-wrap{padding:16px}
+  .content,.admin-wrap,.evd-wrap,.prod-detail-wrap{padding:16px}
   .topbar{padding:0 14px}
   .ev-card{grid-template-columns:120px 1fr}
   .ev-img,.ev-img-placeholder{width:120px}
   .evd-dates-row{grid-template-columns:1fr 1fr}
   .evd-tz-body{grid-template-columns:1fr 1fr}
   .evd-tz-cd-col{border-top:1px solid rgba(255,255,255,.07);grid-column:1/-1;text-align:left;padding:10px 16px}
-  .sidebar-overlay{display:block!important}
+  .sidebar-overlay{display:block!important;pointer-events:none}
 }
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;pointer-events:none}
+.sidebar.open~.sidebar-overlay,.sidebar-overlay.visible{display:block!important;pointer-events:all}
 
 /* ── BANNER ADS ── */
 .banner-slot{width:100%;margin-bottom:20px;border-radius:12px;overflow:hidden;position:relative}
@@ -381,25 +440,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="pokeball"></div>
     <div class="brand">JOMS POGO<small>Digital Store GT</small></div>
   </div>
-  <div class="nav-section">Catálogo</div>
-  <div class="nav-item active" id="nav-all" onclick="showSection('catalog','all',this)"><span class="ni-icon">🏠</span>Todos<span class="ni-count" id="count-all">0</span></div>
-  <div class="nav-section">Categorías</div>
-  <div class="nav-item" id="nav-pokemon" onclick="showSection('catalog','pokemon',this)"><span class="ni-icon">⚡</span>Pokémon<span class="ni-count" id="count-pokemon">0</span></div>
-  <div class="nav-item" id="nav-cuenta" onclick="showSection('catalog','cuenta',this)"><span class="ni-icon">🎮</span>Cuentas<span class="ni-count" id="count-cuenta">0</span></div>
-  <div class="nav-item" id="nav-servicio" onclick="showSection('catalog','servicio',this)"><span class="ni-icon">⚔️</span>Servicios<span class="ni-count" id="count-servicio">0</span></div>
-  <div class="nav-item" id="nav-item-cat" onclick="showSection('catalog','item',this)"><span class="ni-icon">🎒</span>Items<span class="ni-count" id="count-item">0</span></div>
-  <div class="nav-section">Eventos</div>
-  <div class="nav-item" id="nav-ev-all" onclick="showSection('events','all',this)"><span class="ni-icon">📅</span>Todos los Eventos<span class="ni-count" id="count-ev-all">0</span></div>
-  <div class="nav-item" id="nav-ev-cd" onclick="showSection('events','Community Day',this)"><span class="ni-icon">🦕</span>Community Day</div>
-  <div class="nav-item" id="nav-ev-rh" onclick="showSection('events','Raid Hour',this)"><span class="ni-icon">⚔️</span>Raid Hour</div>
-  <div class="nav-item" id="nav-ev-gf" onclick="showSection('events','GO Fest',this)"><span class="ni-icon">🎉</span>GO Fest</div>
-  <div class="nav-item" id="nav-ev-gt" onclick="showSection('events','GO Tour',this)"><span class="ni-icon">🌍</span>GO Tour</div>
-  <div class="nav-item" id="nav-ev-wa" onclick="showSection('events','Wild Area',this)"><span class="ni-icon">🌿</span>Wild Area</div>
-  <div class="nav-item" id="nav-ev-sc" onclick="showSection('events','Safari City',this)"><span class="ni-icon">🏙️</span>Safari City</div>
-  <div class="nav-item" id="nav-ev-sh" onclick="showSection('events','Spotlight Hour',this)"><span class="ni-icon">🔦</span>Spotlight Hour</div>
-  <div class="nav-section">Comunidad</div>
-  <div class="nav-item" id="nav-reviews" onclick="showSection('reviews','',this)"><span class="ni-icon">⭐</span>Reviews<span class="ni-count" id="count-reviews">0</span></div>
-  <div class="nav-item admin-nav" id="nav-admin" style="display:none" onclick="showSection('admin','',this)"><span class="ni-icon">⚙️</span>Panel Admin</div>
+  <div class="nav-section ni-label">Catálogo</div>
+  <div class="nav-item active" id="nav-all" onclick="showSection('catalog','all',this)"><span class="ni-icon" id="icon-all">🏠</span><span class="ni-label">Todos</span><span class="ni-count" id="count-all">0</span></div>
+  <div class="nav-section ni-label">Categorías</div>
+  <div class="nav-item" id="nav-pokemon" onclick="showSection('catalog','pokemon',this)"><span class="ni-icon" id="icon-pokemon">⚡</span><span class="ni-label">Pokémon</span><span class="ni-count" id="count-pokemon">0</span></div>
+  <div class="nav-item" id="nav-cuenta" onclick="showSection('catalog','cuenta',this)"><span class="ni-icon" id="icon-cuenta">🎮</span><span class="ni-label">Cuentas</span><span class="ni-count" id="count-cuenta">0</span></div>
+  <div class="nav-item" id="nav-servicio" onclick="showSection('catalog','servicio',this)"><span class="ni-icon" id="icon-servicio">⚔️</span><span class="ni-label">Servicios</span><span class="ni-count" id="count-servicio">0</span></div>
+  <div class="nav-section ni-label">Eventos</div>
+  <div class="nav-item" id="nav-ev-all" onclick="showSection('events','all',this)"><span class="ni-icon" id="icon-ev-all">📅</span><span class="ni-label">Todos los Eventos</span><span class="ni-count" id="count-ev-all">0</span></div>
+  <div class="nav-item" id="nav-ev-cd" onclick="showSection('events','Community Day',this)"><span class="ni-icon" id="icon-ev-cd">🦕</span><span class="ni-label">Community Day</span></div>
+  <div class="nav-item" id="nav-ev-rh" onclick="showSection('events','Raid Hour',this)"><span class="ni-icon" id="icon-ev-rh">⚔️</span><span class="ni-label">Raid Hour</span></div>
+  <div class="nav-item" id="nav-ev-gf" onclick="showSection('events','GO Fest',this)"><span class="ni-icon" id="icon-ev-gf">🎉</span><span class="ni-label">GO Fest</span></div>
+  <div class="nav-item" id="nav-ev-gt" onclick="showSection('events','GO Tour',this)"><span class="ni-icon" id="icon-ev-gt">🌍</span><span class="ni-label">GO Tour</span></div>
+  <div class="nav-item" id="nav-ev-wa" onclick="showSection('events','Wild Area',this)"><span class="ni-icon" id="icon-ev-wa">🌿</span><span class="ni-label">Wild Area</span></div>
+  <div class="nav-item" id="nav-ev-sc" onclick="showSection('events','Safari City',this)"><span class="ni-icon" id="icon-ev-sc">🏙️</span><span class="ni-label">Safari City</span></div>
+  <div class="nav-section ni-label">Comunidad</div>
+  <div class="nav-item" id="nav-reviews" onclick="showSection('reviews','',this)"><span class="ni-icon" id="icon-reviews">⭐</span><span class="ni-label">Reviews</span><span class="ni-count" id="count-reviews">0</span></div>
+  <div class="nav-item admin-nav" id="nav-admin" style="display:none" onclick="showSection('admin','',this)"><span class="ni-icon" id="icon-admin">⚙️</span><span class="ni-label">Panel Admin</span></div>
 </aside>
 <div class="sidebar-overlay" id="overlay" onclick="closeMobile()"></div>
 
@@ -442,7 +499,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <div><div class="pay-badge-label">WhatsApp</div><div class="pay-badge-sub">Coordina el pago</div></div>
         </div>
       </div>
-      <div class="pay-note">Todos los precios en <strong>Q (Quetzales)</strong> · Coordina el método por WhatsApp antes de pagar</div>
     </div>
     <div class="prod-grid" id="prodGrid"><div class="db-loading"><div class="spinner"></div><span>Cargando catálogo...</span></div></div>
     <!-- MID BANNER -->
@@ -668,7 +724,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <input type="hidden" id="ban-edit-id">
           <button class="adm-btn adm-btn-red" id="ban-save-btn" onclick="saveBanner()">🚀 Publicar Banner</button>
         </div>
-        <!-- AdSense instructions -->
+        <!-- Icon customization -->
+        <div class="adm-form-card" style="margin-top:0">
+          <div class="adm-form-title">🎨 Personalizar Iconos del Menú</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="icon-editor-grid">
+            <!-- rendered by JS -->
+          </div>
+          <button class="adm-btn adm-btn-primary" onclick="saveIcons()" style="margin-top:14px">💾 Guardar Iconos</button>
+          <div class="adm-hint" style="margin-top:6px">Usa cualquier emoji. Los cambios se aplican de inmediato.</div>
+        </div>
         <div class="adm-form-card" style="margin-top:0">
           <div class="adm-form-title">📊 Google AdSense</div>
           <div style="color:var(--muted);font-size:13px;line-height:1.7">
@@ -890,6 +954,7 @@ window.showSection = (section, filter, navEl) => {
   } else if (section==='admin') {
     if (!isAdmin) { showAdminLogin(); return; }
     renderAdminLists();
+    renderIconEditor();
   }
   closeMobile(); window.scrollTo(0,0);
 };
@@ -1437,6 +1502,7 @@ window.switchAdminTab = (tab) => {
     document.getElementById('atab-'+t).classList.toggle('active',t===tab);
     document.getElementById('apanel-'+t).classList.toggle('active',t===tab);
   });
+  if (tab==='ban') renderIconEditor();
 };
 
 /* ── BANNERS ── */
@@ -1628,15 +1694,76 @@ window.delReview = async (id) => {
   showToast('🗑️ Review eliminada');
 };
 
+/* ── ICON EDITOR ── */
+const ICON_DEFS = [
+  {id:'all',     label:'Todos'},
+  {id:'pokemon', label:'Pokémon'},
+  {id:'cuenta',  label:'Cuentas'},
+  {id:'servicio',label:'Servicios'},
+  {id:'ev-all',  label:'Todos Eventos'},
+  {id:'ev-cd',   label:'Community Day'},
+  {id:'ev-rh',   label:'Raid Hour'},
+  {id:'ev-gf',   label:'GO Fest'},
+  {id:'ev-gt',   label:'GO Tour'},
+  {id:'ev-wa',   label:'Wild Area'},
+  {id:'ev-sc',   label:'Safari City'},
+  {id:'reviews', label:'Reviews'},
+  {id:'admin',   label:'Admin'},
+];
+
+function loadIcons() {
+  const saved = JSON.parse(localStorage.getItem('jp_icons')||'{}');
+  ICON_DEFS.forEach(def => {
+    const el = document.getElementById('icon-'+def.id);
+    if (el && saved[def.id]) el.textContent = saved[def.id];
+  });
+}
+
+function renderIconEditor() {
+  const grid = document.getElementById('icon-editor-grid');
+  if (!grid) return;
+  const saved = JSON.parse(localStorage.getItem('jp_icons')||'{}');
+  grid.innerHTML = ICON_DEFS.map(def => {
+    const current = saved[def.id] || (document.getElementById('icon-'+def.id)||{}).textContent || '❓';
+    return `<div style="display:flex;align-items:center;gap:8px;background:var(--dark3);border-radius:8px;padding:8px 10px">
+      <span style="font-size:20px" id="iedit-${def.id}">${current}</span>
+      <span style="font-size:12px;color:var(--muted);flex:1">${def.label}</span>
+      <input style="width:54px;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 6px;border-radius:6px;font-size:14px;text-align:center;outline:none"
+        id="iinput-${def.id}" value="${current}" maxlength="4"
+        oninput="document.getElementById('iedit-${def.id}').textContent=this.value">
+    </div>`;
+  }).join('');
+}
+
+window.saveIcons = () => {
+  const icons = {};
+  ICON_DEFS.forEach(def => {
+    const inp = document.getElementById('iinput-'+def.id);
+    if (inp && inp.value.trim()) icons[def.id] = inp.value.trim();
+  });
+  localStorage.setItem('jp_icons', JSON.stringify(icons));
+  loadIcons();
+  showToast('✅ Iconos guardados');
+};
+
 /* ── UTILS ── */
 window.onSearch = () => { if(currentSection==='catalog')renderProducts(); else if(currentSection==='events')renderEvents(); };
 window.openWA = (name) => { window.open('https://wa.me/'+WA+'?text='+encodeURIComponent('Hola! Me interesa: '+name+' 🎮'),'_blank'); };
-window.toggleMobile = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').style.display=document.getElementById('sidebar').classList.contains('open')?'block':'none'; };
-window.closeMobile = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').style.display='none'; };
+window.toggleMobile = () => {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('visible', sb.classList.contains('open'));
+};
+window.closeMobile = () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('visible');
+};
 window.showToast = (msg,type='') => { const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200); };
 
 /* ── START ── */
 if(isAdmin) document.getElementById('nav-admin').style.display='flex';
+loadIcons();
 
 // Wire up Enter key on URL inputs
 const pUrlInp = document.getElementById('p-img-url-input');
