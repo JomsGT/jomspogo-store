@@ -155,24 +155,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 
 /* EVENT DETAIL */
-.evd-wrap{max-width:880px;margin:0 auto;padding:28px}
+.evd-wrap{max-width:920px;margin:0 auto;padding:28px}
 .evd-back{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:8px 16px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;letter-spacing:.5px;transition:all .2s}
 .evd-back:hover{background:rgba(245,197,24,.16)}
-.evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px}
-.evd-banner{background:linear-gradient(120deg,#1a8fd1,#1dd6c0);padding:28px;display:flex;align-items:center;gap:18px}
-.evd-banner.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
-.evd-banner.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad)}
-.evd-banner.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020)}
-.evd-icon{font-size:58px;line-height:1;flex-shrink:0}
+
+/* Hero with background image */
+.evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;position:relative}
+.evd-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.35) saturate(1.2);z-index:0}
+.evd-banner{position:relative;z-index:1;padding:36px 28px 28px;display:flex;align-items:center;gap:18px;min-height:160px}
+.evd-banner.no-img{background:linear-gradient(120deg,#1a8fd1,#1dd6c0)}
+.evd-banner.no-img.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
+.evd-banner.no-img.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad)}
+.evd-banner.no-img.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020)}
+.evd-icon{font-size:64px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
 .evd-banner-info{flex:1;min-width:0}
 .evd-banner-type{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:2px;margin-bottom:3px}
-.evd-banner-title{font-family:'Orbitron',monospace;font-size:clamp(15px,3vw,22px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px}
+.evd-banner-title{font-family:'Orbitron',monospace;font-size:clamp(16px,3vw,26px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
 .evd-badges{display:flex;gap:7px;flex-wrap:wrap}
 .evd-badge{padding:3px 11px;border-radius:50px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .evd-badge.live{background:rgba(76,175,80,.25);color:var(--green);border:1px solid rgba(76,175,80,.5)}
 .evd-badge.upcoming{background:rgba(26,115,232,.2);color:#64b5f6;border:1px solid rgba(26,115,232,.4)}
 .evd-badge.ended{background:rgba(136,136,170,.15);color:var(--muted);border:1px solid rgba(136,136,170,.3)}
-.evd-dates-row{background:var(--dark3);padding:14px 28px;display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:center;border-top:1px solid rgba(255,255,255,.07)}
+.evd-dates-row{background:rgba(13,13,26,.85);backdrop-filter:blur(8px);padding:14px 28px;display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:center;border-top:1px solid rgba(255,255,255,.1);position:relative;z-index:1}
+@media(max-width:580px){.evd-dates-row{grid-template-columns:1fr 1fr}}
 .evd-date-lbl{font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
 .evd-date-val{font-size:13px;color:var(--text)}
 .evd-cd-block{text-align:right}
@@ -180,24 +185,50 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-cd-val2{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#fff;letter-spacing:1px}
 .evd-cd-val2.live{color:var(--green)}
 .evd-cd-val2.ended{color:var(--muted);font-size:14px;font-family:'Rajdhani',sans-serif;font-weight:700}
-.evd-body{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 26px;margin-bottom:16px}
+
+/* Tabbed content */
+.evd-tabs-bar{display:flex;gap:4px;margin-bottom:0;overflow-x:auto;padding-bottom:0}
+.evd-tabs-bar::-webkit-scrollbar{height:0}
+.evd-tab-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 16px;background:var(--dark3);border:1px solid var(--border);border-bottom:none;border-radius:10px 10px 0 0;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.evd-tab-btn:hover{background:var(--card)}
+.evd-tab-btn.active{background:var(--card);border-color:var(--teal);color:var(--teal)}
+.evd-tab-icon{font-size:20px;line-height:1}
+.evd-tab-label{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.evd-tab-btn.active .evd-tab-label{color:var(--teal)}
+.evd-body{background:var(--card);border:1px solid var(--border);border-radius:0 14px 14px 14px;padding:22px 26px;margin-bottom:16px}
+.evd-tab-panel{display:none}
+.evd-tab-panel.active{display:block}
 .evd-section{margin-bottom:22px}
 .evd-section:last-child{margin-bottom:0}
 .evd-sec-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;border-bottom:1px solid rgba(0,180,160,.2);padding-bottom:7px}
 .evd-desc{color:var(--muted);font-size:13px;line-height:1.8}
-.evd-poke-pills{display:flex;gap:7px;flex-wrap:wrap}
-.evd-poke-pill{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.25);color:var(--gold);padding:4px 12px;border-radius:50px;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:600}
 .evd-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .evd-feature{background:var(--dark3);border-radius:10px;padding:13px;display:flex;gap:10px;align-items:flex-start}
 .evd-feature-icon{font-size:20px;flex-shrink:0;margin-top:1px}
 .evd-feature-text strong{display:block;font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--text);margin-bottom:2px}
 .evd-feature-text span{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* Spawn cards */
+.evd-spawns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px}
+.spawn-card{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:border-color .2s}
+.spawn-card:hover{border-color:var(--teal)}
+.spawn-img{width:64px;height:64px;object-fit:contain;border-radius:8px}
+.spawn-img-placeholder{width:64px;height:64px;border-radius:8px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:28px}
+.spawn-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:var(--text);line-height:1.2}
+.spawn-shiny{font-size:9px;color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:600}
+
+/* Pokémon text pills (for huevos/investigacion) */
+.evd-poke-pills{display:flex;gap:7px;flex-wrap:wrap}
+.evd-poke-pill{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.25);color:var(--gold);padding:4px 12px;border-radius:50px;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:600}
+
+/* TZ cards */
 .evd-tz-list{display:flex;flex-direction:column;gap:9px}
 .evd-tz-card{background:var(--dark3);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden}
 .evd-tz-card.is-live{border-color:rgba(76,175,80,.4)}
 .evd-tz-gmt{background:rgba(255,255,255,.04);padding:6px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
 .evd-tz-gmt-lbl{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--muted);letter-spacing:.5px;font-style:italic}
 .evd-tz-body{display:grid;grid-template-columns:170px 1fr auto;align-items:center}
+@media(max-width:560px){.evd-tz-body{grid-template-columns:1fr 1fr}}
 .evd-tz-col{padding:11px 16px}
 .evd-tz-col-mid{padding:11px 16px;border-left:1px solid rgba(255,255,255,.07);border-right:1px solid rgba(255,255,255,.07)}
 .evd-tz-place{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:2px}
@@ -209,6 +240,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-tz-val{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;color:var(--text)}
 .evd-tz-hhmm{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--teal);margin-top:1px}
 .evd-tz-cd-col{padding:11px 16px;min-width:145px;text-align:center}
+@media(max-width:560px){.evd-tz-cd-col{border-top:1px solid rgba(255,255,255,.07);grid-column:1/-1;text-align:left;padding:10px 16px}}
 .evd-tz-cd-lbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .evd-tz-cd-val{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:var(--green);line-height:1}
 .evd-tz-cd-val.ns{color:var(--gold)}
@@ -480,23 +512,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <!-- PAYMENT METHODS BAR -->
     <div class="payment-bar">
       <div class="payment-bar-title">💳 Métodos de pago aceptados</div>
-      <div class="payment-methods">
-        <div class="pay-badge">
-          <span class="pay-badge-icon">🅿️</span>
-          <div><div class="pay-badge-label">PayPal</div><div class="pay-badge-sub">paypal.me/jomspogo</div></div>
-        </div>
-        <div class="pay-badge">
-          <span class="pay-badge-icon">🟢</span>
-          <div><div class="pay-badge-label">Wise</div><div class="pay-badge-sub">Transferencia internacional</div></div>
-        </div>
-        <div class="pay-badge">
-          <span class="pay-badge-icon">🏦</span>
-          <div><div class="pay-badge-label">Transferencia</div><div class="pay-badge-sub">Bancaria local GT</div></div>
-        </div>
-        <div class="pay-badge">
-          <span class="pay-badge-icon">💬</span>
-          <div><div class="pay-badge-label">WhatsApp</div><div class="pay-badge-sub">Coordina el pago</div></div>
-        </div>
+      <div class="payment-methods" id="payment-methods-container">
+        <!-- Loaded dynamically by loadPaymentMethods() -->
+        <div class="pay-badge"><span class="pay-badge-icon">🅿️</span><div><div class="pay-badge-label">PayPal</div><div class="pay-badge-sub">paypal.me/jomspogo</div></div></div>
+        <div class="pay-badge"><span class="pay-badge-icon">🟢</span><div><div class="pay-badge-label">Wise</div><div class="pay-badge-sub">Transferencia internacional</div></div></div>
+        <div class="pay-badge"><span class="pay-badge-icon">🏦</span><div><div class="pay-badge-label">Transferencia</div><div class="pay-badge-sub">Bancaria local GT</div></div></div>
+        <div class="pay-badge"><span class="pay-badge-icon">💬</span><div><div class="pay-badge-label">WhatsApp</div><div class="pay-badge-sub">Coordina el pago</div></div></div>
       </div>
     </div>
     <div class="prod-grid" id="prodGrid"><div class="db-loading"><div class="spinner"></div><span>Cargando catálogo...</span></div></div>
@@ -677,9 +698,34 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <div class="adm-group"><label class="adm-label">Fecha fin UTC</label><input class="adm-input" type="datetime-local" id="ev-end-utc"></div>
           </div>
           <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="ev-desc-short" placeholder="Gible masivo con shiny disponible..."></div>
-          <div class="adm-group"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="ev-desc-full" placeholder="Descripción detallada del evento..."></textarea></div>
-          <div class="adm-group"><label class="adm-label">Pokémon destacados (separados por coma)</label><input class="adm-input" id="ev-pokemon" placeholder="Gible ✨, Gabite, Garchomp"></div>
-          <div class="adm-group"><label class="adm-label">Características (una por línea: 🎁 | Título | Descripción)</label><textarea class="adm-textarea" id="ev-features" placeholder="⭐ | XP Triple | XP x3 al capturar&#10;✨ | Shiny | Mayor tasa shiny"></textarea><div class="adm-hint">Formato: emoji | Título | Descripción</div></div>
+          <!-- Tabbed content sections -->
+          <div style="margin-top:4px">
+            <div style="display:flex;gap:4px;margin-bottom:0;border-bottom:1px solid var(--border);overflow-x:auto">
+              <button class="evd-tab-btn active" id="aevtab-desc" onclick="switchEvAdminTab('desc')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">📋 Descripción</span></button>
+              <button class="evd-tab-btn" id="aevtab-bonus" onclick="switchEvAdminTab('bonus')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">⭐ Bonus</span></button>
+              <button class="evd-tab-btn" id="aevtab-spawns" onclick="switchEvAdminTab('spawns')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">🐾 Spawns</span></button>
+              <button class="evd-tab-btn" id="aevtab-eggs" onclick="switchEvAdminTab('eggs')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">🥚 Huevos</span></button>
+              <button class="evd-tab-btn" id="aevtab-research" onclick="switchEvAdminTab('research')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">🔬 Investigación</span></button>
+            </div>
+            <div style="background:var(--dark3);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px">
+              <div id="aevpanel-desc">
+                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="ev-desc-full" placeholder="Descripción detallada del evento..." style="min-height:100px"></textarea></div>
+              </div>
+              <div id="aevpanel-bonus" style="display:none">
+                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Bonus / Características (una por línea: 🎁 | Título | Descripción)</label><textarea class="adm-textarea" id="ev-features" placeholder="⭐ | XP Triple | XP x3 al capturar&#10;✨ | Shiny | Mayor tasa shiny&#10;🍬 | Caramelos x2 | Doble al atrapar" style="min-height:100px"></textarea><div class="adm-hint">Formato: emoji | Título | Descripción</div></div>
+              </div>
+              <div id="aevpanel-spawns" style="display:none">
+                <div class="adm-hint" style="margin-bottom:10px">Agrega hasta 10 Pokémon. Formato: Nombre | URL-imagen | shiny (opcional)<br>Ejemplo: <code style="color:var(--teal)">Gible | https://i.imgur.com/abc.png | shiny</code></div>
+                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Pokémon con imagen (una por línea)</label><textarea class="adm-textarea" id="ev-spawns" placeholder="Gible | https://i.imgur.com/abc.png | shiny&#10;Gabite | https://i.imgur.com/def.png&#10;Garchomp | https://i.imgur.com/ghi.png | shiny" style="min-height:120px"></textarea></div>
+              </div>
+              <div id="aevpanel-eggs" style="display:none">
+                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Pokémon en huevos (separados por coma)</label><input class="adm-input" id="ev-eggs" placeholder="Riolu ✨, Togepi, Mime Jr."></div>
+              </div>
+              <div id="aevpanel-research" style="display:none">
+                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Tareas de investigación (una por línea)</label><textarea class="adm-textarea" id="ev-research" placeholder="Atrapa 5 Pokémon → Gible ✨&#10;Realiza 3 lanzamientos excelentes → Incubadora&#10;Juega con tu compañero → Caramelo" style="min-height:100px"></textarea></div>
+              </div>
+            </div>
+          </div>
           <input type="hidden" id="ev-edit-id">
           <button class="adm-btn adm-btn-red" id="ev-save-btn" onclick="saveEv()">🚀 Publicar Evento</button>
         </div>
@@ -740,6 +786,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <button class="adm-btn adm-btn-primary" onclick="saveAdsenseCode()" style="margin-top:8px">💾 Guardar código AdSense</button>
             <p style="margin-top:8px;font-size:11px">⚠️ Para aplicar para AdSense ve a <a href="https://adsense.google.com" target="_blank" style="color:var(--teal)">adsense.google.com</a> y registra tu URL: <strong style="color:var(--gold)">https://jomsgt.github.io/jomspogo-store/</strong></p>
           </div>
+        </div>
+        <!-- Payment method editor -->
+        <div class="adm-form-card" style="margin-bottom:0">
+          <div class="adm-form-title">💳 Métodos de Pago</div>
+          <div id="pay-editor-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+          <button class="adm-btn adm-btn-primary" onclick="savePaymentMethods()" style="margin-top:14px">💾 Guardar Métodos de Pago</button>
+          <div class="adm-hint" style="margin-top:6px">El icono puede ser un emoji o una URL de imagen PNG/SVG/WebP</div>
         </div>
         <div class="adm-list-title"><span>Banners publicados</span><span style="font-size:11px;color:var(--muted);font-weight:400" id="ban-list-count"></span></div>
         <div class="adm-list" id="adm-ban-list"></div>
@@ -1049,24 +1102,109 @@ const TZ_GROUPS=[
   {gmt:'GMT+9:00',offset:9,countries:[{flag:'🇯🇵',name:'Japón'},{flag:'🇰🇷',name:'Corea'}]},
 ];
 
+window.switchEvAdminTab = (tab) => {
+  ['desc','bonus','spawns','eggs','research'].forEach(t=>{
+    const btn=document.getElementById('aevtab-'+t);
+    const panel=document.getElementById('aevpanel-'+t);
+    if(btn) btn.classList.toggle('active',t===tab);
+    if(panel) panel.style.display=t===tab?'block':'none';
+  });
+};
+
+window.switchEvDetailTab = (tab) => {
+  document.querySelectorAll('.evd-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.evd-tab-panel').forEach(p=>p.classList.remove('active'));
+  const btn=document.querySelector(`.evd-tab-btn[data-tab="${tab}"]`);
+  const panel=document.getElementById('evd-panel-'+tab);
+  if(btn) btn.classList.add('active');
+  if(panel) panel.classList.add('active');
+};
+
 function renderEventDetail(ev) {
   const st=getStatus(ev),cc=ev.color||'';
   const bH={live:`<span class="evd-badge live"><span class="live-dot"></span> En Vivo</span>`,upcoming:`<span class="evd-badge upcoming">📅 Próximo</span>`,ended:`<span class="evd-badge ended">✓ Finalizado</span>`}[st];
   const cdL=st==='live'?'Finaliza en:':st==='upcoming'?'Inicia en:':'Estado:';
   const cdC=st==='live'?'live':st==='ended'?'ended':'',cdI=st==='ended'?'Finalizado':'–';
+
+  // Background image hero
+  const hasBg = !!ev.img;
+  const bgStyle = hasBg ? `style="background-image:url('${ev.img}')"` : '';
+  const bannerClass = hasBg ? '' : `no-img ${cc}`;
+
+  // TZ rows
   const tzR=TZ_GROUPS.map((g,gi)=>{
     const sL=new Date(ev.startUTC+g.offset*3600000),eL=new Date(ev.endUTC+g.offset*3600000);
     const fmt=d=>d.toLocaleDateString('es',{weekday:'short',day:'2-digit',month:'short'});
     const fmtT=d=>d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',hour12:true});
     return `<div class="evd-tz-card ${st==='live'?'is-live':''}"><div class="evd-tz-gmt"><span class="evd-tz-gmt-lbl">${g.gmt}</span><span style="font-size:15px">${g.countries.map(c=>c.flag).join('')}</span><span style="font-size:11px;color:var(--muted);margin-left:6px">${g.countries.map(c=>c.name).join(', ')}</span></div><div class="evd-tz-body"><div class="evd-tz-col"><div class="evd-tz-place">Hora local ahora</div><div class="evd-tz-time" id="tzt-${gi}">–</div></div><div class="evd-tz-col-mid"><div class="evd-tz-mid-inner"><div class="evd-tz-block"><div class="evd-tz-lbl">Inicio</div><div class="evd-tz-val">${fmt(sL)}</div><div class="evd-tz-hhmm">${fmtT(sL)}</div></div><div class="evd-tz-block"><div class="evd-tz-lbl">Fin</div><div class="evd-tz-val">${fmt(eL)}</div><div class="evd-tz-hhmm">${fmtT(eL)}</div></div></div></div><div class="evd-tz-cd-col"><div class="evd-tz-cd-lbl">${cdL.replace(':','')}</div><div class="evd-tz-cd-val ${cdC} ${st==='upcoming'?'ns':''}" id="tzcd-${gi}">${cdI}</div></div></div></div>`;
   }).join('');
+
+  // Build tabs — only show tabs that have content
+  const hasDesc    = !!(ev.descFull||ev.descShort);
+  const hasBonus   = !!(ev.features&&ev.features.length);
+  const hasSpawns  = !!(ev.spawns&&ev.spawns.length);
+  const hasEggs    = !!(ev.eggs&&ev.eggs.length);
+  const hasResearch= !!(ev.research&&ev.research.length);
+
+  const TAB_DEFS = [
+    {id:'desc',    icon:'📋', label:'Descripción',  show: hasDesc},
+    {id:'bonus',   icon:'⭐', label:'Bonus',         show: hasBonus},
+    {id:'spawns',  icon:'🐾', label:'Spawns',        show: hasSpawns},
+    {id:'eggs',    icon:'🥚', label:'Huevos',        show: hasEggs},
+    {id:'research',icon:'🔬', label:'Investigación', show: hasResearch},
+    {id:'tz',      icon:'🌎', label:'Horarios',      show: true},
+  ].filter(t=>t.show);
+
+  const firstTab = TAB_DEFS[0]?.id || 'desc';
+
+  const tabBtns = TAB_DEFS.map(t=>`
+    <button class="evd-tab-btn ${t.id===firstTab?'active':''}" data-tab="${t.id}" onclick="switchEvDetailTab('${t.id}')">
+      <span class="evd-tab-icon">${t.icon}</span>
+      <span class="evd-tab-label">${t.label}</span>
+    </button>`).join('');
+
+  // Spawn cards HTML
+  const spawnCards = (ev.spawns||[]).map(s=>`
+    <div class="spawn-card">
+      ${s.img
+        ? `<img class="spawn-img" src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">`
+        : `<div class="spawn-img-placeholder">🐾</div>`}
+      <div class="spawn-name">${s.name}</div>
+      ${s.shiny?`<div class="spawn-shiny">✨ Shiny</div>`:''}
+    </div>`).join('');
+
   const fH=(ev.features||[]).map(f=>`<div class="evd-feature"><div class="evd-feature-icon">${f.icon}</div><div class="evd-feature-text"><strong>${f.title}</strong><span>${f.desc}</span></div></div>`).join('');
-  const pP=(ev.pokemon||[]).map(p=>`<span class="evd-poke-pill">${p}</span>`).join('');
+  const eggPills=(ev.eggs||[]).map(p=>`<span class="evd-poke-pill">${p}</span>`).join('');
+  const resLines=(ev.research||[]).map(r=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span style="color:var(--teal);flex-shrink:0">→</span><span style="color:var(--muted);font-size:13px">${r}</span></div>`).join('');
+
   document.getElementById('evdWrap').innerHTML=`
     <button class="evd-back" onclick="showSection('events',activeEvType,document.getElementById('nav-ev-all'))">← Volver a Eventos</button>
-    <div class="evd-hero"><div class="evd-banner ${cc}"><div class="evd-icon">${ev.icon||'📅'}</div><div class="evd-banner-info"><div class="evd-banner-type">${ev.type}</div><div class="evd-banner-title">${ev.name}</div><div class="evd-badges">${bH}</div></div></div><div class="evd-dates-row"><div><div class="evd-date-lbl">Inicio</div><div class="evd-date-val">${ev.startStr}</div></div><div><div class="evd-date-lbl">Fin</div><div class="evd-date-val">${ev.endStr}</div></div><div class="evd-cd-block"><div class="evd-cd-lbl2">${cdL}</div><div class="evd-cd-val2 ${cdC}" id="evd-cd">${cdI}</div></div></div></div>
-    <div class="evd-body"><div class="evd-section"><div class="evd-sec-title">📋 Descripción</div><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>${pP?`<div class="evd-section"><div class="evd-sec-title">⚡ Pokémon Destacados</div><div class="evd-poke-pills">${pP}</div></div>`:''}${fH?`<div class="evd-section"><div class="evd-sec-title">⭐ Características</div><div class="evd-features">${fH}</div></div>`:''}</div>
-    <div class="evd-body"><div class="evd-section" style="margin-bottom:0"><div class="evd-sec-title">🌎 Horarios por Zona Horaria</div><div class="evd-tz-list">${tzR}</div></div></div>`;
+    <div class="evd-hero">
+      ${hasBg?`<div class="evd-hero-bg" ${bgStyle}></div>`:''}
+      <div class="evd-banner ${bannerClass}">
+        <div class="evd-icon">${ev.icon||'📅'}</div>
+        <div class="evd-banner-info">
+          <div class="evd-banner-type">${ev.type}</div>
+          <div class="evd-banner-title">${ev.name}</div>
+          <div class="evd-badges">${bH}</div>
+        </div>
+      </div>
+      <div class="evd-dates-row">
+        <div><div class="evd-date-lbl">Inicio</div><div class="evd-date-val">${ev.startStr}</div></div>
+        <div><div class="evd-date-lbl">Fin</div><div class="evd-date-val">${ev.endStr}</div></div>
+        <div class="evd-cd-block"><div class="evd-cd-lbl2">${cdL}</div><div class="evd-cd-val2 ${cdC}" id="evd-cd">${cdI}</div></div>
+      </div>
+    </div>
+    <div class="evd-tabs-bar">${tabBtns}</div>
+    <div class="evd-body">
+      ${hasDesc?`<div class="evd-tab-panel ${firstTab==='desc'?'active':''}" id="evd-panel-desc"><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>`:''}
+      ${hasBonus?`<div class="evd-tab-panel ${firstTab==='bonus'?'active':''}" id="evd-panel-bonus"><div class="evd-features">${fH}</div></div>`:''}
+      ${hasSpawns?`<div class="evd-tab-panel ${firstTab==='spawns'?'active':''}" id="evd-panel-spawns"><div class="evd-spawns-grid">${spawnCards}</div></div>`:''}
+      ${hasEggs?`<div class="evd-tab-panel ${firstTab==='eggs'?'active':''}" id="evd-panel-eggs"><div class="evd-poke-pills">${eggPills}</div></div>`:''}
+      ${hasResearch?`<div class="evd-tab-panel ${firstTab==='research'?'active':''}" id="evd-panel-research"><div>${resLines}</div></div>`:''}
+      <div class="evd-tab-panel ${firstTab==='tz'?'active':''}" id="evd-panel-tz"><div class="evd-tz-list">${tzR}</div></div>
+    </div>`;
+
   if(st!=='ended'){const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const el=document.getElementById('evd-cd');if(el){const r=t-Date.now();el.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));}
   TZ_GROUPS.forEach((g,gi)=>{const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const now=Date.now(),loc=new Date(now+g.offset*3600000),h=loc.getUTCHours(),m=loc.getUTCMinutes(),s=loc.getUTCSeconds(),ap=h>=12?'pm':'am',h12=h%12||12;const tEl=document.getElementById('tzt-'+gi);if(tEl)tEl.textContent=`${h12}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;const cdEl=document.getElementById('tzcd-'+gi);if(cdEl&&st!=='ended'){const r=t-now;cdEl.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));});
 }
@@ -1369,7 +1507,13 @@ window.saveEv = async () => {
   const startUTC=startUTCval?new Date(startUTCval+'Z').getTime():Date.now();
   const endUTC=endUTCval?new Date(endUTCval+'Z').getTime():Date.now()+3600000;
   const features=document.getElementById('ev-features').value.trim().split('\n').filter(l=>l.trim()).map(line=>{const p=line.split('|');return{icon:(p[0]||'').trim(),title:(p[1]||'').trim(),desc:(p[2]||'').trim()};}).filter(f=>f.title);
-  const pokemon=document.getElementById('ev-pokemon').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
+  // Parse spawns: Name | img-url | shiny
+  const spawns = document.getElementById('ev-spawns').value.trim().split('\n').filter(l=>l.trim()).slice(0,10).map(line=>{
+    const p=line.split('|');
+    return{name:(p[0]||'').trim(), img:(p[1]||'').trim(), shiny:!!((p[2]||'').toLowerCase().includes('shiny'))};
+  }).filter(s=>s.name);
+  const eggs = document.getElementById('ev-eggs').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
+  const research = document.getElementById('ev-research').value.trim().split('\n').filter(l=>l.trim());
   const editId=document.getElementById('ev-edit-id').value;
   const imgData=document.getElementById('ev-img-data').value;
   let existingImg='';
@@ -1381,7 +1525,8 @@ window.saveEv = async () => {
     icon:document.getElementById('ev-icon').value.trim()||'📅',
     startStr, endStr, startUTC, endUTC,
     descShort, descFull:document.getElementById('ev-desc-full').value.trim(),
-    pokemon, features, img:imgData||existingImg
+    features, spawns, eggs, research,
+    img:imgData||existingImg
   };
   try {
     await fbSave('events', obj);
@@ -1393,13 +1538,14 @@ window.saveEv = async () => {
 
 window.cancelEditEv = clearEvForm;
 function clearEvForm() {
-  ['ev-name','ev-desc-short','ev-desc-full','ev-start-str','ev-end-str','ev-start-utc','ev-end-utc','ev-icon','ev-pokemon','ev-features'].forEach(id=>document.getElementById(id).value='');
+  ['ev-name','ev-desc-short','ev-desc-full','ev-start-str','ev-end-str','ev-start-utc','ev-end-utc','ev-icon','ev-features','ev-spawns','ev-eggs','ev-research'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('ev-type').value='Community Day';
   document.getElementById('ev-color').value='';
   document.getElementById('ev-edit-id').value='';
   document.getElementById('ev-form-title').textContent='➕ Nuevo Evento';
   document.getElementById('ev-save-btn').textContent='🚀 Publicar Evento';
   document.getElementById('ev-edit-banner').classList.remove('show');
+  switchEvAdminTab('desc');
   resetImgUI('ev');
 }
 window.editEv = (id) => {
@@ -1416,8 +1562,10 @@ window.editEv = (id) => {
   document.getElementById('ev-end-utc').value=toLocal(ev.endUTC);
   document.getElementById('ev-desc-short').value=ev.descShort||'';
   document.getElementById('ev-desc-full').value=ev.descFull||'';
-  document.getElementById('ev-pokemon').value=(ev.pokemon||[]).join(', ');
   document.getElementById('ev-features').value=(ev.features||[]).map(f=>`${f.icon} | ${f.title} | ${f.desc}`).join('\n');
+  document.getElementById('ev-spawns').value=(ev.spawns||[]).map(s=>`${s.name} | ${s.img||''}${s.shiny?' | shiny':''}`).join('\n');
+  document.getElementById('ev-eggs').value=(ev.eggs||[]).join(', ');
+  document.getElementById('ev-research').value=(ev.research||[]).join('\n');
   document.getElementById('ev-edit-id').value=ev._id;
   document.getElementById('ev-form-title').textContent='✏️ Editar Evento';
   document.getElementById('ev-save-btn').textContent='💾 Guardar Cambios';
@@ -1501,7 +1649,7 @@ window.switchAdminTab = (tab) => {
     document.getElementById('atab-'+t).classList.toggle('active',t===tab);
     document.getElementById('apanel-'+t).classList.toggle('active',t===tab);
   });
-  if (tab==='ban') renderIconEditor();
+  if (tab==='ban') { renderIconEditor(); renderPayEditor(); }
 };
 
 /* ── BANNERS ── */
@@ -1714,7 +1862,15 @@ function loadIcons() {
   const saved = JSON.parse(localStorage.getItem('jp_icons')||'{}');
   ICON_DEFS.forEach(def => {
     const el = document.getElementById('icon-'+def.id);
-    if (el && saved[def.id]) el.textContent = saved[def.id];
+    if (!el) return;
+    const val = saved[def.id];
+    if (!val) return;
+    // If it's a URL (starts with http or data:), render as img
+    if (val.startsWith('http')||val.startsWith('data:')) {
+      el.innerHTML = `<img src="${val}" style="width:20px;height:20px;object-fit:contain;vertical-align:middle">`;
+    } else {
+      el.textContent = val;
+    }
   });
 }
 
@@ -1723,16 +1879,30 @@ function renderIconEditor() {
   if (!grid) return;
   const saved = JSON.parse(localStorage.getItem('jp_icons')||'{}');
   grid.innerHTML = ICON_DEFS.map(def => {
-    const current = saved[def.id] || (document.getElementById('icon-'+def.id)||{}).textContent || '❓';
+    const current = saved[def.id] || document.getElementById('icon-'+def.id)?.textContent || '❓';
+    const isUrl = current.startsWith('http')||current.startsWith('data:');
+    const preview = isUrl
+      ? `<img src="${current}" style="width:22px;height:22px;object-fit:contain">`
+      : `<span style="font-size:20px">${current}</span>`;
     return `<div style="display:flex;align-items:center;gap:8px;background:var(--dark3);border-radius:8px;padding:8px 10px">
-      <span style="font-size:20px" id="iedit-${def.id}">${current}</span>
+      <div id="iedit-${def.id}" style="width:24px;text-align:center;flex-shrink:0">${preview}</div>
       <span style="font-size:12px;color:var(--muted);flex:1">${def.label}</span>
-      <input style="width:54px;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 6px;border-radius:6px;font-size:14px;text-align:center;outline:none"
-        id="iinput-${def.id}" value="${current}" maxlength="4"
-        oninput="document.getElementById('iedit-${def.id}').textContent=this.value">
+      <input style="width:120px;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 6px;border-radius:6px;font-size:12px;outline:none"
+        id="iinput-${def.id}" value="${current.startsWith('http')?current:current}" placeholder="emoji o URL"
+        oninput="previewIconEdit('${def.id}',this.value)">
     </div>`;
   }).join('');
 }
+
+window.previewIconEdit = (id, val) => {
+  const el = document.getElementById('iedit-'+id);
+  if(!el) return;
+  if(val.startsWith('http')||val.startsWith('data:')) {
+    el.innerHTML=`<img src="${val}" style="width:22px;height:22px;object-fit:contain">`;
+  } else {
+    el.innerHTML=`<span style="font-size:20px">${val}</span>`;
+  }
+};
 
 window.saveIcons = () => {
   const icons = {};
@@ -1743,6 +1913,76 @@ window.saveIcons = () => {
   localStorage.setItem('jp_icons', JSON.stringify(icons));
   loadIcons();
   showToast('✅ Iconos guardados');
+};
+
+/* ── PAYMENT METHOD EDITOR ── */
+const PAY_DEFAULTS = [
+  {id:'paypal',   icon:'🅿️', label:'PayPal',        sub:'paypal.me/jomspogo'},
+  {id:'wise',     icon:'🟢', label:'Wise',           sub:'Transferencia internacional'},
+  {id:'transfer', icon:'🏦', label:'Transferencia',  sub:'Bancaria local GT'},
+  {id:'whatsapp', icon:'💬', label:'WhatsApp',        sub:'Coordina el pago'},
+];
+
+function loadPaymentMethods() {
+  const saved = JSON.parse(localStorage.getItem('jp_pay')||'{}');
+  const container = document.getElementById('payment-methods-container');
+  if (!container) return;
+  container.innerHTML = PAY_DEFAULTS.map(p => {
+    const data = saved[p.id] || p;
+    const iconVal = data.icon || p.icon;
+    const isUrl = iconVal.startsWith('http')||iconVal.startsWith('data:');
+    const iconHtml = isUrl
+      ? `<img src="${iconVal}" style="width:24px;height:24px;object-fit:contain">`
+      : `<span class="pay-badge-icon">${iconVal}</span>`;
+    return `<div class="pay-badge">
+      ${iconHtml}
+      <div>
+        <div class="pay-badge-label">${data.label||p.label}</div>
+        <div class="pay-badge-sub">${data.sub||p.sub}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPayEditor() {
+  const grid = document.getElementById('pay-editor-grid');
+  if(!grid) return;
+  const saved = JSON.parse(localStorage.getItem('jp_pay')||'{}');
+  grid.innerHTML = PAY_DEFAULTS.map(p => {
+    const data = saved[p.id] || p;
+    return `<div style="background:var(--dark3);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:7px">
+      <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--gold)">${p.label}</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span style="font-size:10px;color:var(--muted);min-width:40px">Icono</span>
+        <input style="flex:1;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;outline:none"
+          id="pay-icon-${p.id}" value="${data.icon||p.icon}" placeholder="emoji o URL imagen">
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span style="font-size:10px;color:var(--muted);min-width:40px">Nombre</span>
+        <input style="flex:1;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;outline:none"
+          id="pay-label-${p.id}" value="${data.label||p.label}">
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span style="font-size:10px;color:var(--muted);min-width:40px">Info</span>
+        <input style="flex:1;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;outline:none"
+          id="pay-sub-${p.id}" value="${data.sub||p.sub}" placeholder="usuario, info...">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.savePaymentMethods = () => {
+  const pay = {};
+  PAY_DEFAULTS.forEach(p => {
+    pay[p.id] = {
+      icon:  document.getElementById('pay-icon-'+p.id)?.value.trim()  || p.icon,
+      label: document.getElementById('pay-label-'+p.id)?.value.trim() || p.label,
+      sub:   document.getElementById('pay-sub-'+p.id)?.value.trim()   || p.sub,
+    };
+  });
+  localStorage.setItem('jp_pay', JSON.stringify(pay));
+  loadPaymentMethods();
+  showToast('✅ Métodos de pago guardados');
 };
 
 /* ── UTILS ── */
@@ -1763,6 +2003,7 @@ window.showToast = (msg,type='') => { const t=document.getElementById('toast');t
 /* ── START ── */
 if(isAdmin) document.getElementById('nav-admin').style.display='flex';
 loadIcons();
+loadPaymentMethods();
 
 // Wire up Enter key on URL inputs
 const pUrlInp = document.getElementById('p-img-url-input');
