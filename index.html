@@ -820,10 +820,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="admin-login-logo">⚙️</div>
     <div class="admin-login-title">Panel Admin</div>
     <div class="admin-login-sub">Acceso restringido · Solo administradores</div>
-    <div class="login-group"><label class="adm-label">Usuario</label><input class="adm-input" id="login-user" type="text" placeholder="usuario" autocomplete="username"></div>
+    <div class="login-group"><label class="adm-label">Email</label><input class="adm-input" id="login-user" type="email" placeholder="admin@email.com" autocomplete="email"></div>
     <div class="login-group"><label class="adm-label">Contraseña</label><input class="adm-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <div class="login-err" id="login-err">Usuario o contraseña incorrectos</div>
-    <button class="login-btn" onclick="doLogin()">🔓 Ingresar</button>
+    <div class="login-err" id="login-err">Email o contraseña incorrectos</div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">🔓 Ingresar</button>
     <span class="login-cancel" onclick="cancelLogin()">← Volver al catálogo</span>
   </div>
 </div>
@@ -836,6 +836,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, setDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 /* ── CONFIG ── */
 const firebaseConfig = {
@@ -849,17 +850,17 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const db   = getFirestore(app);
+const auth = getAuth(app);
 
-/* ── CREDENTIALS (cámbialos aquí) ── */
-const ADMIN_USER = 'jomspogo';
-const ADMIN_PASS = 'JomsPogo2024!';
-const WA         = '50255555555';
+/* ── CONFIG ── */
+const WA           = '50255555555';
+const ADMIN_UID    = 'bNZJtQwE1WOs0SqEaaOFrvD5IOk1';
 
 /* ── STATE ── */
 let products = [];
 let events   = [];
-let isAdmin  = sessionStorage.getItem('jp_admin') === 'true';
+let isAdmin  = false;
 let currentSection = 'catalog';
 let activeCat      = 'all';
 let activeEvType   = 'all';
@@ -875,11 +876,9 @@ async function fbLoad(col) {
 async function fbSave(col, data) {
   const {_id, ...rest} = data;
   if (_id) {
-    // UPDATE — merge so createdAt and other fields are preserved
     await setDoc(doc(db, col, _id), {...rest, updatedAt: Date.now()}, {merge: true});
     return _id;
   } else {
-    // CREATE — add new document with createdAt
     const ref = await addDoc(collection(db, col), {...rest, createdAt: Date.now()});
     return ref.id;
   }
@@ -920,15 +919,37 @@ function setFbStatus(s) {
   el.textContent = s==='ok' ? '🟢 Conectado' : s==='err' ? '🔴 Sin conexión' : '⏳ Conectando...';
 }
 
-/* ── AUTH ── */
+/* ── AUTH (Firebase Authentication) ── */
+
+// Listen for auth state changes — fires on page load and after login/logout
+onAuthStateChanged(auth, (user) => {
+  if (user && user.uid === ADMIN_UID) {
+    // Valid admin logged in
+    isAdmin = true;
+    document.getElementById('nav-admin').style.display = 'flex';
+    // If we were waiting to go to admin (via #admin hash), go now
+    if (window._pendingAdmin) {
+      window._pendingAdmin = false;
+      goAdmin();
+    }
+  } else {
+    // Not logged in or wrong account
+    isAdmin = false;
+    document.getElementById('nav-admin').style.display = 'none';
+    if (currentSection === 'admin') {
+      showSection('catalog','all',document.getElementById('nav-all'));
+    }
+  }
+});
+
 window.checkHashForAdmin = () => {
   if (window.location.hash === '#admin') {
     history.replaceState(null,'',window.location.pathname);
-    if (!isAdmin) {
-      // Show login immediately — don't wait for Firebase
-      showAdminLogin();
-    } else {
+    if (isAdmin) {
       goAdmin();
+    } else {
+      window._pendingAdmin = true;
+      showAdminLogin();
     }
   }
 };
@@ -938,46 +959,66 @@ function showAdminLogin() {
   document.getElementById('adminLoginOverlay').style.display = 'flex';
   setTimeout(()=>document.getElementById('login-user').focus(), 100);
 }
+
 window.cancelLogin = () => {
+  window._pendingAdmin = false;
   document.getElementById('adminLoginOverlay').style.display = 'none';
   document.getElementById('login-err').style.display = 'none';
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
 };
-window.doLogin = () => {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    isAdmin = true;
-    sessionStorage.setItem('jp_admin','true');
+
+window.doLogin = async () => {
+  const email = document.getElementById('login-user').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if (!email || !pass) { document.getElementById('login-err').style.display = 'block'; return; }
+  const btn = document.getElementById('login-btn');
+  btn.textContent = '⏳ Verificando...';
+  btn.disabled = true;
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    if (cred.user.uid !== ADMIN_UID) {
+      // Signed in but not the admin account — sign out immediately
+      await signOut(auth);
+      throw new Error('No autorizado');
+    }
     document.getElementById('adminLoginOverlay').style.display = 'none';
-    document.getElementById('nav-admin').style.display = 'flex';
+    document.getElementById('login-err').style.display = 'none';
     document.getElementById('login-user').value = '';
     document.getElementById('login-pass').value = '';
-    document.getElementById('login-err').style.display = 'none';
     goAdmin();
-    showToast('✅ Bienvenido, ' + ADMIN_USER + '!');
-  } else {
+    showToast('✅ Bienvenido al panel admin!');
+  } catch(e) {
     document.getElementById('login-err').style.display = 'block';
+    document.getElementById('login-err').textContent = 'Email o contraseña incorrectos';
     document.getElementById('login-pass').value = '';
     document.getElementById('login-pass').focus();
+  } finally {
+    btn.textContent = '🔓 Ingresar';
+    btn.disabled = false;
   }
 };
-window.adminLogout = () => {
+
+window.adminLogout = async () => {
+  await signOut(auth);
   isAdmin = false;
-  sessionStorage.removeItem('jp_admin');
   document.getElementById('nav-admin').style.display = 'none';
   showSection('catalog','all',document.getElementById('nav-all'));
   showToast('👋 Sesión cerrada');
 };
+
 function goAdmin() {
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('nav-admin').style.display = 'flex';
   document.getElementById('nav-admin').classList.add('active');
-  ['catalog','events','evdetail'].forEach(p=>document.getElementById('page-'+p).style.display='none');
+  ['catalog','events','evdetail','proddetail','reviews'].forEach(p=>{
+    const el=document.getElementById('page-'+p);
+    if(el) el.style.display='none';
+  });
   document.getElementById('page-admin').style.display = 'block';
   currentSection = 'admin';
   renderAdminLists();
+  renderIconEditor();
   closeMobile(); window.scrollTo(0,0);
 }
 
@@ -2001,7 +2042,7 @@ window.closeMobile = () => {
 window.showToast = (msg,type='') => { const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200); };
 
 /* ── START ── */
-if(isAdmin) document.getElementById('nav-admin').style.display='flex';
+// Auth state handled by onAuthStateChanged above
 loadIcons();
 loadPaymentMethods();
 
