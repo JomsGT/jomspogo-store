@@ -730,51 +730,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <div class="adm-group"><label class="adm-label">Fecha fin UTC</label><input class="adm-input" type="datetime-local" id="ev-end-utc"></div>
           </div>
           <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="ev-desc-short" placeholder="Gible masivo con shiny disponible..."></div>
-          <!-- Tabbed content sections -->
-          <div style="margin-top:4px">
-            <div style="display:flex;gap:4px;margin-bottom:0;border-bottom:1px solid var(--border);overflow-x:auto">
-              <button class="evd-tab-btn active" id="aevtab-desc" onclick="switchEvAdminTab('desc')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">📋 Descripción</span></button>
-              <button class="evd-tab-btn" id="aevtab-bonus" onclick="switchEvAdminTab('bonus')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">⭐ Bonus</span></button>
-              <button class="evd-tab-btn" id="aevtab-spawns" onclick="switchEvAdminTab('spawns')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">🐾 Spawns</span></button>
-              <button class="evd-tab-btn" id="aevtab-eggs" onclick="switchEvAdminTab('eggs')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">🥚 Huevos</span></button>
-              <button class="evd-tab-btn" id="aevtab-research" onclick="switchEvAdminTab('research')" style="border-radius:8px 8px 0 0;padding:7px 12px"><span class="evd-tab-label" style="font-size:10px">🔬 Investigación</span></button>
+
+          <!-- Section icon customizer -->
+          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:4px;margin-bottom:8px">
+            <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🎨 Iconos de secciones (emoji)</div>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="ev-section-icons-grid">
+              <!-- rendered by renderEvSectionIcons() -->
             </div>
-            <div style="background:var(--dark3);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px">
-              <div id="aevpanel-desc">
-                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="ev-desc-full" placeholder="Descripción detallada del evento..." style="min-height:100px"></textarea></div>
-              </div>
-              <div id="aevpanel-bonus" style="display:none">
-                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Bonus / Características (una por línea: 🎁 | Título | Descripción)</label><textarea class="adm-textarea" id="ev-features" placeholder="⭐ | XP Triple | XP x3 al capturar&#10;✨ | Shiny | Mayor tasa shiny&#10;🍬 | Caramelos x2 | Doble al atrapar" style="min-height:100px"></textarea><div class="adm-hint">Formato: emoji | Título | Descripción</div></div>
-              </div>
-              <div id="aevpanel-spawns" style="display:none">
-                <div class="adm-hint" style="margin-bottom:10px">
-                  Puedes crear <strong style="color:var(--gold)">múltiples secciones</strong> (ej: "Encuentros salvajes", "Encuentros de Ruta").<br>
-                  Separa las secciones con una línea que empiece con <code style="color:var(--teal)"># Título de sección</code><br>
-                  Luego el texto descriptivo con <code style="color:var(--teal)">descripcion: texto aquí</code> (opcional)<br>
-                  Luego los Pokémon: <code style="color:var(--teal)">Nombre | URL-imagen | shiny</code> (hasta 10 por sección)
-                </div>
-                <textarea class="adm-textarea" id="ev-spawns"
-                  placeholder="# Encuentros salvajes&#10;descripcion: Pokémon con temática del evento aparecerán en la naturaleza&#10;Seedot | https://i.imgur.com/abc.png&#10;Castform | https://i.imgur.com/def.png | shiny&#10;Silicobra | https://i.imgur.com/ghi.png&#10;&#10;# Encuentros de Ruta&#10;descripcion: Diferentes Pokémon aparecerán en Rutas&#10;Togetic | https://i.imgur.com/jkl.png | shiny&#10;Lapras | https://i.imgur.com/mno.png"
-                  style="min-height:180px;font-family:monospace;font-size:12px"></textarea>
-              </div>
-              <div id="aevpanel-eggs" style="display:none">
-                <div class="adm-hint" style="margin-bottom:8px">
-                  Secciones con <code style="color:var(--teal)"># Título</code>, descripción opcional y Pokémon.<br>
-                  Formato Pokémon: <code style="color:var(--teal)">Nombre | URL-imagen | shiny</code>
-                </div>
-                <textarea class="adm-textarea" id="ev-eggs"
-                  placeholder="# Huevos de 2km&#10;Pichu ✨ | https://i.imgur.com/abc.png | shiny&#10;Cleffa | https://i.imgur.com/def.png&#10;&#10;# Huevos de 5km&#10;Riolu ✨ | https://i.imgur.com/ghi.png | shiny&#10;Togepi | https://i.imgur.com/jkl.png"
-                  style="min-height:150px;font-family:monospace;font-size:12px"></textarea>
-              </div>
-              <div id="aevpanel-research" style="display:none">
-                <div class="adm-hint" style="margin-bottom:8px">
-                  Tareas de investigación. Formato: <code style="color:var(--teal)">Tarea → Recompensa | URL-imagen-recompensa | shiny</code><br>
-                  O sin imagen: <code style="color:var(--teal)">Atrapa 5 Pokémon → Gible ✨</code>
-                </div>
-                <textarea class="adm-textarea" id="ev-research"
-                  placeholder="Atrapa 5 Pokémon → Gible ✨ | https://i.imgur.com/abc.png | shiny&#10;Realiza 3 lanzamientos excelentes → Incubadora&#10;Juega con tu compañero → Caramelo XL | https://i.imgur.com/candy.png"
-                  style="min-height:120px;font-family:monospace;font-size:12px"></textarea>
-              </div>
+            <div class="adm-hint" style="margin-top:8px">Cambia los iconos de cada sección para este evento</div>
+          </div>
+
+          <!-- Tabbed content sections — UNIFIED FORMAT for all -->
+          <div style="margin-top:4px">
+            <div style="display:flex;gap:4px;margin-bottom:0;border-bottom:1px solid var(--border);overflow-x:auto" id="aev-tabs-bar">
+              <!-- rendered dynamically -->
+            </div>
+            <div style="background:var(--dark3);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px" id="aev-panels-wrap">
+              <!-- rendered dynamically -->
             </div>
           </div>
           <input type="hidden" id="ev-edit-id">
@@ -1070,6 +1042,8 @@ function goAdmin() {
   currentSection = 'admin';
   renderAdminLists();
   renderIconEditor();
+  renderEvAdminTabs(null);
+  renderEvSectionIcons(null);
   closeMobile(); window.scrollTo(0,0);
 }
 
@@ -1099,6 +1073,8 @@ window.showSection = (section, filter, navEl) => {
     if (!isAdmin) { showAdminLogin(); return; }
     renderAdminLists();
     renderIconEditor();
+    renderEvAdminTabs(null);
+    renderEvSectionIcons(null);
   }
   closeMobile(); window.scrollTo(0,0);
 };
@@ -1342,17 +1318,95 @@ function buildResearchHtml(research) {
   }).join('');
 }
 
-window.switchEvAdminTab = (tab) => {
-  ['desc','bonus','spawns','eggs','research'].forEach(t=>{
-    const btn=document.getElementById('aevtab-'+t);
-    const panel=document.getElementById('aevpanel-'+t);
-    if(btn) btn.classList.toggle('active',t===tab);
-    if(panel) panel.style.display=t===tab?'block':'none';
+/* ══════════════════════════════════════
+   EVENT SECTIONS — UNIFIED SYSTEM
+   All 5 sections share the same format:
+   # Title
+   descripcion: text
+   Name | img-url | shiny
+   ══════════════════════════════════════ */
+
+const EV_SECTIONS = [
+  { id:'desc',     label:'Descripción',  defaultIcon:'📋', textarea:'ev-desc-full',  placeholder:'Descripción completa del evento...' },
+  { id:'bonus',    label:'Bonus',        defaultIcon:'⭐', textarea:'ev-features',   placeholder:'# Bonus de captura\ndescripcion: Activos durante todo el evento\nXP x3 al capturar | https://i.imgur.com/xp.png\nShiny | https://i.imgur.com/shiny.png | shiny\n\n# Bonus de Amistad\ndescripcion: Bonus de intercambio\nIntercambio especial | https://i.imgur.com/trade.png' },
+  { id:'spawns',   label:'Spawns',       defaultIcon:'🐾', textarea:'ev-spawns',     placeholder:'# Encuentros salvajes\ndescripcion: Pokémon con temática aparecerán en la naturaleza\nSeedot | https://i.imgur.com/seedot.png\nCastform | https://i.imgur.com/castform.png | shiny\n\n# Encuentros de Ruta\ndescripcion: Aparecerán en Rutas durante el evento\nTogetic | https://i.imgur.com/togetic.png | shiny' },
+  { id:'eggs',     label:'Huevos',       defaultIcon:'🥚', textarea:'ev-eggs',       placeholder:'# Huevos de 2km\nPichu | https://i.imgur.com/pichu.png | shiny\nCleffa | https://i.imgur.com/cleffa.png\n\n# Huevos de 5km\nRiolu | https://i.imgur.com/riolu.png | shiny\nTogepi | https://i.imgur.com/togepi.png' },
+  { id:'research', label:'Investigación',defaultIcon:'🔬', textarea:'ev-research',   placeholder:'# Tareas de campo\ndescripcion: Tareas disponibles durante el evento\nAtrapa 5 Pokémon → Gible | https://i.imgur.com/gible.png | shiny\nRealiza 3 lanzamientos excelentes → Incubadora\nJuega con tu compañero → Caramelo XL | https://i.imgur.com/candy.png' },
+];
+
+function getEvSectionIcons(ev) {
+  const saved = ev?.sectionIcons || {};
+  const result = {};
+  EV_SECTIONS.forEach(s => { result[s.id] = saved[s.id] || s.defaultIcon; });
+  return result;
+}
+
+function renderEvSectionIcons(ev) {
+  const grid = document.getElementById('ev-section-icons-grid');
+  if (!grid) return;
+  const icons = getEvSectionIcons(ev);
+  grid.innerHTML = EV_SECTIONS.map(s => `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="font-size:20px" id="seci-prev-${s.id}">${icons[s.id]}</div>
+      <div style="font-size:10px;color:var(--muted);font-family:'Rajdhani',sans-serif;font-weight:600">${s.label}</div>
+      <input style="width:100%;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:3px 6px;border-radius:6px;font-size:13px;text-align:center;outline:none"
+        id="seci-input-${s.id}" value="${icons[s.id]}" maxlength="4"
+        oninput="document.getElementById('seci-prev-${s.id}').textContent=this.value||'${s.defaultIcon}'">
+    </div>`).join('');
+}
+
+function getEvSectionIconsFromForm() {
+  const icons = {};
+  EV_SECTIONS.forEach(s => {
+    const inp = document.getElementById('seci-input-'+s.id);
+    if (inp) icons[s.id] = inp.value.trim() || s.defaultIcon;
+  });
+  return icons;
+}
+
+/* Admin tabs — rendered dynamically so icons update live */
+window.switchEvAdminTab = (tabId) => {
+  EV_SECTIONS.forEach(s => {
+    const btn = document.getElementById('aevtab-'+s.id);
+    const panel = document.getElementById('aevpanel-'+s.id);
+    if (btn) btn.classList.toggle('active', s.id===tabId);
+    if (panel) panel.style.display = s.id===tabId ? 'block' : 'none';
   });
 };
 
+function renderEvAdminTabs(ev) {
+  const icons = getEvSectionIcons(ev);
+  const bar = document.getElementById('aev-tabs-bar');
+  const wrap = document.getElementById('aev-panels-wrap');
+  if (!bar || !wrap) return;
+
+  bar.innerHTML = EV_SECTIONS.map((s,i) => `
+    <button class="evd-tab-btn ${i===0?'active':''}" id="aevtab-${s.id}"
+      onclick="switchEvAdminTab('${s.id}')"
+      style="border-radius:8px 8px 0 0;padding:7px 14px;min-width:unset">
+      <span style="font-size:16px">${icons[s.id]}</span>
+      <span class="evd-tab-label" style="font-size:10px">${s.label}</span>
+    </button>`).join('');
+
+  const HINT = `<div class="adm-hint" style="margin-bottom:10px">
+    Secciones con <code style="color:var(--teal)"># Título</code> (opcional),
+    <code style="color:var(--teal)">descripcion: texto</code> (opcional),
+    luego Pokémon/items: <code style="color:var(--teal)">Nombre | URL | shiny</code><br>
+    Para investigación usa: <code style="color:var(--teal)">Tarea → Recompensa | URL | shiny</code>
+  </div>`;
+
+  wrap.innerHTML = EV_SECTIONS.map((s,i) => `
+    <div id="aevpanel-${s.id}" ${i!==0?'style="display:none"':''}>
+      ${s.id!=='desc'?HINT:''}
+      <textarea class="adm-textarea" id="${s.textarea}"
+        placeholder="${s.placeholder}"
+        style="min-height:${s.id==='desc'?'100':'160'}px;font-family:monospace;font-size:12px"></textarea>
+    </div>`).join('');
+}
+
+/* ── TAB ICON in detail view */
 window.switchEvDetailTab = (tab) => {
-  document.querySelectorAll('.evd-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.evd-tab-btn[data-tab]').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.evd-tab-panel').forEach(p=>p.classList.remove('active'));
   const btn=document.querySelector(`.evd-tab-btn[data-tab="${tab}"]`);
   const panel=document.getElementById('evd-panel-'+tab);
@@ -1387,13 +1441,20 @@ function renderEventDetail(ev) {
   const hasResearch= !!(ev.research&&ev.research.length);
 
   const TAB_DEFS = [
-    {id:'desc',    icon:'📋', label:'Descripción',  show: hasDesc},
-    {id:'bonus',   icon:'⭐', label:'Bonus',         show: hasBonus},
-    {id:'spawns',  icon:'🐾', label:'Spawns',        show: hasSpawns},
-    {id:'eggs',    icon:'🥚', label:'Huevos',        show: hasEggs},
-    {id:'research',icon:'🔬', label:'Investigación', show: hasResearch},
-    {id:'tz',      icon:'🌎', label:'Horarios',      show: true},
-  ].filter(t=>t.show);
+    {id:'desc',    show: hasDesc},
+    {id:'bonus',   show: hasBonus},
+    {id:'spawns',  show: hasSpawns},
+    {id:'eggs',    show: hasEggs},
+    {id:'research',show: hasResearch},
+    {id:'tz',      show: true, label:'Horarios', icon:'🌎'},
+  ].filter(t=>t.show).map(t=>{
+    const sec = EV_SECTIONS.find(s=>s.id===t.id);
+    return {
+      ...t,
+      label: t.label || sec?.label || t.id,
+      icon:  t.icon  || (ev.sectionIcons?.[t.id]) || sec?.defaultIcon || '📋'
+    };
+  });
 
   const firstTab = TAB_DEFS[0]?.id || 'desc';
 
@@ -1404,11 +1465,10 @@ function renderEventDetail(ev) {
     </button>`).join('');
 
   // Build spawn sections HTML
-  const spawnSectionsHtml = buildSpawnSectionsHtml(ev.spawns||[]);
-
-  const fH=(ev.features||[]).map(f=>`<div class="evd-feature"><div class="evd-feature-icon">${f.icon}</div><div class="evd-feature-text"><strong>${f.title}</strong><span>${f.desc}</span></div></div>`).join('');
-  const eggSectionsHtml = buildSpawnSectionsHtml(ev.eggs||[]);
-  const resSectionsHtml = buildResearchHtml(ev.research||[]);
+  const spawnSectionsHtml  = buildSpawnSectionsHtml(ev.spawns||[]);
+  const bonusSectionsHtml  = buildSpawnSectionsHtml(ev.features||[]);
+  const eggSectionsHtml    = buildSpawnSectionsHtml(ev.eggs||[]);
+  const resSectionsHtml    = buildResearchHtml(ev.research||[]);
 
   document.getElementById('evdWrap').innerHTML=`
     <button class="evd-back" onclick="showSection('events',activeEvType,document.getElementById('nav-ev-all'))">← Volver a Eventos</button>
@@ -1431,7 +1491,7 @@ function renderEventDetail(ev) {
     <div class="evd-tabs-bar">${tabBtns}</div>
     <div class="evd-body">
       ${hasDesc?`<div class="evd-tab-panel ${firstTab==='desc'?'active':''}" id="evd-panel-desc"><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>`:''}
-      ${hasBonus?`<div class="evd-tab-panel ${firstTab==='bonus'?'active':''}" id="evd-panel-bonus"><div class="evd-features">${fH}</div></div>`:''}
+      ${hasBonus?`<div class="evd-tab-panel ${firstTab==='bonus'?'active':''}" id="evd-panel-bonus">${bonusSectionsHtml}</div>`:''}
       ${hasSpawns?`<div class="evd-tab-panel ${firstTab==='spawns'?'active':''}" id="evd-panel-spawns">${spawnSectionsHtml}</div>`:''}
       ${hasEggs?`<div class="evd-tab-panel ${firstTab==='eggs'?'active':''}" id="evd-panel-eggs">${eggSectionsHtml}</div>`:''}
       ${hasResearch?`<div class="evd-tab-panel ${firstTab==='research'?'active':''}" id="evd-panel-research">${resSectionsHtml}</div>`:''}
@@ -1741,12 +1801,15 @@ window.saveEv = async () => {
   const endUTCval=document.getElementById('ev-end-utc').value;
   const startUTC=startUTCval?new Date(startUTCval+'Z').getTime():Date.now();
   const endUTC=endUTCval?new Date(endUTCval+'Z').getTime():Date.now()+3600000;
-  const features=document.getElementById('ev-features').value.trim().split('\n').filter(l=>l.trim()).map(line=>{const p=line.split('|');return{icon:(p[0]||'').trim(),title:(p[1]||'').trim(),desc:(p[2]||'').trim()};}).filter(f=>f.title);
-  // Parse spawns with sections: # Section Title, descripcion: text, Name | img | shiny
-  const spawnsRaw = document.getElementById('ev-spawns').value;
-  const spawns = parseSpawnSections(spawnsRaw);
-  const eggs = parseSpawnSections(document.getElementById('ev-eggs').value);
-  const research = parseResearchLines(document.getElementById('ev-research').value);
+
+  // Unified parse — all sections use parseSpawnSections except research
+  const descFull   = document.getElementById('ev-desc-full')?.value.trim()||'';
+  const features   = parseSpawnSections(document.getElementById('ev-features')?.value||'');
+  const spawns     = parseSpawnSections(document.getElementById('ev-spawns')?.value||'');
+  const eggs       = parseSpawnSections(document.getElementById('ev-eggs')?.value||'');
+  const research   = parseResearchLines(document.getElementById('ev-research')?.value||'');
+  const sectionIcons = getEvSectionIconsFromForm();
+
   const editId=document.getElementById('ev-edit-id').value;
   const imgData=document.getElementById('ev-img-data').value;
   let existingImg='';
@@ -1757,8 +1820,8 @@ window.saveEv = async () => {
     color:document.getElementById('ev-color').value,
     icon:document.getElementById('ev-icon').value.trim()||'📅',
     startStr, endStr, startUTC, endUTC,
-    descShort, descFull:document.getElementById('ev-desc-full').value.trim(),
-    features, spawns, eggs, research,
+    descShort, descFull, features, spawns, eggs, research,
+    sectionIcons,
     img:imgData||existingImg
   };
   try {
@@ -1771,16 +1834,19 @@ window.saveEv = async () => {
 
 window.cancelEditEv = clearEvForm;
 function clearEvForm() {
-  ['ev-name','ev-desc-short','ev-desc-full','ev-start-str','ev-end-str','ev-start-utc','ev-end-utc','ev-icon','ev-features','ev-spawns','ev-eggs','ev-research'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['ev-name','ev-desc-short','ev-start-str','ev-end-str','ev-start-utc','ev-end-utc','ev-icon'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('ev-type').value='Community Day';
   document.getElementById('ev-color').value='';
   document.getElementById('ev-edit-id').value='';
   document.getElementById('ev-form-title').textContent='➕ Nuevo Evento';
   document.getElementById('ev-save-btn').textContent='🚀 Publicar Evento';
   document.getElementById('ev-edit-banner').classList.remove('show');
+  renderEvAdminTabs(null);
+  renderEvSectionIcons(null);
   switchEvAdminTab('desc');
   resetImgUI('ev');
 }
+
 window.editEv = (id) => {
   const ev=events.find(e=>e._id===id);
   if(!ev) return;
@@ -1794,23 +1860,26 @@ window.editEv = (id) => {
   document.getElementById('ev-start-utc').value=toLocal(ev.startUTC);
   document.getElementById('ev-end-utc').value=toLocal(ev.endUTC);
   document.getElementById('ev-desc-short').value=ev.descShort||'';
+
+  // Render tabs then fill textareas
+  renderEvAdminTabs(ev);
+  renderEvSectionIcons(ev);
+
   document.getElementById('ev-desc-full').value=ev.descFull||'';
-  document.getElementById('ev-features').value=(ev.features||[]).map(f=>`${f.icon} | ${f.title} | ${f.desc}`).join('\n');
-  document.getElementById('ev-spawns').value = serializeSpawnSections(ev.spawns||[]);
-  document.getElementById('ev-eggs').value = serializeSpawnSections(ev.eggs||[]);
-  document.getElementById('ev-research').value = serializeResearchLines(ev.research||[]);
+  document.getElementById('ev-features').value=serializeSpawnSections(ev.features||[]);
+  document.getElementById('ev-spawns').value=serializeSpawnSections(ev.spawns||[]);
+  document.getElementById('ev-eggs').value=serializeSpawnSections(ev.eggs||[]);
+  document.getElementById('ev-research').value=serializeResearchLines(ev.research||[]);
+
   document.getElementById('ev-edit-id').value=ev._id;
   document.getElementById('ev-form-title').textContent='✏️ Editar Evento';
   document.getElementById('ev-save-btn').textContent='💾 Guardar Cambios';
   document.getElementById('ev-edit-banner').classList.add('show');
-  // Load existing image URL
   if(ev.img){
     document.getElementById('ev-img-data').value=ev.img;
     document.getElementById('ev-img-prev').src=ev.img;
     document.getElementById('ev-img-preview-wrap').style.display='block';
-  } else {
-    removeEvImg();
-  }
+  } else { removeEvImg(); }
   document.getElementById('apanel-ev').scrollIntoView({behavior:'smooth',block:'start'});
 };
 
