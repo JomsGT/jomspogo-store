@@ -187,9 +187,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-cd-val2.ended{color:var(--muted);font-size:14px;font-family:'Rajdhani',sans-serif;font-weight:700}
 
 /* Tabbed content */
-.evd-tabs-bar{display:flex;gap:4px;margin-bottom:0;overflow-x:auto;padding-bottom:0}
+.evd-tabs-bar{display:flex;gap:4px;margin-bottom:0;overflow-x:auto;padding-bottom:0;justify-content:center;flex-wrap:wrap}
 .evd-tabs-bar::-webkit-scrollbar{height:0}
-.evd-tab-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 16px;background:var(--dark3);border:1px solid var(--border);border-bottom:none;border-radius:10px 10px 0 0;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.evd-tab-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 18px;background:var(--dark3);border:1px solid var(--border);border-bottom:none;border-radius:10px 10px 0 0;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;min-width:80px}
 .evd-tab-btn:hover{background:var(--card)}
 .evd-tab-btn.active{background:var(--card);border-color:var(--teal);color:var(--teal)}
 .evd-tab-icon{font-size:20px;line-height:1}
@@ -209,20 +209,37 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-feature-text span{font-size:12px;color:var(--muted);line-height:1.5}
 
 /* Spawn cards — pokéball circle style */
-.evd-spawns-section{margin-bottom:20px}
+.evd-spawns-section{margin-bottom:24px}
 .evd-spawns-section:last-child{margin-bottom:0}
-.evd-spawns-section-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:6px}
+.evd-spawns-section-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--text);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.07)}
 .evd-spawns-desc{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:4px}
 .evd-spawns-bullets{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:12px;padding-left:18px}
 .evd-spawns-bullets li{margin-bottom:2px}
-.evd-spawns-grid{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px}
-.spawn-card{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:72px}
-.spawn-img-wrap{width:80px;height:80px;border-radius:50%;border:3px solid rgba(255,255,255,.15);background:linear-gradient(135deg,#1e1e38,#2a2a50);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:border-color .2s;position:relative}
-.spawn-img-wrap:hover{border-color:var(--teal)}
-.spawn-img{width:72px;height:72px;object-fit:contain}
-.spawn-img-placeholder{font-size:32px;line-height:1}
-.spawn-shiny-badge{position:absolute;top:2px;right:2px;font-size:12px;line-height:1}
-.spawn-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--text);line-height:1.2;max-width:84px}
+.evd-spawns-grid{display:flex;flex-wrap:wrap;gap:20px;margin-top:14px;justify-content:flex-start}
+
+/* Unified Pokémon card — used for spawns, eggs, research rewards */
+.poke-card{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;min-width:76px;max-width:90px}
+.poke-ball-wrap{
+  width:84px;height:84px;border-radius:50%;
+  background-image:url('https://cdn.jsdelivr.net/gh/pogoquest-web/assets@main/events/poke-circle-bg.png');
+  background-size:cover;background-position:center;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+  transition:transform .2s, box-shadow .2s;
+  box-shadow:0 2px 10px rgba(0,0,0,.4);
+  flex-shrink:0;
+}
+.poke-ball-wrap:hover{transform:scale(1.08);box-shadow:0 4px 18px rgba(0,180,160,.35)}
+.poke-ball-wrap img{width:70px;height:70px;object-fit:contain;position:relative;z-index:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.poke-ball-placeholder{font-size:34px;line-height:1;z-index:1}
+.poke-shiny-badge{position:absolute;top:3px;right:3px;font-size:13px;line-height:1;z-index:2}
+.poke-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--text);line-height:1.3;max-width:88px}
+
+/* Research line item */
+.evd-research-item{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.evd-research-item:last-child{border-bottom:none}
+.evd-research-text{color:var(--muted);font-size:13px;line-height:1.5;flex:1}
+.evd-research-reward{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
 /* Pokémon text pills (for huevos/investigacion) */
 .evd-poke-pills{display:flex;gap:7px;flex-wrap:wrap}
@@ -741,10 +758,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
                   style="min-height:180px;font-family:monospace;font-size:12px"></textarea>
               </div>
               <div id="aevpanel-eggs" style="display:none">
-                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Pokémon en huevos (separados por coma)</label><input class="adm-input" id="ev-eggs" placeholder="Riolu ✨, Togepi, Mime Jr."></div>
+                <div class="adm-hint" style="margin-bottom:8px">
+                  Secciones con <code style="color:var(--teal)"># Título</code>, descripción opcional y Pokémon.<br>
+                  Formato Pokémon: <code style="color:var(--teal)">Nombre | URL-imagen | shiny</code>
+                </div>
+                <textarea class="adm-textarea" id="ev-eggs"
+                  placeholder="# Huevos de 2km&#10;Pichu ✨ | https://i.imgur.com/abc.png | shiny&#10;Cleffa | https://i.imgur.com/def.png&#10;&#10;# Huevos de 5km&#10;Riolu ✨ | https://i.imgur.com/ghi.png | shiny&#10;Togepi | https://i.imgur.com/jkl.png"
+                  style="min-height:150px;font-family:monospace;font-size:12px"></textarea>
               </div>
               <div id="aevpanel-research" style="display:none">
-                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Tareas de investigación (una por línea)</label><textarea class="adm-textarea" id="ev-research" placeholder="Atrapa 5 Pokémon → Gible ✨&#10;Realiza 3 lanzamientos excelentes → Incubadora&#10;Juega con tu compañero → Caramelo" style="min-height:100px"></textarea></div>
+                <div class="adm-hint" style="margin-bottom:8px">
+                  Tareas de investigación. Formato: <code style="color:var(--teal)">Tarea → Recompensa | URL-imagen-recompensa | shiny</code><br>
+                  O sin imagen: <code style="color:var(--teal)">Atrapa 5 Pokémon → Gible ✨</code>
+                </div>
+                <textarea class="adm-textarea" id="ev-research"
+                  placeholder="Atrapa 5 Pokémon → Gible ✨ | https://i.imgur.com/abc.png | shiny&#10;Realiza 3 lanzamientos excelentes → Incubadora&#10;Juega con tu compañero → Caramelo XL | https://i.imgur.com/candy.png"
+                  style="min-height:120px;font-family:monospace;font-size:12px"></textarea>
               </div>
             </div>
           </div>
@@ -1222,26 +1251,23 @@ function serializeSpawnSections(spawns) {
   }
 }
 
-// Build HTML for spawn sections display
+// Build HTML for spawn/egg sections display
 function buildSpawnSectionsHtml(spawns) {
   if (!spawns || !spawns.length) return '';
-
-  // Detect format: new sectioned or old flat
   const isSectioned = spawns[0] && spawns[0].title !== undefined;
 
   if (!isSectioned) {
-    // Old flat array — render as single grid
+    // Old flat array
     const cards = spawns.map(s => buildSpawnCard(s)).join('');
     return `<div class="evd-spawns-grid">${cards}</div>`;
   }
 
-  // Sectioned format
   return spawns.map(sec => {
     const cards = (sec.pokemon||[]).map(s => buildSpawnCard(s)).join('');
     const cardsHtml = cards ? `<div class="evd-spawns-grid">${cards}</div>` : '';
     return `<div class="evd-spawns-section">
       ${sec.title ? `<div class="evd-spawns-section-title">${sec.title}</div>` : ''}
-      ${sec.desc ? `<div class="evd-spawns-desc">${sec.desc}</div>` : ''}
+      ${sec.desc  ? `<div class="evd-spawns-desc">${sec.desc}</div>` : ''}
       ${cardsHtml}
     </div>`;
   }).join('');
@@ -1249,15 +1275,71 @@ function buildSpawnSectionsHtml(spawns) {
 
 function buildSpawnCard(s) {
   const imgContent = s.img
-    ? `<img class="spawn-img" src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">`
-    : `<div class="spawn-img-placeholder">🐾</div>`;
-  return `<div class="spawn-card">
-    <div class="spawn-img-wrap">
+    ? `<img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">`
+    : `<div class="poke-ball-placeholder">🐾</div>`;
+  return `<div class="poke-card">
+    <div class="poke-ball-wrap">
       ${imgContent}
-      ${s.shiny ? `<span class="spawn-shiny-badge">✨</span>` : ''}
+      ${s.shiny ? `<span class="poke-shiny-badge">✨</span>` : ''}
     </div>
-    <div class="spawn-name">${s.name}</div>
+    <div class="poke-name">${s.name}</div>
   </div>`;
+}
+
+// Parse research lines: "Task → Reward | img | shiny"
+function parseResearchLines(raw) {
+  if (!raw || !raw.trim()) return [];
+  return raw.split('\n').filter(l => l.trim()).map(line => {
+    const arrow = line.indexOf('→');
+    if (arrow === -1) return { task: line.trim(), reward: '', img: '', shiny: false };
+    const task = line.substring(0, arrow).trim();
+    const rewardPart = line.substring(arrow + 1).trim();
+    const p = rewardPart.split('|');
+    return {
+      task,
+      reward: (p[0]||'').trim(),
+      img:    (p[1]||'').trim(),
+      shiny:  !!(p[2]||'').toLowerCase().includes('shiny')
+    };
+  }).filter(r => r.task);
+}
+
+function serializeResearchLines(research) {
+  if (!research || !research.length) return '';
+  // Old string format (backward compat)
+  if (typeof research[0] === 'string') return research.join('\n');
+  return research.map(r => {
+    let line = `${r.task} → ${r.reward||''}`;
+    if (r.img) line += ` | ${r.img}`;
+    if (r.shiny) line += ` | shiny`;
+    return line;
+  }).join('\n');
+}
+
+function buildResearchHtml(research) {
+  if (!research || !research.length) return '';
+  // Old string format
+  if (typeof research[0] === 'string') {
+    return research.map(r => `
+      <div class="evd-research-item">
+        <div class="evd-research-text"><span style="color:var(--teal)">→</span> ${r}</div>
+      </div>`).join('');
+  }
+  return research.map(r => {
+    const rewardCard = r.img
+      ? `<div class="poke-card" style="min-width:60px;max-width:70px">
+           <div class="poke-ball-wrap" style="width:64px;height:64px">
+             <img src="${r.img}" alt="${r.reward}" style="width:54px;height:54px;object-fit:contain" onerror="this.style.display='none'">
+             ${r.shiny?`<span class="poke-shiny-badge">✨</span>`:''}
+           </div>
+           <div class="poke-name" style="max-width:70px">${r.reward}</div>
+         </div>`
+      : (r.reward ? `<span style="background:rgba(0,180,160,.12);border:1px solid rgba(0,180,160,.3);color:var(--teal);padding:3px 10px;border-radius:50px;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:600">${r.reward}</span>` : '');
+    return `<div class="evd-research-item">
+      <div class="evd-research-text"><span style="color:var(--teal);font-weight:700">→</span> ${r.task}</div>
+      ${rewardCard ? `<div class="evd-research-reward">${rewardCard}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 window.switchEvAdminTab = (tab) => {
@@ -1325,8 +1407,8 @@ function renderEventDetail(ev) {
   const spawnSectionsHtml = buildSpawnSectionsHtml(ev.spawns||[]);
 
   const fH=(ev.features||[]).map(f=>`<div class="evd-feature"><div class="evd-feature-icon">${f.icon}</div><div class="evd-feature-text"><strong>${f.title}</strong><span>${f.desc}</span></div></div>`).join('');
-  const eggPills=(ev.eggs||[]).map(p=>`<span class="evd-poke-pill">${p}</span>`).join('');
-  const resLines=(ev.research||[]).map(r=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span style="color:var(--teal);flex-shrink:0">→</span><span style="color:var(--muted);font-size:13px">${r}</span></div>`).join('');
+  const eggSectionsHtml = buildSpawnSectionsHtml(ev.eggs||[]);
+  const resSectionsHtml = buildResearchHtml(ev.research||[]);
 
   document.getElementById('evdWrap').innerHTML=`
     <button class="evd-back" onclick="showSection('events',activeEvType,document.getElementById('nav-ev-all'))">← Volver a Eventos</button>
@@ -1351,8 +1433,8 @@ function renderEventDetail(ev) {
       ${hasDesc?`<div class="evd-tab-panel ${firstTab==='desc'?'active':''}" id="evd-panel-desc"><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>`:''}
       ${hasBonus?`<div class="evd-tab-panel ${firstTab==='bonus'?'active':''}" id="evd-panel-bonus"><div class="evd-features">${fH}</div></div>`:''}
       ${hasSpawns?`<div class="evd-tab-panel ${firstTab==='spawns'?'active':''}" id="evd-panel-spawns">${spawnSectionsHtml}</div>`:''}
-      ${hasEggs?`<div class="evd-tab-panel ${firstTab==='eggs'?'active':''}" id="evd-panel-eggs"><div class="evd-poke-pills">${eggPills}</div></div>`:''}
-      ${hasResearch?`<div class="evd-tab-panel ${firstTab==='research'?'active':''}" id="evd-panel-research"><div>${resLines}</div></div>`:''}
+      ${hasEggs?`<div class="evd-tab-panel ${firstTab==='eggs'?'active':''}" id="evd-panel-eggs">${eggSectionsHtml}</div>`:''}
+      ${hasResearch?`<div class="evd-tab-panel ${firstTab==='research'?'active':''}" id="evd-panel-research">${resSectionsHtml}</div>`:''}
       <div class="evd-tab-panel ${firstTab==='tz'?'active':''}" id="evd-panel-tz"><div class="evd-tz-list">${tzR}</div></div>
     </div>`;
 
@@ -1663,8 +1745,8 @@ window.saveEv = async () => {
   // Parse spawns with sections: # Section Title, descripcion: text, Name | img | shiny
   const spawnsRaw = document.getElementById('ev-spawns').value;
   const spawns = parseSpawnSections(spawnsRaw);
-  const eggs = document.getElementById('ev-eggs').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
-  const research = document.getElementById('ev-research').value.trim().split('\n').filter(l=>l.trim());
+  const eggs = parseSpawnSections(document.getElementById('ev-eggs').value);
+  const research = parseResearchLines(document.getElementById('ev-research').value);
   const editId=document.getElementById('ev-edit-id').value;
   const imgData=document.getElementById('ev-img-data').value;
   let existingImg='';
@@ -1715,8 +1797,8 @@ window.editEv = (id) => {
   document.getElementById('ev-desc-full').value=ev.descFull||'';
   document.getElementById('ev-features').value=(ev.features||[]).map(f=>`${f.icon} | ${f.title} | ${f.desc}`).join('\n');
   document.getElementById('ev-spawns').value = serializeSpawnSections(ev.spawns||[]);
-  document.getElementById('ev-eggs').value=(ev.eggs||[]).join(', ');
-  document.getElementById('ev-research').value=(ev.research||[]).join('\n');
+  document.getElementById('ev-eggs').value = serializeSpawnSections(ev.eggs||[]);
+  document.getElementById('ev-research').value = serializeResearchLines(ev.research||[]);
   document.getElementById('ev-edit-id').value=ev._id;
   document.getElementById('ev-form-title').textContent='✏️ Editar Evento';
   document.getElementById('ev-save-btn').textContent='💾 Guardar Cambios';
