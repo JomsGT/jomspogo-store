@@ -161,16 +161,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* Hero with background image */
 .evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;position:relative}
-.evd-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.35) saturate(1.2);z-index:0}
-.evd-banner{position:relative;z-index:1;padding:36px 28px 28px;display:flex;align-items:center;gap:18px;min-height:160px}
+.evd-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center top;filter:brightness(.28) saturate(1.3);z-index:0}
+.evd-banner{position:relative;z-index:1;padding:44px 32px 36px;display:flex;align-items:center;gap:22px;min-height:220px}
 .evd-banner.no-img{background:linear-gradient(120deg,#1a8fd1,#1dd6c0)}
 .evd-banner.no-img.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
 .evd-banner.no-img.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad)}
 .evd-banner.no-img.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020)}
-.evd-icon{font-size:64px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+.evd-icon{font-size:72px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 16px rgba(0,0,0,.7))}
 .evd-banner-info{flex:1;min-width:0}
-.evd-banner-type{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:2px;margin-bottom:3px}
-.evd-banner-title{font-family:'Orbitron',monospace;font-size:clamp(16px,3vw,26px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.evd-banner-type{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px}
+.evd-banner-title{font-family:'Orbitron',monospace;font-size:clamp(18px,3.5vw,30px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px;text-shadow:0 2px 12px rgba(0,0,0,.8)}
 .evd-badges{display:flex;gap:7px;flex-wrap:wrap}
 .evd-badge{padding:3px 11px;border-radius:50px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .evd-badge.live{background:rgba(76,175,80,.25);color:var(--green);border:1px solid rgba(76,175,80,.5)}
@@ -208,14 +208,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-feature-text strong{display:block;font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--text);margin-bottom:2px}
 .evd-feature-text span{font-size:12px;color:var(--muted);line-height:1.5}
 
-/* Spawn cards */
-.evd-spawns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px}
-.spawn-card{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:border-color .2s}
-.spawn-card:hover{border-color:var(--teal)}
-.spawn-img{width:64px;height:64px;object-fit:contain;border-radius:8px}
-.spawn-img-placeholder{width:64px;height:64px;border-radius:8px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:28px}
-.spawn-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:var(--text);line-height:1.2}
-.spawn-shiny{font-size:9px;color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:600}
+/* Spawn cards — pokéball circle style */
+.evd-spawns-section{margin-bottom:20px}
+.evd-spawns-section:last-child{margin-bottom:0}
+.evd-spawns-section-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:6px}
+.evd-spawns-desc{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:4px}
+.evd-spawns-bullets{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:12px;padding-left:18px}
+.evd-spawns-bullets li{margin-bottom:2px}
+.evd-spawns-grid{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px}
+.spawn-card{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:72px}
+.spawn-img-wrap{width:80px;height:80px;border-radius:50%;border:3px solid rgba(255,255,255,.15);background:linear-gradient(135deg,#1e1e38,#2a2a50);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:border-color .2s;position:relative}
+.spawn-img-wrap:hover{border-color:var(--teal)}
+.spawn-img{width:72px;height:72px;object-fit:contain}
+.spawn-img-placeholder{font-size:32px;line-height:1}
+.spawn-shiny-badge{position:absolute;top:2px;right:2px;font-size:12px;line-height:1}
+.spawn-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--text);line-height:1.2;max-width:84px}
 
 /* Pokémon text pills (for huevos/investigacion) */
 .evd-poke-pills{display:flex;gap:7px;flex-wrap:wrap}
@@ -652,6 +659,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <div class="adm-group"><label class="adm-label">Badge</label><select class="adm-select" id="p-tag"><option>HOT</option><option>NEW</option><option>SHINY</option><option>RARE</option><option>HUNDO</option><option>SALE</option></select></div>
           </div>
           <div class="adm-group"><label class="adm-label">Evento asociado (opcional)</label><input class="adm-input" id="p-event" placeholder="Community Day, GO Fest..."></div>
+          <div class="adm-group">
+            <label class="adm-label">WhatsApp de contacto <span style="color:var(--muted);font-weight:400;font-size:10px">(dejar vacío = usar el número por defecto)</span></label>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:18px;flex-shrink:0">📱</span>
+              <input class="adm-input" id="p-wa" placeholder="50299887766 — solo números, sin + ni espacios" style="flex:1">
+            </div>
+            <div class="adm-hint" style="margin-top:4px">Número por defecto: <strong style="color:var(--gold)" id="wa-default-hint"></strong> · Cambia solo si este item lo vende otra persona</div>
+          </div>
           <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="p-short" placeholder="CP 514 | Shiny | Team Valor"></div>
           <div class="adm-group"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="p-desc" placeholder="Descripción detallada..."></textarea></div>
           <input type="hidden" id="p-edit-id">
@@ -715,8 +730,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
                 <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Bonus / Características (una por línea: 🎁 | Título | Descripción)</label><textarea class="adm-textarea" id="ev-features" placeholder="⭐ | XP Triple | XP x3 al capturar&#10;✨ | Shiny | Mayor tasa shiny&#10;🍬 | Caramelos x2 | Doble al atrapar" style="min-height:100px"></textarea><div class="adm-hint">Formato: emoji | Título | Descripción</div></div>
               </div>
               <div id="aevpanel-spawns" style="display:none">
-                <div class="adm-hint" style="margin-bottom:10px">Agrega hasta 10 Pokémon. Formato: Nombre | URL-imagen | shiny (opcional)<br>Ejemplo: <code style="color:var(--teal)">Gible | https://i.imgur.com/abc.png | shiny</code></div>
-                <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Pokémon con imagen (una por línea)</label><textarea class="adm-textarea" id="ev-spawns" placeholder="Gible | https://i.imgur.com/abc.png | shiny&#10;Gabite | https://i.imgur.com/def.png&#10;Garchomp | https://i.imgur.com/ghi.png | shiny" style="min-height:120px"></textarea></div>
+                <div class="adm-hint" style="margin-bottom:10px">
+                  Puedes crear <strong style="color:var(--gold)">múltiples secciones</strong> (ej: "Encuentros salvajes", "Encuentros de Ruta").<br>
+                  Separa las secciones con una línea que empiece con <code style="color:var(--teal)"># Título de sección</code><br>
+                  Luego el texto descriptivo con <code style="color:var(--teal)">descripcion: texto aquí</code> (opcional)<br>
+                  Luego los Pokémon: <code style="color:var(--teal)">Nombre | URL-imagen | shiny</code> (hasta 10 por sección)
+                </div>
+                <textarea class="adm-textarea" id="ev-spawns"
+                  placeholder="# Encuentros salvajes&#10;descripcion: Pokémon con temática del evento aparecerán en la naturaleza&#10;Seedot | https://i.imgur.com/abc.png&#10;Castform | https://i.imgur.com/def.png | shiny&#10;Silicobra | https://i.imgur.com/ghi.png&#10;&#10;# Encuentros de Ruta&#10;descripcion: Diferentes Pokémon aparecerán en Rutas&#10;Togetic | https://i.imgur.com/jkl.png | shiny&#10;Lapras | https://i.imgur.com/mno.png"
+                  style="min-height:180px;font-family:monospace;font-size:12px"></textarea>
               </div>
               <div id="aevpanel-eggs" style="display:none">
                 <div class="adm-group" style="margin-bottom:0"><label class="adm-label">Pokémon en huevos (separados por coma)</label><input class="adm-input" id="ev-eggs" placeholder="Riolu ✨, Togepi, Mime Jr."></div>
@@ -854,7 +876,7 @@ const db   = getFirestore(app);
 const auth = getAuth(app);
 
 /* ── CONFIG ── */
-const WA           = '50255555555';
+const WA           = '50234431282';
 const ADMIN_UID    = 'bNZJtQwE1WOs0SqEaaOFrvD5IOk1';
 
 /* ── STATE ── */
@@ -1100,7 +1122,7 @@ function renderProducts() {
       <div class="card-body">
         <div class="card-name">${p.name}</div>
         <div class="card-tags"><span class="tag-cat">${cl}</span>${eb}</div>
-        <button class="card-wa" onclick="event.stopPropagation();openWA('${(p.name||'').replace(/'/g,"\\'")}')">
+        <button class="card-wa" onclick="event.stopPropagation();openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
           Comprar por WhatsApp
         </button>
@@ -1142,6 +1164,101 @@ const TZ_GROUPS=[
   {gmt:'GMT+1:00',offset:1,countries:[{flag:'🇪🇸',name:'España'},{flag:'🇫🇷',name:'Francia'}]},
   {gmt:'GMT+9:00',offset:9,countries:[{flag:'🇯🇵',name:'Japón'},{flag:'🇰🇷',name:'Corea'}]},
 ];
+
+/* ── SPAWN SECTION HELPERS ── */
+
+// Parse multi-section spawn format from textarea
+function parseSpawnSections(raw) {
+  if (!raw || !raw.trim()) return [];
+  const lines = raw.split('\n');
+  const sections = [];
+  let current = null;
+
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t) continue;
+    if (t.startsWith('#')) {
+      // New section
+      current = { title: t.replace(/^#+\s*/, ''), desc: '', pokemon: [] };
+      sections.push(current);
+    } else if (t.toLowerCase().startsWith('descripcion:') || t.toLowerCase().startsWith('descripción:')) {
+      const desc = t.replace(/^descripci[oó]n:\s*/i, '');
+      if (current) current.desc = desc;
+      else { current = { title: '', desc, pokemon: [] }; sections.push(current); }
+    } else if (t.includes('|') || (!t.startsWith('#') && current)) {
+      // Pokémon line
+      if (!current) { current = { title: '', desc: '', pokemon: [] }; sections.push(current); }
+      const p = t.split('|');
+      const name = (p[0]||'').trim();
+      if (name) {
+        current.pokemon.push({
+          name,
+          img: (p[1]||'').trim(),
+          shiny: !!(p[2]||'').toLowerCase().includes('shiny')
+        });
+      }
+    }
+  }
+  // If no sections found but has content, treat as flat list
+  if (!sections.length) return [];
+  return sections;
+}
+
+// Serialize sections back to textarea format
+function serializeSpawnSections(spawns) {
+  if (!spawns || !spawns.length) return '';
+  // Check if it's the new sectioned format or old flat array
+  if (spawns[0] && spawns[0].title !== undefined) {
+    // Sectioned format
+    return spawns.map(sec => {
+      let out = sec.title ? `# ${sec.title}\n` : '';
+      if (sec.desc) out += `descripcion: ${sec.desc}\n`;
+      out += (sec.pokemon||[]).map(p => `${p.name} | ${p.img||''}${p.shiny?' | shiny':''}`).join('\n');
+      return out;
+    }).join('\n\n');
+  } else {
+    // Old flat format (backward compat)
+    return spawns.map(s => `${s.name} | ${s.img||''}${s.shiny?' | shiny':''}`).join('\n');
+  }
+}
+
+// Build HTML for spawn sections display
+function buildSpawnSectionsHtml(spawns) {
+  if (!spawns || !spawns.length) return '';
+
+  // Detect format: new sectioned or old flat
+  const isSectioned = spawns[0] && spawns[0].title !== undefined;
+
+  if (!isSectioned) {
+    // Old flat array — render as single grid
+    const cards = spawns.map(s => buildSpawnCard(s)).join('');
+    return `<div class="evd-spawns-grid">${cards}</div>`;
+  }
+
+  // Sectioned format
+  return spawns.map(sec => {
+    const cards = (sec.pokemon||[]).map(s => buildSpawnCard(s)).join('');
+    const cardsHtml = cards ? `<div class="evd-spawns-grid">${cards}</div>` : '';
+    return `<div class="evd-spawns-section">
+      ${sec.title ? `<div class="evd-spawns-section-title">${sec.title}</div>` : ''}
+      ${sec.desc ? `<div class="evd-spawns-desc">${sec.desc}</div>` : ''}
+      ${cardsHtml}
+    </div>`;
+  }).join('');
+}
+
+function buildSpawnCard(s) {
+  const imgContent = s.img
+    ? `<img class="spawn-img" src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">`
+    : `<div class="spawn-img-placeholder">🐾</div>`;
+  return `<div class="spawn-card">
+    <div class="spawn-img-wrap">
+      ${imgContent}
+      ${s.shiny ? `<span class="spawn-shiny-badge">✨</span>` : ''}
+    </div>
+    <div class="spawn-name">${s.name}</div>
+  </div>`;
+}
 
 window.switchEvAdminTab = (tab) => {
   ['desc','bonus','spawns','eggs','research'].forEach(t=>{
@@ -1204,15 +1321,8 @@ function renderEventDetail(ev) {
       <span class="evd-tab-label">${t.label}</span>
     </button>`).join('');
 
-  // Spawn cards HTML
-  const spawnCards = (ev.spawns||[]).map(s=>`
-    <div class="spawn-card">
-      ${s.img
-        ? `<img class="spawn-img" src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">`
-        : `<div class="spawn-img-placeholder">🐾</div>`}
-      <div class="spawn-name">${s.name}</div>
-      ${s.shiny?`<div class="spawn-shiny">✨ Shiny</div>`:''}
-    </div>`).join('');
+  // Build spawn sections HTML
+  const spawnSectionsHtml = buildSpawnSectionsHtml(ev.spawns||[]);
 
   const fH=(ev.features||[]).map(f=>`<div class="evd-feature"><div class="evd-feature-icon">${f.icon}</div><div class="evd-feature-text"><strong>${f.title}</strong><span>${f.desc}</span></div></div>`).join('');
   const eggPills=(ev.eggs||[]).map(p=>`<span class="evd-poke-pill">${p}</span>`).join('');
@@ -1240,7 +1350,7 @@ function renderEventDetail(ev) {
     <div class="evd-body">
       ${hasDesc?`<div class="evd-tab-panel ${firstTab==='desc'?'active':''}" id="evd-panel-desc"><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>`:''}
       ${hasBonus?`<div class="evd-tab-panel ${firstTab==='bonus'?'active':''}" id="evd-panel-bonus"><div class="evd-features">${fH}</div></div>`:''}
-      ${hasSpawns?`<div class="evd-tab-panel ${firstTab==='spawns'?'active':''}" id="evd-panel-spawns"><div class="evd-spawns-grid">${spawnCards}</div></div>`:''}
+      ${hasSpawns?`<div class="evd-tab-panel ${firstTab==='spawns'?'active':''}" id="evd-panel-spawns">${spawnSectionsHtml}</div>`:''}
       ${hasEggs?`<div class="evd-tab-panel ${firstTab==='eggs'?'active':''}" id="evd-panel-eggs"><div class="evd-poke-pills">${eggPills}</div></div>`:''}
       ${hasResearch?`<div class="evd-tab-panel ${firstTab==='research'?'active':''}" id="evd-panel-research"><div>${resLines}</div></div>`:''}
       <div class="evd-tab-panel ${firstTab==='tz'?'active':''}" id="evd-panel-tz"><div class="evd-tz-list">${tzR}</div></div>
@@ -1421,7 +1531,7 @@ function renderProdDetail(p) {
         ${p.price ? `<div class="pdi-price">Q ${p.price}</div>` : ''}
         <hr class="pdi-divider">
         ${p.descShort ? `<div class="pdi-short">${p.descShort}</div>` : ''}
-        <button class="pdi-wa" onclick="openWA('${(p.name||'').replace(/'/g,"\\'")}')">
+        <button class="pdi-wa" onclick="openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}')">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
           Comprar por WhatsApp
         </button>
@@ -1482,6 +1592,7 @@ window.saveProd = async () => {
     price:parseFloat(document.getElementById('p-price').value)||0,
     tag:document.getElementById('p-tag').value,
     event:document.getElementById('p-event').value.trim(),
+    wa: document.getElementById('p-wa').value.replace(/\D/g,'').trim() || '',
     descShort, desc:document.getElementById('p-desc').value.trim(),
     img: imgMain,
     imgs: imgsAll
@@ -1496,7 +1607,7 @@ window.saveProd = async () => {
 
 window.cancelEditProd = clearProdForm;
 function clearProdForm() {
-  ['p-name','p-price','p-short','p-desc','p-event'].forEach(id=>document.getElementById(id).value='');
+  ['p-name','p-price','p-short','p-desc','p-event','p-wa'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('p-cat').value='pokemon';
   document.getElementById('p-tag').value='HOT';
   document.getElementById('p-edit-id').value='';
@@ -1513,6 +1624,7 @@ window.editProd = (id) => {
   document.getElementById('p-short').value=p.descShort||'';
   document.getElementById('p-desc').value=p.desc||'';
   document.getElementById('p-event').value=p.event||'';
+  document.getElementById('p-wa').value=p.wa||'';
   document.getElementById('p-cat').value=p.category||'pokemon';
   document.getElementById('p-tag').value=p.tag||'HOT';
   document.getElementById('p-edit-id').value=p._id;
@@ -1548,11 +1660,9 @@ window.saveEv = async () => {
   const startUTC=startUTCval?new Date(startUTCval+'Z').getTime():Date.now();
   const endUTC=endUTCval?new Date(endUTCval+'Z').getTime():Date.now()+3600000;
   const features=document.getElementById('ev-features').value.trim().split('\n').filter(l=>l.trim()).map(line=>{const p=line.split('|');return{icon:(p[0]||'').trim(),title:(p[1]||'').trim(),desc:(p[2]||'').trim()};}).filter(f=>f.title);
-  // Parse spawns: Name | img-url | shiny
-  const spawns = document.getElementById('ev-spawns').value.trim().split('\n').filter(l=>l.trim()).slice(0,10).map(line=>{
-    const p=line.split('|');
-    return{name:(p[0]||'').trim(), img:(p[1]||'').trim(), shiny:!!((p[2]||'').toLowerCase().includes('shiny'))};
-  }).filter(s=>s.name);
+  // Parse spawns with sections: # Section Title, descripcion: text, Name | img | shiny
+  const spawnsRaw = document.getElementById('ev-spawns').value;
+  const spawns = parseSpawnSections(spawnsRaw);
   const eggs = document.getElementById('ev-eggs').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
   const research = document.getElementById('ev-research').value.trim().split('\n').filter(l=>l.trim());
   const editId=document.getElementById('ev-edit-id').value;
@@ -1604,7 +1714,7 @@ window.editEv = (id) => {
   document.getElementById('ev-desc-short').value=ev.descShort||'';
   document.getElementById('ev-desc-full').value=ev.descFull||'';
   document.getElementById('ev-features').value=(ev.features||[]).map(f=>`${f.icon} | ${f.title} | ${f.desc}`).join('\n');
-  document.getElementById('ev-spawns').value=(ev.spawns||[]).map(s=>`${s.name} | ${s.img||''}${s.shiny?' | shiny':''}`).join('\n');
+  document.getElementById('ev-spawns').value = serializeSpawnSections(ev.spawns||[]);
   document.getElementById('ev-eggs').value=(ev.eggs||[]).join(', ');
   document.getElementById('ev-research').value=(ev.research||[]).join('\n');
   document.getElementById('ev-edit-id').value=ev._id;
@@ -1640,7 +1750,7 @@ function renderAdminLists() {
   pl.innerHTML=products.length?products.map(p=>`
     <div class="adm-list-item">
       ${p.img?`<img class="adm-list-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='.3'">`:`<div class="adm-list-img">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':p.category==='servicio'?'⚔️':'🎒'}</div>`}
-      <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price} · ${p.tag}${p.event?' · 📅 '+p.event:''}</div></div>
+      <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price} · ${p.tag}${p.event?' · 📅 '+p.event:''}${p.wa?' · 📱 '+p.wa:''}</div></div>
       <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editProd('${p._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delProd('${p._id}')">🗑️</button></div>
     </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay productos publicados aún.</div>';
 
@@ -2028,7 +2138,10 @@ window.savePaymentMethods = () => {
 
 /* ── UTILS ── */
 window.onSearch = () => { if(currentSection==='catalog')renderProducts(); else if(currentSection==='events')renderEvents(); };
-window.openWA = (name) => { window.open('https://wa.me/'+WA+'?text='+encodeURIComponent('Hola! Me interesa: '+name+' 🎮'),'_blank'); };
+window.openWA = (name, customNum) => {
+  const num = (customNum && customNum.trim()) ? customNum.trim() : WA;
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent('Hola! Me interesa: '+name+' 🎮'),'_blank');
+};
 window.toggleMobile = () => {
   const sb = document.getElementById('sidebar');
   const ov = document.getElementById('overlay');
@@ -2045,6 +2158,9 @@ window.showToast = (msg,type='') => { const t=document.getElementById('toast');t
 // Auth state handled by onAuthStateChanged above
 loadIcons();
 loadPaymentMethods();
+// Show default WA number in admin form hint
+const waHint = document.getElementById('wa-default-hint');
+if (waHint) waHint.textContent = WA;
 
 // Wire up Enter key on URL inputs
 const pUrlInp = document.getElementById('p-img-url-input');
