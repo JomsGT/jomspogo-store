@@ -195,7 +195,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-tab-icon{font-size:20px;line-height:1}
 .evd-tab-label{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .evd-tab-btn.active .evd-tab-label{color:var(--teal)}
-.evd-body{background:var(--card);border:1px solid var(--border);border-radius:0 14px 14px 14px;padding:22px 26px;margin-bottom:16px}
+.evd-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 14px 14px;padding:22px 26px;margin-bottom:16px}
+.evd-desc-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-top:none;border-bottom:none;padding:14px 26px}
 .evd-tab-panel{display:none}
 .evd-tab-panel.active{display:block}
 .evd-section{margin-bottom:22px}
@@ -252,17 +253,26 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-tz-list{display:flex;flex-direction:column;gap:8px}
 .evd-tz-card{background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;transition:border-color .2s}
 .evd-tz-card.is-live{border-color:rgba(76,175,80,.4)}
-.evd-tz-header{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;user-select:none;transition:background .2s}
+.evd-tz-header{display:flex;align-items:stretch;cursor:pointer;user-select:none;transition:background .2s;gap:0}
 .evd-tz-header:hover{background:rgba(255,255,255,.04)}
-.evd-tz-gmt-lbl{font-family:'Orbitron',monospace;font-weight:700;font-size:13px;color:var(--gold);letter-spacing:.5px;flex-shrink:0}
-.evd-tz-localtime{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:#fff;letter-spacing:.5px}
-.evd-tz-cd-inline{font-family:'Rajdhani',sans-serif;font-size:12px;color:var(--muted);margin-left:4px}
-.evd-tz-start-end{font-size:11px;color:var(--muted);flex:1;padding-left:8px;border-left:1px solid rgba(255,255,255,.08)}
-.evd-tz-arrow{color:var(--muted);font-size:12px;transition:transform .25s;flex-shrink:0}
+/* Left block: GMT label */
+.evd-tz-gmt-block{display:flex;align-items:center;justify-content:center;padding:14px 16px;background:rgba(0,0,0,.2);min-width:110px;flex-shrink:0}
+.evd-tz-gmt-lbl{font-family:'Orbitron',monospace;font-weight:700;font-size:12px;color:var(--gold);letter-spacing:.3px;text-align:center}
+/* Middle block: local time + start/end */
+.evd-tz-mid-block{flex:1;padding:10px 14px;display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0;border-left:1px solid rgba(255,255,255,.07)}
+.evd-tz-localtime{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:#fff;letter-spacing:.3px;line-height:1}
+.evd-tz-cd-inline{font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--teal);margin-top:2px}
+.evd-tz-dates-mini{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px}
+.evd-tz-date-mini{font-size:10px;color:var(--muted)}
+.evd-tz-date-mini span{color:var(--text);font-weight:600}
+/* Right block: arrow */
+.evd-tz-arrow-block{display:flex;align-items:center;justify-content:center;padding:0 14px;border-left:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.evd-tz-arrow{color:var(--muted);font-size:11px;transition:transform .25s}
 .evd-tz-card.open .evd-tz-arrow{transform:rotate(180deg)}
-.evd-tz-body{display:none;padding:0 12px 12px}
+/* Expanded body */
+.evd-tz-body{display:none;padding:0 12px 12px;border-top:1px solid rgba(255,255,255,.07)}
 .evd-tz-card.open .evd-tz-body{display:block}
-.evd-tz-country{margin-bottom:10px}
+.evd-tz-country{margin-top:10px}
 .evd-tz-country-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding:4px 0;border-bottom:1px solid rgba(0,180,160,.15)}
 .evd-tz-locs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 @media(max-width:500px){.evd-tz-locs{grid-template-columns:1fr}}
@@ -1709,22 +1719,24 @@ function renderEventDetail(ev) {
     }).join('');
     return `<div class="evd-tz-card ${st==='live'?'is-live':''}" id="tzcard-${gi}">
       <div class="evd-tz-header" onclick="toggleTzCard(${gi})">
-        <div class="evd-tz-gmt-lbl">${g.gmt}</div>
-        <div>
-          <span class="evd-tz-localtime" id="tzt-${gi}">–</span>
-          <span class="evd-tz-cd-inline" id="tzcd-${gi}"></span>
+        <div class="evd-tz-gmt-block">
+          <div class="evd-tz-gmt-lbl">${g.gmt}</div>
         </div>
-        <div class="evd-tz-start-end">
-          <div>▶ ${fmtDT(sL)}</div>
-          <div>⏹ ${fmtDT(eL)}</div>
+        <div class="evd-tz-mid-block">
+          <div class="evd-tz-localtime" id="tzt-${gi}">–</div>
+          <div class="evd-tz-cd-inline" id="tzcd-${gi}"></div>
+          <div class="evd-tz-dates-mini">
+            <div class="evd-tz-date-mini">▶ <span>${fmtDT(sL)}</span></div>
+            <div class="evd-tz-date-mini">⏹ <span>${fmtDT(eL)}</span></div>
+          </div>
         </div>
-        <span class="evd-tz-arrow">▼</span>
+        <div class="evd-tz-arrow-block"><span class="evd-tz-arrow">▼</span></div>
       </div>
       <div class="evd-tz-body">${countriesHtml}</div>
     </div>`;
   }).join('');
 
-  // Build tabs — only show tabs that have content
+  // Build tabs — only show tabs that have content (no Descripción tab)
   const hasDesc    = !!(ev.descFull||ev.descShort);
   const hasBonus   = !!(ev.features&&ev.features.length);
   const hasSpawns  = !!(ev.spawns&&ev.spawns.length);
@@ -1732,7 +1744,6 @@ function renderEventDetail(ev) {
   const hasResearch= !!(ev.research&&ev.research.length);
 
   const TAB_DEFS = [
-    {id:'desc',    show: hasDesc},
     {id:'bonus',   show: hasBonus},
     {id:'spawns',  show: hasSpawns},
     {id:'eggs',    show: hasEggs},
@@ -1780,8 +1791,8 @@ function renderEventDetail(ev) {
       </div>
     </div>
     <div class="evd-tabs-bar">${tabBtns}</div>
+    ${hasDesc?`<div class="evd-desc-card"><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>`:''}
     <div class="evd-body">
-      ${hasDesc?`<div class="evd-tab-panel ${firstTab==='desc'?'active':''}" id="evd-panel-desc"><div class="evd-desc">${ev.descFull||ev.descShort}</div></div>`:''}
       ${hasBonus?`<div class="evd-tab-panel ${firstTab==='bonus'?'active':''}" id="evd-panel-bonus">${bonusSectionsHtml}</div>`:''}
       ${hasSpawns?`<div class="evd-tab-panel ${firstTab==='spawns'?'active':''}" id="evd-panel-spawns">${spawnSectionsHtml}</div>`:''}
       ${hasEggs?`<div class="evd-tab-panel ${firstTab==='eggs'?'active':''}" id="evd-panel-eggs">${eggSectionsHtml}</div>`:''}
