@@ -913,6 +913,23 @@ let currentSection = 'catalog';
 let activeCat      = 'all';
 let activeEvType   = 'all';
 let cdIntervals    = [];
+let shareSelection = new Set();
+
+function updateShareToolbar() {
+  const toolbar = document.getElementById('shareToolbar');
+  const count   = document.getElementById('shareCount');
+  const btn     = document.getElementById('shareGenBtn');
+  if (!toolbar) return;
+  if (isAdmin && currentSection==='catalog') toolbar.classList.add('visible');
+  else toolbar.classList.remove('visible');
+  if (count) count.textContent = shareSelection.size;
+  if (btn) {
+    const ok = shareSelection.size > 0;
+    btn.disabled = !ok;
+    btn.style.opacity  = ok ? '1' : '.5';
+    btn.style.cursor   = ok ? 'pointer' : 'not-allowed';
+  }
+}
 
 /* ── FIREBASE HELPERS ── */
 async function fbLoad(col) {
@@ -1450,6 +1467,8 @@ function renderGlobalEvSectionIcons() {
     </div>`;
   }).join('');
 }
+
+window.saveEvSectionIconsGlobal = () => {
   const icons = {};
   EV_SECTIONS.forEach(s => {
     const inp = document.getElementById('gseci-'+s.id);
@@ -2406,23 +2425,6 @@ window.savePaymentMethods = () => {
 };
 
 /* ── ADMIN CATALOG SHARE ── */
-let shareSelection = new Set();
-
-function updateShareToolbar() {
-  const toolbar = document.getElementById('shareToolbar');
-  const count = document.getElementById('shareCount');
-  const btn = document.getElementById('shareGenBtn');
-  if (!toolbar) return;
-  if (isAdmin && currentSection==='catalog') toolbar.classList.add('visible');
-  else toolbar.classList.remove('visible');
-  if (count) count.textContent = shareSelection.size;
-  if (btn) {
-    const ok = shareSelection.size > 0;
-    btn.disabled = !ok;
-    btn.style.opacity = ok ? '1' : '.5';
-    btn.style.cursor = ok ? 'pointer' : 'not-allowed';
-  }
-}
 
 window.toggleShareSelect = (pid, e) => {
   if (e) e.stopPropagation();
