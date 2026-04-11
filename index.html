@@ -123,8 +123,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .card-body{padding:13px 13px 12px;flex:1;display:flex;flex-direction:column;gap:6px}
 .card-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:#fff;line-height:1.2}
 .card-tags{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.tag-cat{display:inline-flex;align-items:center;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:2px 8px;border-radius:50px;font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:600;text-transform:uppercase}
-.tag-event{display:inline-flex;align-items:center;background:rgba(0,180,160,.12);border:1px solid rgba(0,180,160,.3);color:var(--teal);padding:2px 8px;border-radius:50px;font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase}
+.tag-cat{display:inline-flex;align-items:center;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:4px 11px;border-radius:50px;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.tag-event{display:inline-flex;align-items:center;background:rgba(0,180,160,.12);border:1px solid rgba(0,180,160,.3);color:var(--teal);padding:4px 11px;border-radius:50px;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
 .card-wa{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;border-radius:8px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;transition:all .2s;margin-top:auto}
 .card-wa:hover{opacity:.9;transform:translateY(-1px)}
 
@@ -161,7 +161,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* Hero with background image */
 .evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;position:relative}
-.evd-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.25) saturate(1.4);z-index:0}
+.evd-hero-bg{position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat;filter:brightness(.32) saturate(1.3);z-index:0}
 .evd-banner{position:relative;z-index:1;padding:54px 32px 44px;display:flex;align-items:center;gap:22px;min-height:340px}
 .evd-banner.no-img{background:linear-gradient(120deg,#1a8fd1,#1dd6c0)}
 .evd-banner.no-img.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
@@ -359,6 +359,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .empty-icon{font-size:48px;margin-bottom:12px}
 .empty-state h3{font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--text);margin-bottom:6px}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--dark2)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+/* Share link button */
+.share-link-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(26,115,232,.12);border:1px solid rgba(26,115,232,.3);color:#64b5f6;padding:8px 14px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;margin-left:8px;letter-spacing:.5px;transition:all .2s}
+.share-link-btn:hover{background:rgba(26,115,232,.22)}
 /* ── PRODUCT DETAIL PAGE ── */
 .prod-detail-wrap{max-width:900px;margin:0 auto;padding:28px}
 .prod-detail-back{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:8px 16px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;letter-spacing:.5px;transition:all .2s}
@@ -368,8 +371,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* gallery reuse same classes as modal */
 .prod-detail-gallery{background:var(--dark3);border-radius:14px;overflow:hidden;border:1px solid var(--border)}
 .prod-detail-info{display:flex;flex-direction:column;gap:14px}
-.pdi-badge{display:inline-block;padding:3px 11px;border-radius:50px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;width:fit-content}
-.pdi-name{font-family:'Orbitron',monospace;font-size:clamp(16px,3vw,24px);font-weight:700;color:#fff;line-height:1.25}
+.pdi-badge{display:inline-block;padding:5px 14px;border-radius:50px;font-size:13px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;width:fit-content}
+.pdi-name{font-family:'Orbitron',monospace;font-size:clamp(18px,3.5vw,28px);font-weight:700;color:#fff;line-height:1.25}
 .pdi-tags{display:flex;gap:6px;flex-wrap:wrap}
 .pdi-price{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--gold)}
 .pdi-divider{border:none;border-top:1px solid var(--border);margin:0}
@@ -813,7 +816,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <!-- Icon customization -->
         <div class="adm-form-card" style="margin-top:0">
           <div class="adm-form-title">🎨 Personalizar Iconos del Menú</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="icon-editor-grid">
+          <div style="display:grid;grid-template-columns:1fr;gap:8px" id="icon-editor-grid">
             <!-- rendered by JS -->
           </div>
           <button class="adm-btn adm-btn-primary" onclick="saveIcons()" style="margin-top:14px">💾 Guardar Iconos</button>
@@ -916,19 +919,9 @@ let cdIntervals    = [];
 let shareSelection = new Set();
 
 function updateShareToolbar() {
+  // Share selection disabled for now
   const toolbar = document.getElementById('shareToolbar');
-  const count   = document.getElementById('shareCount');
-  const btn     = document.getElementById('shareGenBtn');
-  if (!toolbar) return;
-  if (isAdmin && currentSection==='catalog') toolbar.classList.add('visible');
-  else toolbar.classList.remove('visible');
-  if (count) count.textContent = shareSelection.size;
-  if (btn) {
-    const ok = shareSelection.size > 0;
-    btn.disabled = !ok;
-    btn.style.opacity  = ok ? '1' : '.5';
-    btn.style.cursor   = ok ? 'pointer' : 'not-allowed';
-  }
+  if (toolbar) toolbar.classList.remove('visible');
 }
 
 /* ── FIREBASE HELPERS ── */
@@ -1134,6 +1127,19 @@ window.openEventDetail = (id) => {
   window.scrollTo(0,0);
 };
 
+window.goBackToEvents = () => {
+  cdIntervals.forEach(clearInterval); cdIntervals=[];
+  // Find the matching nav item for the current event type
+  const navMap = {
+    'all':'nav-ev-all','Community Day':'nav-ev-cd','Raid Hour':'nav-ev-rh',
+    'GO Fest':'nav-ev-gf','GO Tour':'nav-ev-gt','Wild Area':'nav-ev-wa',
+    'Safari City':'nav-ev-sc'
+  };
+  const navId = navMap[activeEvType] || 'nav-ev-all';
+  const navEl = document.getElementById(navId);
+  showSection('events', activeEvType, navEl);
+};
+
 /* ── COUNTS ── */
 function updateCounts() {
   ['all','pokemon','cuenta','servicio','item'].forEach(c=>{
@@ -1165,16 +1171,16 @@ function renderProducts() {
     const eb=p.event?`<span class="tag-event">📅 ${p.event}</span>`:'';
     const pid = p._id||p.id;
     const mainImg = p.img || '';
-    const selected = shareSelection.has(pid);
-    return `<div class="pcard${selected?' selected':''}" onclick="${isAdmin?`toggleShareSelect('${pid}',event)`:`openProdDetail('${pid}')`}" id="pcard-${pid}">
+    const selected = false; // share selection disabled
+    return `<div class="pcard" onclick="openProdDetail('${pid}')" id="pcard-${pid}">
       <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div></div>
       <div class="card-body">
         <div class="card-name">${p.name}</div>
         <div class="card-tags"><span class="tag-cat">${cl}</span>${eb}</div>
-        ${!isAdmin?`<button class="card-wa" onclick="event.stopPropagation();openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}')">
+        <button class="card-wa" onclick="event.stopPropagation();openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
           Comprar por WhatsApp
-        </button>`:`<div style="text-align:center;padding:6px;font-family:'Rajdhani',sans-serif;font-size:12px;color:${selected?'var(--gold)':'var(--muted)'};">${selected?'✓ Seleccionado':'Click para seleccionar'}</div>`}
+        </button>
       </div></div>`;
   }).join('');
 }
@@ -1608,11 +1614,11 @@ function renderEventDetail(ev) {
   const resSectionsHtml    = buildResearchHtml(ev.research||[]);
 
   document.getElementById('evdWrap').innerHTML=`
-    <button class="evd-back" onclick="showSection('events',activeEvType,document.getElementById('nav-ev-all'))">← Volver a Eventos</button>
+    <button class="evd-back" onclick="goBackToEvents()">← Volver a Eventos</button>
+    <button class="share-link-btn" onclick="shareLink('event','${ev._id||ev.id}','${ev.name.replace(/'/g,"\\'")}')">🔗 Compartir</button>
     <div class="evd-hero">
       ${hasBg?`<div class="evd-hero-bg" ${bgStyle}></div>`:''}
       <div class="evd-banner ${bannerClass}">
-        <div class="evd-icon">${ev.icon||'📅'}</div>
         <div class="evd-banner-info">
           <div class="evd-banner-type">${ev.type}</div>
           <div class="evd-banner-title">${ev.name}</div>
@@ -1792,6 +1798,7 @@ function renderProdDetail(p) {
 
   document.getElementById('prodDetailWrap').innerHTML = `
     <button class="prod-detail-back" onclick="closeProdDetail()">← Volver al catálogo</button>
+    <button class="share-link-btn" onclick="shareLink('product','${p._id||p.id}','${(p.name||'').replace(/'/g,"\\'")}')">🔗 Compartir</button>
     <div class="prod-detail-grid">
       <!-- Gallery -->
       <div class="prod-detail-gallery">
@@ -1853,8 +1860,7 @@ window.dtToggleZoom = (e) => {
 /* ── ADMIN PRODUCTS CRUD ── */
 window.saveProd = async () => {
   const name=document.getElementById('p-name').value.trim();
-  const descShort=document.getElementById('p-short').value.trim();
-  if(!name||!descShort){showToast('⚠️ Nombre y descripción requeridos','error');return;}
+  if(!name){showToast('⚠️ El nombre es requerido','error');return;}
   const editId=document.getElementById('p-edit-id').value;
   let imgMain = document.getElementById('p-img-data').value;
   let imgsAll = [];
@@ -1930,10 +1936,10 @@ window.delProd = async (id) => {
 /* ── ADMIN EVENTS CRUD ── */
 window.saveEv = async () => {
   const name=document.getElementById('ev-name').value.trim();
+  if(!name){showToast('⚠️ El nombre es requerido','error');return;}
   const descShort=document.getElementById('ev-desc-short').value.trim();
   const startStr=document.getElementById('ev-start-str').value.trim();
   const endStr=document.getElementById('ev-end-str').value.trim();
-  if(!name||!descShort||!startStr||!endStr){showToast('⚠️ Nombre, descripción y fechas requeridos','error');return;}
   const startUTCval=document.getElementById('ev-start-utc').value;
   const endUTCval=document.getElementById('ev-end-utc').value;
   const startUTC=startUTCval?new Date(startUTCval+'Z').getTime():Date.now();
@@ -2253,8 +2259,8 @@ function renderReviews() {
 
 window.submitReview = async () => {
   const name = document.getElementById('rv-name').value.trim();
+  if(!name){showToast('⚠️ El nombre es requerido','error');return;}
   const text = document.getElementById('rv-text').value.trim();
-  if(!name||!text){showToast('⚠️ Nombre y texto requeridos','error');return;}
   const obj = {
     name, stars:rvStars,
     product: document.getElementById('rv-prod').value.trim(),
@@ -2304,9 +2310,8 @@ function loadIcons() {
     if (!el) return;
     const val = saved[def.id];
     if (!val) return;
-    // If it's a URL (starts with http or data:), render as img
     if (val.startsWith('http')||val.startsWith('data:')) {
-      el.innerHTML = `<img src="${val}" style="width:20px;height:20px;object-fit:contain;vertical-align:middle">`;
+      el.innerHTML = `<img src="${val}" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;border-radius:3px">`;
     } else {
       el.textContent = val;
     }
@@ -2318,16 +2323,18 @@ function renderIconEditor() {
   if (!grid) return;
   const saved = JSON.parse(localStorage.getItem('jp_icons')||'{}');
   grid.innerHTML = ICON_DEFS.map(def => {
-    const current = saved[def.id] || document.getElementById('icon-'+def.id)?.textContent || '❓';
-    const isUrl = current.startsWith('http')||current.startsWith('data:');
+    const raw = saved[def.id] || '';
+    const isUrl = raw.startsWith('http')||raw.startsWith('data:');
     const preview = isUrl
-      ? `<img src="${current}" style="width:22px;height:22px;object-fit:contain">`
-      : `<span style="font-size:20px">${current}</span>`;
-    return `<div style="display:flex;align-items:center;gap:8px;background:var(--dark3);border-radius:8px;padding:8px 10px">
-      <div id="iedit-${def.id}" style="width:24px;text-align:center;flex-shrink:0">${preview}</div>
-      <span style="font-size:12px;color:var(--muted);flex:1">${def.label}</span>
-      <input style="width:120px;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 6px;border-radius:6px;font-size:12px;outline:none"
-        id="iinput-${def.id}" value="${current.startsWith('http')?current:current}" placeholder="emoji o URL"
+      ? `<img src="${raw}" style="width:22px;height:22px;object-fit:contain;border-radius:3px">`
+      : `<span style="font-size:20px">${raw || def.defaultIcon || '❓'}</span>`;
+    return `<div style="background:var(--dark3);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="iedit-${def.id}" style="width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center">${preview}</div>
+        <span style="font-size:12px;color:var(--muted);flex:1;font-family:'Rajdhani',sans-serif;font-weight:600">${def.label}</span>
+      </div>
+      <input style="width:100%;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:6px;font-size:11px;outline:none"
+        id="iinput-${def.id}" value="${raw}" placeholder="emoji ó https://url-imagen.png"
         oninput="previewIconEdit('${def.id}',this.value)">
     </div>`;
   }).join('');
@@ -2344,12 +2351,16 @@ window.previewIconEdit = (id, val) => {
 };
 
 window.saveIcons = () => {
-  const icons = {};
+  const existing = JSON.parse(localStorage.getItem('jp_icons')||'{}');
   ICON_DEFS.forEach(def => {
     const inp = document.getElementById('iinput-'+def.id);
-    if (inp && inp.value.trim()) icons[def.id] = inp.value.trim();
+    if (inp) {
+      const val = inp.value.trim();
+      if (val) existing[def.id] = val;
+      else delete existing[def.id]; // empty = reset to default
+    }
   });
-  localStorage.setItem('jp_icons', JSON.stringify(icons));
+  localStorage.setItem('jp_icons', JSON.stringify(existing));
   loadIcons();
   showToast('✅ Iconos guardados');
 };
@@ -2561,6 +2572,49 @@ window.openWA = (name, customNum) => {
   const num = (customNum && customNum.trim()) ? customNum.trim() : WA;
   window.open('https://wa.me/'+num+'?text='+encodeURIComponent('Hola! Me interesa: '+name+' 🎮'),'_blank');
 };
+
+/* ── DEEP LINKS (shareable URLs) ── */
+// Format: ?item=PRODUCT_ID or ?event=EVENT_ID
+window.shareLink = (type, id, name) => {
+  const base = window.location.origin + window.location.pathname;
+  const url  = `${base}?${type}=${id}`;
+  // Try native share first (mobile), fall back to clipboard
+  if (navigator.share) {
+    navigator.share({
+      title: `Joms PoGo Store — ${name}`,
+      text:  `Mira esto en Joms PoGo Store: ${name}`,
+      url
+    }).catch(()=>{});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(()=>{
+      showToast('🔗 Link copiado al portapapeles!');
+    }).catch(()=>{ prompt('Copia este link:', url); });
+  } else {
+    prompt('Copia este link:', url);
+  }
+};
+
+function handleDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const itemId  = params.get('item');
+  const eventId = params.get('event');
+  if (itemId) {
+    // Wait for data to load, then open product
+    const tryOpen = (attempts=0) => {
+      const p = products.find(x=>(x._id||x.id)===itemId);
+      if (p) { openProdDetail(itemId); }
+      else if (attempts < 20) { setTimeout(()=>tryOpen(attempts+1), 300); }
+    };
+    tryOpen();
+  } else if (eventId) {
+    const tryOpen = (attempts=0) => {
+      const ev = events.find(e=>(e._id||e.id)===eventId);
+      if (ev) { openEventDetail(eventId); }
+      else if (attempts < 20) { setTimeout(()=>tryOpen(attempts+1), 300); }
+    };
+    tryOpen();
+  }
+}
 window.toggleMobile = () => {
   const sb = document.getElementById('sidebar');
   const ov = document.getElementById('overlay');
@@ -2590,7 +2644,7 @@ if(evUrlInp) evUrlInp.addEventListener('keydown', e=>{ if(e.key==='Enter') addEv
 // Check for #admin FIRST so login shows immediately
 checkHashForAdmin();
 // Then load data from Firebase
-loadAll();
+loadAll().then(() => handleDeepLink());
 
 </script>
 </body>
