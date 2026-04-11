@@ -1185,7 +1185,7 @@ function updateCounts() {
 }
 
 const BADGE_CLASS={SHINY:'badge-shiny',HOT:'badge-hot',NEW:'badge-new',RARE:'badge-rare',HUNDO:'badge-hundo',SALE:'badge-sale'};
-const CAT_LABEL={pokemon:'⚡ Pokémon',cuenta:'🎮 Cuenta',servicio:'⚔️ Servicio',item:'🎒 Item'};
+const CAT_LABEL={pokemon:'Pokémon',cuenta:'Cuenta',servicio:'Servicio',item:'Item'};
 
 /* ── RENDER PRODUCTS ── */
 function renderProducts() {
@@ -1200,7 +1200,7 @@ function renderProducts() {
   if(!f.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><h3>Sin resultados</h3><p>Intenta con otra búsqueda</p></div>';return;}
   grid.innerHTML = f.map(p=>{
     const bc=BADGE_CLASS[p.tag]||'badge-hot', cl=CAT_LABEL[p.category]||p.category;
-    const eb=p.event?`<span class="tag-event">📅 ${p.event}</span>`:'';
+    const eb=p.event?`<span class="tag-event">${p.event}</span>`:'';
     const pid = p._id||p.id;
     const mainImg = p.img || '';
     const selected = false; // share selection disabled
@@ -1816,7 +1816,7 @@ function renderProdDetail(p) {
   detailGalleryIdx  = 0;
   const bc  = BADGE_CLASS[p.tag]||'badge-hot';
   const cl  = CAT_LABEL[p.category]||p.category;
-  const evB = p.event ? `<span class="tag-event">📅 ${p.event}</span>` : '';
+  const evB = p.event ? `<span class="tag-event">${p.event}</span>` : '';
   const mainImg = imgs[0]||'';
 
   const thumbsHtml = imgs.length>1 ? `
@@ -2076,7 +2076,7 @@ function renderAdminLists() {
   pl.innerHTML=products.length?products.map(p=>`
     <div class="adm-list-item">
       ${p.img?`<img class="adm-list-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='.3'">`:`<div class="adm-list-img">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':p.category==='servicio'?'⚔️':'🎒'}</div>`}
-      <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price} · ${p.tag}${p.event?' · 📅 '+p.event:''}${p.wa?' · 📱 '+p.wa:''}</div></div>
+      <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price} · ${p.tag}${p.event?' · '+p.event:''}${p.wa?' · 📱 '+p.wa:''}</div></div>
       <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editProd('${p._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delProd('${p._id}')">🗑️</button></div>
     </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay productos publicados aún.</div>';
 
@@ -2639,7 +2639,7 @@ function handleDeepLink() {
   // Remove hash from URL without reload
   history.replaceState(null, '', window.location.pathname);
 
-  if (type === 'item') {
+  if (type === 'product' || type === 'item') {
     const p = products.find(x=>(x._id||x.id)===id);
     if (p) openProdDetail(id);
   } else if (type === 'event') {
