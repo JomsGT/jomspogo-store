@@ -177,7 +177,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-badge.upcoming{background:rgba(26,115,232,.2);color:#64b5f6;border:1px solid rgba(26,115,232,.4)}
 .evd-badge.ended{background:rgba(136,136,170,.15);color:var(--muted);border:1px solid rgba(136,136,170,.3)}
 .evd-dates-row{background:rgba(13,13,26,.85);backdrop-filter:blur(8px);padding:14px 28px;display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:center;border-top:1px solid rgba(255,255,255,.1);position:relative;z-index:1}
-@media(max-width:580px){.evd-dates-row{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.evd-dates-row{grid-template-columns:1fr 1fr;padding:12px 16px}.evd-cd-block{grid-column:1/-1;text-align:center;padding-top:8px;border-top:1px solid rgba(255,255,255,.07)}.evd-cd-val2{font-size:32px}}
 .evd-date-lbl{font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
 .evd-date-val{font-size:13px;color:var(--text)}
 .evd-cd-block{text-align:right}
@@ -248,29 +248,30 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .evd-poke-pill{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.25);color:var(--gold);padding:4px 12px;border-radius:50px;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:600}
 
 /* TZ cards */
-.evd-tz-list{display:flex;flex-direction:column;gap:9px}
-.evd-tz-card{background:var(--dark3);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden}
+/* TZ accordion */
+.evd-tz-list{display:flex;flex-direction:column;gap:8px}
+.evd-tz-card{background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;transition:border-color .2s}
 .evd-tz-card.is-live{border-color:rgba(76,175,80,.4)}
-.evd-tz-gmt{background:rgba(255,255,255,.04);padding:6px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
-.evd-tz-gmt-lbl{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--muted);letter-spacing:.5px;font-style:italic}
-.evd-tz-body{display:grid;grid-template-columns:170px 1fr auto;align-items:center}
-@media(max-width:560px){.evd-tz-body{grid-template-columns:1fr 1fr}}
-.evd-tz-col{padding:11px 16px}
-.evd-tz-col-mid{padding:11px 16px;border-left:1px solid rgba(255,255,255,.07);border-right:1px solid rgba(255,255,255,.07)}
-.evd-tz-place{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:2px}
-.evd-tz-time{font-family:'Orbitron',monospace;font-size:21px;font-weight:900;color:var(--gold);line-height:1;letter-spacing:1px}
-.evd-tz-mid-inner{display:flex}
-.evd-tz-block{flex:1}
-.evd-tz-block+.evd-tz-block{border-left:1px solid rgba(255,255,255,.07);padding-left:12px}
-.evd-tz-lbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-.evd-tz-val{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;color:var(--text)}
-.evd-tz-hhmm{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--teal);margin-top:1px}
-.evd-tz-cd-col{padding:11px 16px;min-width:145px;text-align:center}
-@media(max-width:560px){.evd-tz-cd-col{border-top:1px solid rgba(255,255,255,.07);grid-column:1/-1;text-align:left;padding:10px 16px}}
-.evd-tz-cd-lbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.evd-tz-cd-val{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:var(--green);line-height:1}
-.evd-tz-cd-val.ns{color:var(--gold)}
-.evd-tz-cd-val.ended{color:var(--muted);font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700}
+.evd-tz-header{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;user-select:none;transition:background .2s}
+.evd-tz-header:hover{background:rgba(255,255,255,.04)}
+.evd-tz-gmt-lbl{font-family:'Orbitron',monospace;font-weight:700;font-size:13px;color:var(--gold);letter-spacing:.5px;flex-shrink:0}
+.evd-tz-localtime{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:#fff;letter-spacing:.5px}
+.evd-tz-cd-inline{font-family:'Rajdhani',sans-serif;font-size:12px;color:var(--muted);margin-left:4px}
+.evd-tz-start-end{font-size:11px;color:var(--muted);flex:1;padding-left:8px;border-left:1px solid rgba(255,255,255,.08)}
+.evd-tz-arrow{color:var(--muted);font-size:12px;transition:transform .25s;flex-shrink:0}
+.evd-tz-card.open .evd-tz-arrow{transform:rotate(180deg)}
+.evd-tz-body{display:none;padding:0 12px 12px}
+.evd-tz-card.open .evd-tz-body{display:block}
+.evd-tz-country{margin-bottom:10px}
+.evd-tz-country-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding:4px 0;border-bottom:1px solid rgba(0,180,160,.15)}
+.evd-tz-locs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+@media(max-width:500px){.evd-tz-locs{grid-template-columns:1fr}}
+.evd-tz-loc{background:rgba(255,255,255,.04);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.evd-tz-loc-info{flex:1;min-width:0}
+.evd-tz-loc-place{font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evd-tz-loc-coords{font-family:monospace;font-size:11px;color:var(--muted);margin-top:2px}
+.evd-tz-copy-btn{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:3px 8px;border-radius:6px;font-size:11px;cursor:pointer;white-space:nowrap;font-family:'Rajdhani',sans-serif;font-weight:700;flex-shrink:0;transition:background .15s}
+.evd-tz-copy-btn:hover{background:rgba(245,197,24,.22)}
 
 /* ADMIN LOGIN */
 .admin-login-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
@@ -567,6 +568,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <input class="search-input" id="searchInput" type="text" placeholder="Buscar productos, eventos..." oninput="onSearch()">
     </div>
     <div class="count-pill" id="countPill"><span>–</span> items</div>
+    <div class="count-pill" id="visitPill" title="Visitas totales" style="display:none">👁 <span id="visitCount">–</span></div>
   </div>
 
   <div id="page-catalog" class="content">
@@ -1014,11 +1016,14 @@ onAuthStateChanged(auth, (user) => {
   if (user && user.uid === ADMIN_UID) {
     isAdmin = true;
     document.getElementById('nav-admin').style.display = 'flex';
-    if (window._pendingAdmin) {
-      window._pendingAdmin = false;
-      goAdmin();
-    }
+    if (window._pendingAdmin) { window._pendingAdmin = false; goAdmin(); }
     updateShareToolbar();
+    // Show visit counter
+    if (window._pendingVisitCount !== undefined) {
+      const pill = document.getElementById('visitPill');
+      const count = document.getElementById('visitCount');
+      if (pill && count) { pill.style.display='flex'; count.textContent=window._pendingVisitCount.toLocaleString(); }
+    }
   } else {
     isAdmin = false;
     document.getElementById('nav-admin').style.display = 'none';
@@ -1243,13 +1248,94 @@ function renderEvents() {
 
 /* ── EVENT DETAIL ── */
 const TZ_GROUPS=[
-  {gmt:'GMT-6:00',offset:-6,countries:[{flag:'🇬🇹',name:'Guatemala'},{flag:'🇲🇽',name:'México (Centro)'},{flag:'🇸🇻',name:'El Salvador'}]},
-  {gmt:'GMT-5:00',offset:-5,countries:[{flag:'🇺🇸',name:'EE.UU. (Este)'},{flag:'🇨🇴',name:'Colombia'},{flag:'🇵🇪',name:'Perú'}]},
-  {gmt:'GMT-4:00',offset:-4,countries:[{flag:'🇻🇪',name:'Venezuela'},{flag:'🇨🇱',name:'Chile'}]},
-  {gmt:'GMT-3:00',offset:-3,countries:[{flag:'🇧🇷',name:'Brasil'},{flag:'🇦🇷',name:'Argentina'}]},
-  {gmt:'GMT+0:00',offset:0,countries:[{flag:'🇬🇧',name:'Reino Unido'},{flag:'🇵🇹',name:'Portugal'}]},
-  {gmt:'GMT+1:00',offset:1,countries:[{flag:'🇪🇸',name:'España'},{flag:'🇫🇷',name:'Francia'}]},
-  {gmt:'GMT+9:00',offset:9,countries:[{flag:'🇯🇵',name:'Japón'},{flag:'🇰🇷',name:'Corea'}]},
+  {gmt:'GTM +14:00',offset:14,countries:[
+    {name:'Kiribati',locations:[{place:'Catholic Church Maneaba, London',coords:'1.987149,-157.477137'},{place:'St. Stanislas Church, Poland',coords:'1.866227,-157.553342'}]},
+  ]},
+  {gmt:'GTM +13:00',offset:13,countries:[
+    {name:'Tonga',locations:[{place:'Nukualofa',coords:'-21.132027,-175.198404'},{place:'Tongatapu',coords:'-21.139005,-175.184033'}]},
+  ]},
+  {gmt:'GTM +12:00',offset:12,countries:[
+    {name:'Nueva Zelanda',locations:[{place:'Botanic Garden, Wellington',coords:'-41.280230,174.768500'},{place:'Auckland Town, Auckland',coords:'-36.843391,174.767093'},{place:'Botanic Gardens, Christchurch',coords:'-43.530635,172.621909'}]},
+    {name:'Fiyi',locations:[{place:'Albert Park, Suva',coords:'-18.146580,178.424547'},{place:'My Suva Picnic Park, Suva',coords:'-18.155665,178.446365'},{place:'Queens Rd, Nadi',coords:'-17.802858,177.415738'}]},
+  ]},
+  {gmt:'GTM +10:00',offset:10,countries:[
+    {name:'Australia',locations:[{place:'Royal Botanic Gardens, Sydney',coords:'-33.863021,151.215353'},{place:'Queen Victoria Gardens, Melbourne',coords:'-37.821492,144.971232'},{place:'Hobart, Tasmania',coords:'-42.881375,147.329955'},{place:'City Botanic Gardens, Brisbane',coords:'-27.476013,153.029658'}]},
+    {name:'Guam',locations:[{place:'Tumon Bay, Tamuning',coords:'13.513504,144.805744'},{place:'Apurguan, Tamuning',coords:'13.488553,144.781546'},{place:'Agaña, Tamuning',coords:'13.476144,144.751700'}]},
+  ]},
+  {gmt:'GTM +9:30',offset:9.5,countries:[
+    {name:'Australia',locations:[{place:'Adelaide Botanic Garden',coords:'-34.918194,138.611379'},{place:'Adelaide Parklands',coords:'-34.940292,138.593045'},{place:'Port Adelaide',coords:'-34.845295,138.504931'}]},
+  ]},
+  {gmt:'GTM +9:00',offset:9,countries:[
+    {name:'Japón',locations:[{place:'Osaka Tennoji Zoo, Osaka',coords:'34.650107,135.510500'},{place:'Yamashita Park, Yokohama',coords:'35.444997,139.650437'},{place:'Kōtō, Tokio',coords:'35.696301,139.814405'},{place:'Disneyland Tokyo',coords:'35.631209,139.880933'}]},
+    {name:'Corea del Sur',locations:[{place:'Lotte World Mall, Seúl',coords:'37.512444,127.101460'},{place:'Bujeon-Dong, Busan',coords:'35.155536,129.059131'}]},
+  ]},
+  {gmt:'GTM +8:00',offset:8,countries:[
+    {name:'Taiwán',locations:[{place:'Wanhua District, Taipei',coords:'25.042289,121.506751'},{place:'Daan Forest Park, Taipei',coords:'25.027821,121.536376'},{place:'North District, Tainan',coords:'23.001974,120.211591'},{place:'Taichung Metropolitan Park',coords:'24.208017,120.597684'}]},
+    {name:'Singapur',locations:[{place:'Area Central, River Valley',coords:'1.292435,103.847606'},{place:'Gardens by the Bay, Marina South',coords:'1.282431,103.863951'}]},
+    {name:'Malasia',locations:[{place:'Bangsar, Kuala Lumpur',coords:'3.131001,101.671742'},{place:'Taman Bulatan Miri, Miri',coords:'4.420357,114.013123'}]},
+    {name:'Hong Kong',locations:[{place:'Hong Kong Park Conservatory',coords:'22.277733,114.162073'},{place:'Victoria Park, Causeway Bay',coords:'22.282751,114.188745'}]},
+    {name:'Filipinas',locations:[{place:'Rizal Park, Manila',coords:'14.584918,120.981125'},{place:'Barangay 76, Manila',coords:'14.534543,120.981875'}]},
+    {name:'Indonesia',locations:[{place:'Kabupaten Badung, Bali',coords:'-8.618332,115.128218'}]},
+  ]},
+  {gmt:'GTM +5:30',offset:5.5,countries:[
+    {name:'India',locations:[{place:'Lodhi Garden, Nueva Delhi',coords:'28.593711,77.220227'},{place:'Kala Ghoda, Mumbai',coords:'18.926681,72.832133'}]},
+    {name:'Sri Lanka',locations:[{place:'Town Hall Building, Colombo',coords:'6.915617,79.863336'}]},
+  ]},
+  {gmt:'GTM +2:00',offset:2,countries:[
+    {name:'España',locations:[{place:'Parque de María Luisa, Sevilla',coords:'37.377148,-5.987055'},{place:'Parque de la Química, Zaragoza',coords:'41.661545,-0.894701'},{place:'Parque El Retiro, Madrid',coords:'40.417543,-3.682446'},{place:'Parque de la Ciudadela, Barcelona',coords:'41.388245,2.186891'}]},
+    {name:'Alemania',locations:[{place:'Tiergarten, Berlin',coords:'52.516103,13.361087'},{place:'Hamburg Stadtpark',coords:'53.596669,10.023077'},{place:'Botanischer Garten, Bremen',coords:'53.093886,8.883612'},{place:'Maurischer Garten, Stuttgart',coords:'48.806459,9.206154'}]},
+    {name:'Francia',locations:[{place:'Tuileries Garden, Paris',coords:'48.863598,2.327481'},{place:'Le Panier, Marseille',coords:'43.298589,5.367503'},{place:'All. de la Tête d\'Or, Lyon',coords:'45.776439,4.855886'},{place:'Jardín de Toulouse',coords:'43.594563,1.452135'}]},
+    {name:'Hungría',locations:[{place:'Margaret Island, Budapest',coords:'47.529875,19.051542'}]},
+    {name:'Italia',locations:[{place:'Cannaregio, Venice',coords:'45.439321,12.339091'},{place:'San Giovanni, Florence',coords:'43.769561,11.255811'}]},
+  ]},
+  {gmt:'GTM +1:00',offset:1,countries:[
+    {name:'Túnez',locations:[{place:'Ras Ettabia',coords:'36.812424,10.148603'},{place:'Tunis Centre',coords:'36.800302,10.184646'}]},
+    {name:'Reino Unido',locations:[{place:'St. James\'s Park, London',coords:'51.501222,-0.139702'},{place:'Alexandra Park, Manchester',coords:'53.449383,-2.249384'},{place:'Botanic Garden Edinburgh',coords:'55.964906,-3.209311'},{place:'Kings Heath Park, Birmingham',coords:'52.43237,-1.901339'}]},
+    {name:'Portugal',locations:[{place:'Jardim do Príncipe Real, Lisbon',coords:'38.716183,-9.148742'}]},
+    {name:'Irlanda',locations:[{place:'Saint Stephen\'s Green, Dublin',coords:'53.337790,-6.259001'},{place:'Watergate, Dublin',coords:'52.662099,-8.626432'}]},
+    {name:'Gran Canaria',locations:[{place:'Plaza de la Música, Las Palmas',coords:'28.128783,-15.451647'},{place:'San Cristóbal, Santa Cruz de Tenerife',coords:'28.489334,-16.317490'}]},
+  ]},
+  {gmt:'GTM -3:00',offset:-3,countries:[
+    {name:'Brasil',locations:[{place:'Parque Ibirapuera, São Paulo',coords:'-23.587193,-46.655285'},{place:'Recreio dos Bandeirantes, Río de Janeiro',coords:'-23.032933,-43.485812'},{place:'Parque Farroupilha, Porto Alegre',coords:'-30.036925,-51.216308'},{place:'Centro, Indaial - Santa Catarina',coords:'-26.893355,-49.230638'}]},
+    {name:'Argentina',locations:[{place:'Parque Rivadavia, Buenos Aires',coords:'-34.617777,-58.432850'},{place:'Plaza Ejército Argentino, Buenos Aires',coords:'-34.610111,-58.368732'}]},
+    {name:'Uruguay',locations:[{place:'Parque José Enrique Rodó, Montevideo',coords:'-34.913694,-56.165400'}]},
+    {name:'Canadá',locations:[{place:'Halifax, Nova Scotia',coords:'44.642443,-63.580160'},{place:'Dartmouth, Nova Scotia',coords:'44.702192,-63.554617'}]},
+  ]},
+  {gmt:'GTM -4:00',offset:-4,countries:[
+    {name:'Chile',locations:[{place:'Parque Forestal, Santiago de Chile',coords:'-33.435701,-70.640991'},{place:'Viña del Mar, Valparaíso',coords:'-33.028076,-71.554301'}]},
+    {name:'Rep. Dominicana',locations:[{place:'Centro Olimpico, Santo Domingo',coords:'18.476709,-69.915483'},{place:'Costa Caribe, Santo Domingo',coords:'18.429105,-69.969770'}]},
+    {name:'Brasil',locations:[{place:'Coronado, Manaus',coords:'-3.088021,-59.985925'},{place:'Centro, Manaus',coords:'-3.117974,-60.026865'}]},
+    {name:'Venezuela',locations:[{place:'Centro-Sur, Caracas',coords:'10.503385,-66.902934'},{place:'Maracay, Aragua',coords:'10.252374,-67.595454'}]},
+    {name:'Bolivia',locations:[{place:'Parque Urbano Central, La Paz',coords:'-16.501521,-68.128703'},{place:'Noroeste, Cochabamba',coords:'-17.382142,-66.160093'}]},
+    {name:'Estados Unidos',locations:[{place:'Central Park, New York',coords:'40.765723,-73.973038'},{place:'Miami, Florida',coords:'25.761117,-80.193901'},{place:'Disneyworld, Florida',coords:'28.415972,-81.580934'},{place:'Bryant Park, New York',coords:'40.753869,-73.983796'}]},
+    {name:'Canadá',locations:[{place:'High Park, Toronto',coords:'43.649552,-79.465872'},{place:'Golden Triangle, Ottawa',coords:'45.420927,-75.690556'}]},
+  ]},
+  {gmt:'GTM -5:00',offset:-5,countries:[
+    {name:'Perú',locations:[{place:'Parque de la Exposición, Lima',coords:'-12.062746,-77.036275'},{place:'C.C Mega Plaza, Independencia',coords:'-11.994232,-77.063427'},{place:'Plaza de Armas de Chancay',coords:'-11.563121,-77.270121'},{place:'UNMSM, Lima',coords:'-12.053035,-77.081881'}]},
+    {name:'Ecuador',locations:[{place:'Parque Samanes, Guayaquil',coords:'-2.103466,-79.907960'},{place:'Jardín Botánico de Quito',coords:'-0.185014,-78.485145'}]},
+    {name:'Colombia',locations:[{place:'Gilmar, Bogotá',coords:'4.743923,-74.062239'},{place:'Parque El Tunal, Bogotá',coords:'4.572565,-74.134401'}]},
+    {name:'Brasil',locations:[{place:'Centro, Rio Branco',coords:'-9.973617,-67.809409'},{place:'Univ. Federal de Acre, Rio Branco',coords:'-9.956152,-67.866009'}]},
+    {name:'Estados Unidos',locations:[{place:'Muelle de la Armada, Chicago',coords:'41.891882,-87.598955'},{place:'Houston, Texas',coords:'29.760385,-95.369804'},{place:'Dallas Downtown, Dallas',coords:'32.776721,-96.799042'},{place:'Bricktown Ballpark, Oklahoma',coords:'35.465201,-97.507469'}]},
+    {name:'Canadá',locations:[{place:'Downtown, Winnipeg',coords:'49.887753,-97.129913'}]},
+  ]},
+  {gmt:'GTM -6:00',offset:-6,countries:[
+    {name:'Nicaragua',locations:[{place:'Parque Luis Alfonso Velásquez, Managua',coords:'12.152215,-86.271448'},{place:'Bello Horizonte, Managua',coords:'12.139751,-86.229406'}]},
+    {name:'Costa Rica',locations:[{place:'Jardín de Paz, San José',coords:'9.935429,-84.074897'},{place:'Parque La Sabana, San José',coords:'9.934838,-84.102927'}]},
+    {name:'Guatemala',locations:[{place:'Universidad de San Carlos',coords:'14.587332,-90.551392'},{place:'Parque Central, Retalhuleu',coords:'14.536337,-91.678448'}]},
+    {name:'México',locations:[{place:'Alameda Central, Ciudad de México',coords:'19.435731,-99.143961'},{place:'Parque Hundido, Ciudad de México',coords:'19.378292,-99.178743'},{place:'Poza Rica de Hidalgo, Veracruz',coords:'20.532138,-97.459704'},{place:'Zona Centro, Guadalajara',coords:'20.675232,-103.347615'}]},
+    {name:'Canadá',locations:[{place:'Victoria Park, Regina',coords:'50.447895,-104.612321'},{place:'University of Alberta, Edmonton',coords:'53.525915,-113.525268'}]},
+    {name:'Estados Unidos',locations:[{place:'Albuquerque, Nuevo México',coords:'35.085182,-106.649917'},{place:'Denver, Colorado',coords:'39.739215,-104.990295'}]},
+  ]},
+  {gmt:'GTM -7:00',offset:-7,countries:[
+    {name:'México',locations:[{place:'Zona Comercial, La Paz',coords:'24.156951,-110.31474'},{place:'Hermosillo, Sonora',coords:'29.082813,-110.959955'},{place:'Zona Centro, Tijuana',coords:'32.533798,-117.039238'}]},
+    {name:'Estados Unidos',locations:[{place:'Pier39, San Francisco',coords:'37.808971,-122.410242'},{place:'Santa Monica Pier, Santa Monica',coords:'34.010113,-118.495742'},{place:'Paradise, Las Vegas',coords:'36.115972,-115.174323'},{place:'T-Mobile Park, Seattle',coords:'47.591324,-122.333023'}]},
+    {name:'Canadá',locations:[{place:'Queen Elizabeth Park, Vancouver',coords:'49.240966,-123.112591'},{place:'Deer Lake Park, Burnaby',coords:'49.239236,-122.968218'}]},
+  ]},
+  {gmt:'GTM -10:00',offset:-10,countries:[
+    {name:'Estados Unidos',locations:[{place:'Ala Moana, Hawaii',coords:'21.291101,-157.843110'},{place:'Honolulu Zoo, Hawaii',coords:'21.270942,-157.818172'}]},
+    {name:'Polinesia Francesa',locations:[{place:'Papeete, Tahiti',coords:'-17.540164,-149.567215'}]},
+    {name:'Islas Cook',locations:[{place:'Avarua, Rarotonga',coords:'-21.208002,-159.772213'}]},
+  ]},
 ];
 
 /* ── SPAWN SECTION HELPERS ── */
@@ -1601,11 +1687,41 @@ function renderEventDetail(ev) {
   const bannerClass = hasBg ? '' : `no-img ${cc}`;
 
   // TZ rows
-  const tzR=TZ_GROUPS.map((g,gi)=>{
-    const sL=new Date(ev.startUTC+g.offset*3600000),eL=new Date(ev.endUTC+g.offset*3600000);
-    const fmt=d=>d.toLocaleDateString('es',{weekday:'short',day:'2-digit',month:'short'});
-    const fmtT=d=>d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',hour12:true});
-    return `<div class="evd-tz-card ${st==='live'?'is-live':''}"><div class="evd-tz-gmt"><span class="evd-tz-gmt-lbl">${g.gmt}</span><span style="font-size:15px">${g.countries.map(c=>c.flag).join('')}</span><span style="font-size:11px;color:var(--muted);margin-left:6px">${g.countries.map(c=>c.name).join(', ')}</span></div><div class="evd-tz-body"><div class="evd-tz-col"><div class="evd-tz-place">Hora local ahora</div><div class="evd-tz-time" id="tzt-${gi}">–</div></div><div class="evd-tz-col-mid"><div class="evd-tz-mid-inner"><div class="evd-tz-block"><div class="evd-tz-lbl">Inicio</div><div class="evd-tz-val">${fmt(sL)}</div><div class="evd-tz-hhmm">${fmtT(sL)}</div></div><div class="evd-tz-block"><div class="evd-tz-lbl">Fin</div><div class="evd-tz-val">${fmt(eL)}</div><div class="evd-tz-hhmm">${fmtT(eL)}</div></div></div></div><div class="evd-tz-cd-col"><div class="evd-tz-cd-lbl">${cdL.replace(':','')}</div><div class="evd-tz-cd-val ${cdC} ${st==='upcoming'?'ns':''}" id="tzcd-${gi}">${cdI}</div></div></div></div>`;
+  // Build TZ accordion
+  const tzR = TZ_GROUPS.map((g,gi)=>{
+    const offset = g.offset * 3600000;
+    const sL = new Date(ev.startUTC + offset);
+    const eL = new Date(ev.endUTC  + offset);
+    const fmtDT = d => d.toLocaleString('es',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true});
+    const countriesHtml = g.countries.map(c=>{
+      const locsHtml = (c.locations||[]).map(loc=>`
+        <div class="evd-tz-loc">
+          <div class="evd-tz-loc-info">
+            <div class="evd-tz-loc-place">${loc.place}</div>
+            <div class="evd-tz-loc-coords">${loc.coords}</div>
+          </div>
+          <button class="evd-tz-copy-btn" onclick="copyCoords('${loc.coords}',this)">📋 Copiar</button>
+        </div>`).join('');
+      return `<div class="evd-tz-country">
+        <div class="evd-tz-country-name">${c.name}</div>
+        <div class="evd-tz-locs">${locsHtml}</div>
+      </div>`;
+    }).join('');
+    return `<div class="evd-tz-card ${st==='live'?'is-live':''}" id="tzcard-${gi}">
+      <div class="evd-tz-header" onclick="toggleTzCard(${gi})">
+        <div class="evd-tz-gmt-lbl">${g.gmt}</div>
+        <div>
+          <span class="evd-tz-localtime" id="tzt-${gi}">–</span>
+          <span class="evd-tz-cd-inline" id="tzcd-${gi}"></span>
+        </div>
+        <div class="evd-tz-start-end">
+          <div>▶ ${fmtDT(sL)}</div>
+          <div>⏹ ${fmtDT(eL)}</div>
+        </div>
+        <span class="evd-tz-arrow">▼</span>
+      </div>
+      <div class="evd-tz-body">${countriesHtml}</div>
+    </div>`;
   }).join('');
 
   // Build tabs — only show tabs that have content
@@ -1674,8 +1790,38 @@ function renderEventDetail(ev) {
     </div>`;
 
   if(st!=='ended'){const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const el=document.getElementById('evd-cd');if(el){const r=t-Date.now();el.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));}
-  TZ_GROUPS.forEach((g,gi)=>{const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const now=Date.now(),loc=new Date(now+g.offset*3600000),h=loc.getUTCHours(),m=loc.getUTCMinutes(),s=loc.getUTCSeconds(),ap=h>=12?'pm':'am',h12=h%12||12;const tEl=document.getElementById('tzt-'+gi);if(tEl)tEl.textContent=`${h12}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;const cdEl=document.getElementById('tzcd-'+gi);if(cdEl&&st!=='ended'){const r=t-now;cdEl.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));});
+  // TZ clocks
+  TZ_GROUPS.forEach((g,gi)=>{
+    const t=st==='live'?ev.endUTC:ev.startUTC;
+    const tick=()=>{
+      const now=Date.now(), loc=new Date(now+g.offset*3600000);
+      const h=loc.getUTCHours(),m=loc.getUTCMinutes(),s=loc.getUTCSeconds();
+      const ap=h>=12?'pm':'am', h12=h%12||12;
+      const tEl=document.getElementById('tzt-'+gi);
+      if(tEl) tEl.textContent=`${h12}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;
+      const cdEl=document.getElementById('tzcd-'+gi);
+      if(cdEl&&st!=='ended'){const r=t-now;cdEl.textContent=r>0?'· '+fmtCd(r):'· Finalizado';}
+    };
+    tick();
+    cdIntervals.push(setInterval(tick,1000));
+  });
 }
+
+window.toggleTzCard = (gi) => {
+  const card = document.getElementById('tzcard-'+gi);
+  if (card) card.classList.toggle('open');
+};
+
+window.copyCoords = (coords, btn) => {
+  navigator.clipboard.writeText(coords).then(()=>{
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copiado';
+    btn.style.background = 'rgba(76,175,80,.2)';
+    btn.style.borderColor = 'rgba(76,175,80,.4)';
+    btn.style.color = 'var(--green)';
+    setTimeout(()=>{ btn.textContent=orig; btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }, 2000);
+  }).catch(()=>{ prompt('Coordenadas:', coords); });
+};
 
 /* ── ADMIN MULTI-IMAGE (file upload + URL) ── */
 let prodImgList = []; // [{url, isMain}]
@@ -2598,6 +2744,31 @@ function roundRectClip(ctx, x, y, w, h, r) {
   ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.clip();
 }
 
+/* ── VISIT COUNTER ── */
+async function trackVisit() {
+  try {
+    const ref = doc(db, 'meta', 'stats');
+    // Increment using a simple read-then-write (good enough for a personal store)
+    const snap = await getDocs(collection(db, 'meta'));
+    const statsDoc = snap.docs.find(d=>d.id==='stats');
+    const current = statsDoc ? (statsDoc.data().visits||0) : 0;
+    const newCount = current + 1;
+    await setDoc(ref, {visits: newCount, lastVisit: Date.now()}, {merge:true});
+    // Show counter only to admin
+    const showVisits = () => {
+      const pill = document.getElementById('visitPill');
+      const count = document.getElementById('visitCount');
+      if (pill && count && isAdmin) {
+        pill.style.display = 'flex';
+        count.textContent = newCount.toLocaleString();
+      }
+    };
+    showVisits();
+    // Also re-check when admin logs in
+    window._pendingVisitCount = newCount;
+  } catch(e) { /* silent fail */ }
+}
+
 /* ── UTILS ── */
 window.onSearch = () => { if(currentSection==='catalog')renderProducts(); else if(currentSection==='events')renderEvents(); };
 window.openWA = (name, customNum) => {
@@ -2676,13 +2847,13 @@ if(evUrlInp) evUrlInp.addEventListener('keydown', e=>{ if(e.key==='Enter') addEv
 // Handle deep links first (item/event hashes), then admin hash
 const _startHash = window.location.hash;
 if (_startHash && _startHash !== '#admin') {
-  // Deep link — let loadAll complete then navigate
   loadAll().then(() => handleDeepLink());
 } else {
-  // Normal load or admin
   checkHashForAdmin();
   loadAll();
 }
+// Track visit (count visible only to admin)
+trackVisit();
 
 </script>
 </body>
