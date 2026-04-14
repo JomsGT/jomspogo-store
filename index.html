@@ -833,15 +833,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="ev-desc-short" placeholder="Gible masivo con shiny disponible..."></div>
 
-          <!-- Section icon customizer -->
-          <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:4px;margin-bottom:8px">
-            <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🎨 Iconos de secciones (emoji)</div>
-            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="ev-section-icons-grid">
-              <!-- rendered by renderEvSectionIcons() -->
-            </div>
-            <div class="adm-hint" style="margin-top:8px">Cambia los iconos de cada sección para este evento</div>
-          </div>
-
           <!-- Tabbed content sections — UNIFIED FORMAT for all -->
           <div style="margin-top:4px">
             <div style="display:flex;gap:4px;margin-bottom:0;border-bottom:1px solid var(--border);overflow-x:auto" id="aev-tabs-bar">
@@ -1302,7 +1293,7 @@ function renderEvents() {
     const st=getStatus(ev),cc=ev.color||'',eid=ev._id||ev.id;
     const imgH=ev.img?`<img class="ev-img" src="${ev.img}" alt="${ev.name}">`:`<div class="ev-img-placeholder">${ev.icon||'📅'}</div>`;
     const rH=st==='live'?`<div class="ev-cd-lbl"><span class="live-dot"></span>EN VIVO — Finaliza en:</div><div class="ev-cd-val live" id="ecd-${eid}">–</div>`:st==='upcoming'?`<div class="ev-cd-lbl">Inicia en:</div><div class="ev-cd-val" id="ecd-${eid}">–</div>`:`<div class="ev-cd-lbl">Estado:</div><div class="ev-cd-val ended">Finalizado</div>`;
-    const adminBar = `<div class="ev-card-admin-bar" onclick="event.stopPropagation()"><button class="ev-admin-btn edit" onclick="showSection('admin','',document.getElementById('nav-admin'));switchAdminTab('ev');editEv('${eid}')">✏️</button><button class="ev-admin-btn del" onclick="delEv('${eid}')">🗑️</button></div>`;
+    const adminBar = `<div class="ev-card-admin-bar" onclick="event.stopPropagation()"><button class="ev-admin-btn edit" onclick="showSection('admin','',document.getElementById('nav-admin'));switchAdminTab('ev');editEv('${eid}')">✏️</button><button class="ev-admin-btn" style="background:rgba(0,180,160,.85);color:#fff" onclick="duplicateEv('${eid}')">📋</button><button class="ev-admin-btn del" onclick="delEv('${eid}')">🗑️</button></div>`;
     return `<div class="ev-card" onclick="openEventDetail('${eid}')" style="position:relative">${imgH}<div class="ev-content"><div class="ev-header ${cc}"><span class="ev-type-badge">${ev.type}</span><span class="ev-title-text">${ev.name}</span></div><div class="ev-body"><div class="ev-dates"><div class="ev-date-row"><span class="ev-date-lbl">Inicio:</span><span class="ev-date-val">${ev.startStr}</span></div><div class="ev-date-row"><span class="ev-date-lbl">Fin:</span><span class="ev-date-val">${ev.endStr}</span></div></div><div class="ev-right">${rH}</div></div></div>${adminBar}</div>`;
   }).join('');
   f.forEach(ev=>{const st=getStatus(ev);if(st==='ended')return;const eid=ev._id||ev.id;const el=document.getElementById('ecd-'+eid);if(!el)return;const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const r=t-Date.now();el.textContent=r>0?fmtCd(r):'–';};tick();cdIntervals.push(setInterval(tick,1000));});
@@ -1614,20 +1605,22 @@ function buildResearchHtml(research) {
    ══════════════════════════════════════ */
 
 const EV_SECTIONS = [
-  { id:'desc',     label:'Descripción',  defaultIcon:'📋', textarea:'ev-desc-full',  placeholder:'Descripción completa del evento...' },
-  { id:'bonus',    label:'Bonus',        defaultIcon:'⭐', textarea:'ev-features',   placeholder:'# Bonus de captura\ndescripcion: Activos durante todo el evento\nXP x3 al capturar | https://i.imgur.com/xp.png\nShiny | https://i.imgur.com/shiny.png | shiny\n\n# Bonus de Amistad\ndescripcion: Bonus de intercambio\nIntercambio especial | https://i.imgur.com/trade.png' },
-  { id:'spawns',   label:'Spawns',       defaultIcon:'🐾', textarea:'ev-spawns',     placeholder:'# Encuentros salvajes\ndescripcion: Pokémon con temática aparecerán en la naturaleza\nSeedot | https://i.imgur.com/seedot.png\nCastform | https://i.imgur.com/castform.png | shiny\n\n# Encuentros de Ruta\ndescripcion: Aparecerán en Rutas durante el evento\nTogetic | https://i.imgur.com/togetic.png | shiny' },
-  { id:'eggs',     label:'Huevos',       defaultIcon:'🥚', textarea:'ev-eggs',       placeholder:'# Huevos de 2km\nPichu | https://i.imgur.com/pichu.png | shiny\nCleffa | https://i.imgur.com/cleffa.png\n\n# Huevos de 5km\nRiolu | https://i.imgur.com/riolu.png | shiny\nTogepi | https://i.imgur.com/togepi.png' },
-  { id:'research', label:'Investigación',defaultIcon:'🔬', textarea:'ev-research',   placeholder:'# Tareas de campo\ndescripcion: Tareas disponibles durante el evento\nAtrapa 5 Pokémon → Gible | https://i.imgur.com/gible.png | shiny\nRealiza 3 lanzamientos excelentes → Incubadora\nJuega con tu compañero → Caramelo XL | https://i.imgur.com/candy.png' },
+  { id:'desc',      label:'Descripción',  defaultIcon:'📋', textarea:'ev-desc-full',   placeholder:'Descripción completa del evento...' },
+  { id:'bonus',     label:'Bonus',        defaultIcon:'⭐', textarea:'ev-features',    placeholder:'# Bonus de captura\ndescripcion: Activos durante todo el evento\nXP x3 al capturar | https://i.imgur.com/xp.png | shiny\n\n# Bonus de Amistad\nIntercambio especial | https://i.imgur.com/trade.png' },
+  { id:'spawns',    label:'Spawns',       defaultIcon:'🐾', textarea:'ev-spawns',      placeholder:'# Encuentros salvajes\ndescripcion: Pokémon con temática aparecerán en la naturaleza\nSeedot | https://i.imgur.com/seedot.png\nCastform | https://i.imgur.com/castform.png | shiny\n\n# Encuentros de Ruta\nTogetic | https://i.imgur.com/togetic.png | shiny' },
+  { id:'raids',     label:'Incursiones',  defaultIcon:'⚔️', textarea:'ev-raids',       placeholder:'# Incursiones de 1 estrella\ndescripcion: Disponibles durante todo el evento\nMagikarp | https://i.imgur.com/magikarp.png | shiny\nEevee | https://i.imgur.com/eevee.png | shiny\n\n# Incursiones de 5 estrellas\ndescripcion: Jefe de incursión del evento\nMewtwo | https://i.imgur.com/mewtwo.png | shiny' },
+  { id:'eggs',      label:'Huevos',       defaultIcon:'🥚', textarea:'ev-eggs',        placeholder:'# Huevos de 2km\nPichu | https://i.imgur.com/pichu.png | shiny\nCleffa | https://i.imgur.com/cleffa.png\n\n# Huevos de 5km\nRiolu | https://i.imgur.com/riolu.png | shiny' },
+  { id:'research',  label:'Investigación',defaultIcon:'🔬', textarea:'ev-research',    placeholder:'# Tareas de campo\ndescripcion: Tareas disponibles durante el evento\nAtrapa 5 Pokémon → Gible | https://i.imgur.com/gible.png | shiny\nRealiza 3 lanzamientos excelentes → Incubadora' },
+  { id:'extra1',    label:'Extra 1',      defaultIcon:'📌', textarea:'ev-extra1',       placeholder:'# Título de sección personalizada\ndescripcion: Descripción opcional\nPokémon | https://url-imagen.png | shiny' },
+  { id:'extra2',    label:'Extra 2',      defaultIcon:'📌', textarea:'ev-extra2',       placeholder:'# Título de sección personalizada\ndescripcion: Descripción opcional\nPokémon | https://url-imagen.png' },
 ];
 
 function getEvSectionIcons(ev) {
-  // Global permanent icons override defaults; per-event icons override global
+  // Only global icons — per-event customization removed
   const global = JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}');
-  const perEv  = ev?.sectionIcons || {};
   const result = {};
   EV_SECTIONS.forEach(s => {
-    result[s.id] = perEv[s.id] || global[s.id] || s.defaultIcon;
+    result[s.id] = global[s.id] || s.defaultIcon;
   });
   return result;
 }
@@ -1802,25 +1795,34 @@ function renderEventDetail(ev) {
   const hasDesc    = !!(ev.descFull||ev.descShort);
   const hasBonus   = !!(ev.features&&ev.features.length);
   const hasSpawns  = !!(ev.spawns&&ev.spawns.length);
+  const hasRaids   = !!(ev.raids&&ev.raids.length);
   const hasEggs    = !!(ev.eggs&&ev.eggs.length);
   const hasResearch= !!(ev.research&&ev.research.length);
+  const hasExtra1  = !!(ev.extra1&&ev.extra1.length);
+  const hasExtra2  = !!(ev.extra2&&ev.extra2.length);
+
+  // Get global icons
+  const sectionIconsGlobal = getEvSectionIcons(null);
 
   const TAB_DEFS = [
     {id:'bonus',   show: hasBonus},
     {id:'spawns',  show: hasSpawns},
+    {id:'raids',   show: hasRaids},
     {id:'eggs',    show: hasEggs},
     {id:'research',show: hasResearch},
+    {id:'extra1',  show: hasExtra1},
+    {id:'extra2',  show: hasExtra2},
     {id:'tz',      show: true, label:'Horarios', icon:'🌎'},
   ].filter(t=>t.show).map(t=>{
     const sec = EV_SECTIONS.find(s=>s.id===t.id);
     return {
       ...t,
       label: t.label || sec?.label || t.id,
-      icon:  t.icon  || (ev.sectionIcons?.[t.id]) || sec?.defaultIcon || '📋'
+      icon:  t.icon  || sectionIconsGlobal[t.id] || sec?.defaultIcon || '📋'
     };
   });
 
-  const firstTab = TAB_DEFS[0]?.id || 'desc';
+  const firstTab = TAB_DEFS[0]?.id || 'bonus';
 
   const tabBtns = TAB_DEFS.map(t=>`
     <button class="evd-tab-btn ${t.id===firstTab?'active':''}" data-tab="${t.id}" onclick="switchEvDetailTab('${t.id}')">
@@ -1828,11 +1830,14 @@ function renderEventDetail(ev) {
       <span class="evd-tab-label">${t.label}</span>
     </button>`).join('');
 
-  // Build spawn sections HTML
+  // Build section HTML
   const spawnSectionsHtml  = buildSpawnSectionsHtml(ev.spawns||[]);
+  const raidSectionsHtml   = buildSpawnSectionsHtml(ev.raids||[]);
   const bonusSectionsHtml  = buildSpawnSectionsHtml(ev.features||[]);
   const eggSectionsHtml    = buildSpawnSectionsHtml(ev.eggs||[]);
   const resSectionsHtml    = buildResearchHtml(ev.research||[]);
+  const extra1Html         = buildSpawnSectionsHtml(ev.extra1||[]);
+  const extra2Html         = buildSpawnSectionsHtml(ev.extra2||[]);
 
   document.getElementById('evdWrap').innerHTML=`
     <button class="evd-back" onclick="goBackToEvents()">← Volver a Eventos</button>
@@ -1868,8 +1873,11 @@ function renderEventDetail(ev) {
     <div class="evd-body">
       ${hasBonus?`<div class="evd-tab-panel ${firstTab==='bonus'?'active':''}" id="evd-panel-bonus">${bonusSectionsHtml}</div>`:''}
       ${hasSpawns?`<div class="evd-tab-panel ${firstTab==='spawns'?'active':''}" id="evd-panel-spawns">${spawnSectionsHtml}</div>`:''}
+      ${hasRaids?`<div class="evd-tab-panel ${firstTab==='raids'?'active':''}" id="evd-panel-raids">${raidSectionsHtml}</div>`:''}
       ${hasEggs?`<div class="evd-tab-panel ${firstTab==='eggs'?'active':''}" id="evd-panel-eggs">${eggSectionsHtml}</div>`:''}
       ${hasResearch?`<div class="evd-tab-panel ${firstTab==='research'?'active':''}" id="evd-panel-research">${resSectionsHtml}</div>`:''}
+      ${hasExtra1?`<div class="evd-tab-panel ${firstTab==='extra1'?'active':''}" id="evd-panel-extra1">${extra1Html}</div>`:''}
+      ${hasExtra2?`<div class="evd-tab-panel ${firstTab==='extra2'?'active':''}" id="evd-panel-extra2">${extra2Html}</div>`:''}
       <div class="evd-tab-panel ${firstTab==='tz'?'active':''}" id="evd-panel-tz"><div class="evd-tz-list">${tzR}</div></div>
     </div>`;
 
@@ -2220,9 +2228,12 @@ window.saveEv = async () => {
   const descFull   = document.getElementById('ev-desc-full')?.value.trim()||'';
   const features   = parseSpawnSections(document.getElementById('ev-features')?.value||'');
   const spawns     = parseSpawnSections(document.getElementById('ev-spawns')?.value||'');
+  const raids      = parseSpawnSections(document.getElementById('ev-raids')?.value||'');
   const eggs       = parseSpawnSections(document.getElementById('ev-eggs')?.value||'');
   const research   = parseResearchLines(document.getElementById('ev-research')?.value||'');
-  const sectionIcons = getEvSectionIconsFromForm();
+  const extra1     = parseSpawnSections(document.getElementById('ev-extra1')?.value||'');
+  const extra2     = parseSpawnSections(document.getElementById('ev-extra2')?.value||'');
+  const sectionIcons = {}; // no longer per-event
 
   const editId=document.getElementById('ev-edit-id').value;
   const imgData=document.getElementById('ev-img-data').value;
@@ -2234,8 +2245,8 @@ window.saveEv = async () => {
     color:document.getElementById('ev-color').value,
     icon:document.getElementById('ev-icon').value.trim()||'📅',
     startStr, endStr, startUTC, endUTC,
-    descShort, descFull, features, spawns, eggs, research,
-    sectionIcons,
+    descShort, descFull, features, spawns, raids, eggs, research, extra1, extra2,
+    sectionIcons: {},
     img:imgData||existingImg
   };
   try {
@@ -2256,7 +2267,6 @@ function clearEvForm() {
   document.getElementById('ev-save-btn').textContent='🚀 Publicar Evento';
   document.getElementById('ev-edit-banner').classList.remove('show');
   renderEvAdminTabs(null);
-  renderEvSectionIcons(null);
   switchEvAdminTab('desc');
   resetImgUI('ev');
 }
@@ -2264,6 +2274,29 @@ function clearEvForm() {
 window.editEv = (id) => {
   const ev=events.find(e=>e._id===id);
   if(!ev) return;
+  _fillEvForm(ev, ev._id);
+  document.getElementById('ev-form-title').textContent='✏️ Editar Evento';
+  document.getElementById('ev-save-btn').textContent='💾 Guardar Cambios';
+  document.getElementById('ev-edit-banner').classList.add('show');
+  document.getElementById('apanel-ev').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+window.duplicateEv = (id) => {
+  const ev=events.find(e=>e._id===id);
+  if(!ev) return;
+  _fillEvForm(ev, ''); // no _id = new event
+  document.getElementById('ev-name').value = ev.name + ' (copia)';
+  document.getElementById('ev-form-title').textContent='📋 Duplicar Evento';
+  document.getElementById('ev-save-btn').textContent='🚀 Publicar Copia';
+  document.getElementById('ev-edit-banner').classList.remove('show');
+  showToast('📋 Evento duplicado — edita los cambios y publica');
+  // Switch to admin events tab
+  showSection('admin','',document.getElementById('nav-admin'));
+  switchAdminTab('ev');
+  document.getElementById('apanel-ev').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+function _fillEvForm(ev, editId) {
   document.getElementById('ev-name').value=ev.name||'';
   document.getElementById('ev-type').value=ev.type||'Community Day';
   document.getElementById('ev-color').value=ev.color||'';
@@ -2274,28 +2307,22 @@ window.editEv = (id) => {
   document.getElementById('ev-start-utc').value=toLocal(ev.startUTC);
   document.getElementById('ev-end-utc').value=toLocal(ev.endUTC);
   document.getElementById('ev-desc-short').value=ev.descShort||'';
-
-  // Render tabs then fill textareas
+  document.getElementById('ev-edit-id').value=editId||'';
   renderEvAdminTabs(ev);
-  renderEvSectionIcons(ev);
-
   document.getElementById('ev-desc-full').value=ev.descFull||'';
   document.getElementById('ev-features').value=serializeSpawnSections(ev.features||[]);
   document.getElementById('ev-spawns').value=serializeSpawnSections(ev.spawns||[]);
+  const raidEl=document.getElementById('ev-raids');if(raidEl)raidEl.value=serializeSpawnSections(ev.raids||[]);
   document.getElementById('ev-eggs').value=serializeSpawnSections(ev.eggs||[]);
   document.getElementById('ev-research').value=serializeResearchLines(ev.research||[]);
-
-  document.getElementById('ev-edit-id').value=ev._id;
-  document.getElementById('ev-form-title').textContent='✏️ Editar Evento';
-  document.getElementById('ev-save-btn').textContent='💾 Guardar Cambios';
-  document.getElementById('ev-edit-banner').classList.add('show');
-  if(ev.img){
+  const e1=document.getElementById('ev-extra1');if(e1)e1.value=serializeSpawnSections(ev.extra1||[]);
+  const e2=document.getElementById('ev-extra2');if(e2)e2.value=serializeSpawnSections(ev.extra2||[]);
+  if(editId&&ev.img){
     document.getElementById('ev-img-data').value=ev.img;
     document.getElementById('ev-img-prev').src=ev.img;
     document.getElementById('ev-img-preview-wrap').style.display='block';
   } else { removeEvImg(); }
-  document.getElementById('apanel-ev').scrollIntoView({behavior:'smooth',block:'start'});
-};
+}
 
 window.delEv = async (id) => {
   if(!confirm('¿Eliminar este evento?')) return;
@@ -2323,7 +2350,7 @@ function buildEvListItem(ev) {
   return `<div class="adm-list-item" data-name="${(ev.name||'').toLowerCase()}">
     <div class="adm-list-img">${ev.icon||'📅'}</div>
     <div class="adm-list-info"><div class="adm-list-name">${ev.name}</div><div class="adm-list-meta">${ev.type} · ${ev.startStr||''}</div></div>
-    <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editEv('${ev._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delEv('${ev._id}')">🗑️</button></div>
+    <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editEv('${ev._id}')">✏️ Editar</button><button class="adm-btn-edit" style="background:rgba(0,180,160,.15);color:var(--teal)" onclick="duplicateEv('${ev._id}')">📋</button><button class="adm-btn-del" onclick="delEv('${ev._id}')">🗑️</button></div>
   </div>`;
 }
 
