@@ -161,14 +161,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* Hero with background image */
 .evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
-/* Image — full width, sits above text, not behind it */
+/* Image container — title overlays bottom of image */
+.evd-hero-img-wrap{position:relative;width:100%;overflow:hidden;background:#0d0d1a}
 .evd-hero-img{width:100%;max-height:420px;object-fit:cover;object-position:center top;display:block}
-/* No-image banner keeps gradient background */
-.evd-banner{position:relative;padding:22px 28px 18px;display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,#13132b,#1a1a40)}
-.evd-banner.no-img{background:linear-gradient(120deg,#1a8fd1,#1dd6c0);padding:44px 28px}
-.evd-banner.no-img.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
-.evd-banner.no-img.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad)}
-.evd-banner.no-img.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020)}
+/* Title overlay — gradient from bottom of image */
+.evd-banner{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:48px 24px 16px;background:linear-gradient(to top,rgba(8,8,20,.95) 0%,rgba(8,8,20,.7) 50%,transparent 100%)}
+.evd-banner.no-img{position:relative;background:linear-gradient(120deg,#1a8fd1,#1dd6c0);padding:40px 28px}
+.evd-banner.no-img.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0);position:relative}
+.evd-banner.no-img.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad);position:relative}
+.evd-banner.no-img.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020);position:relative}
 .evd-icon{font-size:72px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 16px rgba(0,0,0,.7))}
 .evd-banner-info{flex:1;min-width:0}
 .evd-banner-type{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px}
@@ -372,7 +373,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .empty-icon{font-size:48px;margin-bottom:12px}
 .empty-state h3{font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--text);margin-bottom:6px}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--dark2)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-/* Share link button */
+/* Sold out overlay */
+.sold-out-overlay{position:absolute;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center;z-index:4;border-radius:0}
+.sold-out-label{background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-weight:900;font-size:13px;letter-spacing:2px;padding:7px 18px;border-radius:6px;transform:rotate(-8deg);box-shadow:0 4px 16px rgba(227,53,13,.5);text-transform:uppercase}
+.stock-badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.75);color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;padding:2px 8px;border-radius:50px;z-index:3;border:1px solid rgba(245,197,24,.3)}
+.pcard.is-sold-out{opacity:.75}
+.pcard.is-sold-out .card-wa{opacity:.5;pointer-events:none;cursor:not-allowed}
 .share-link-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(26,115,232,.12);border:1px solid rgba(26,115,232,.3);color:#64b5f6;padding:8px 14px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;margin-left:8px;letter-spacing:.5px;transition:all .2s}
 .share-link-btn:hover{background:rgba(26,115,232,.22)}
 /* ── PRODUCT DETAIL PAGE ── */
@@ -739,6 +745,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <div class="adm-row">
             <div class="adm-group"><label class="adm-label">Categoría</label><select class="adm-select" id="p-cat"><option value="pokemon">⚡ Pokémon</option><option value="cuenta">🎮 Cuenta</option><option value="servicio">⚔️ Servicio</option><option value="item">🎒 Item</option></select></div>
             <div class="adm-group"><label class="adm-label">Badge</label><select class="adm-select" id="p-tag"><option>HOT</option><option>NEW</option><option>SHINY</option><option>RARE</option><option>HUNDO</option><option>SALE</option></select></div>
+          </div>
+          <div class="adm-row">
+            <div class="adm-group">
+              <label class="adm-label">Stock disponible <span style="color:var(--muted);font-weight:400;font-size:10px">(0 = agotado · vacío = sin límite)</span></label>
+              <input class="adm-input" type="number" id="p-stock" placeholder="ej: 3 — dejar vacío si no tiene límite" min="0">
+            </div>
+            <div class="adm-group" style="display:flex;align-items:flex-end;padding-bottom:2px">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--text);text-transform:uppercase;letter-spacing:.5px">
+                <input type="checkbox" id="p-soldout" style="width:16px;height:16px;cursor:pointer;accent-color:var(--red)">
+                Marcar como AGOTADO
+              </label>
+            </div>
           </div>
           <div class="adm-group"><label class="adm-label">Evento asociado (opcional)</label><input class="adm-input" id="p-event" placeholder="Community Day, GO Fest..."></div>
           <div class="adm-group">
@@ -1220,9 +1238,14 @@ function renderProducts() {
     const eb=p.event?`<span class="tag-event">${p.event}</span>`:'';
     const pid = p._id||p.id;
     const mainImg = p.img || '';
-    const selected = false; // share selection disabled
-    return `<div class="pcard" onclick="openProdDetail('${pid}')" id="pcard-${pid}">
-      <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div></div>
+    const selected = false;
+    const isSoldOut = p.soldOut || p.stock === 0;
+    const stockBadge = (!isSoldOut && p.stock != null && p.stock > 0)
+      ? `<div class="stock-badge">📦 ${p.stock} disponible${p.stock>1?'s':''}</div>` : '';
+    const soldOverlay = isSoldOut
+      ? `<div class="sold-out-overlay"><div class="sold-out-label">AGOTADO</div></div>` : '';
+    return `<div class="pcard${isSoldOut?' is-sold-out':''}" onclick="openProdDetail('${pid}')" id="pcard-${pid}">
+      <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div>${soldOverlay}${stockBadge}</div>
       <div class="card-body">
         <div class="card-name">${p.name}</div>
         <div class="card-tags"><span class="tag-cat">${cl}</span>${eb}</div>
@@ -1588,6 +1611,16 @@ function loadEvSectionIcons() {
   return JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}');
 }
 
+window.previewGseci = (id, defaultIcon, val, customPreviewId) => {
+  const previewId = customPreviewId || ('gseci-prev-'+(id||''));
+  const el = document.getElementById(previewId);
+  if (!el) return;
+  const isUrl = val.startsWith('http')||val.startsWith('data:');
+  el.innerHTML = isUrl
+    ? `<img src="${val}" style="width:24px;height:24px;object-fit:contain">`
+    : (val || defaultIcon);
+};
+
 function renderGlobalEvSectionIcons() {
   const grid = document.getElementById('global-ev-section-icons-grid');
   if (!grid) return;
@@ -1595,11 +1628,11 @@ function renderGlobalEvSectionIcons() {
   grid.innerHTML = EV_SECTIONS.map(s => {
     const cur = saved[s.id] || s.defaultIcon;
     return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div style="font-size:20px" id="gseci-prev-${s.id}">${cur}</div>
+      <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center" id="gseci-prev-${s.id}">${cur.startsWith('http')||cur.startsWith('data:')?`<img src="${cur}" style="width:24px;height:24px;object-fit:contain">`:cur}</div>
       <div style="font-size:10px;color:var(--muted);font-family:'Rajdhani',sans-serif;font-weight:600;text-align:center">${s.label}</div>
-      <input style="width:100%;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:3px 6px;border-radius:6px;font-size:14px;text-align:center;outline:none"
-        id="gseci-${s.id}" value="${cur}" maxlength="4"
-        oninput="document.getElementById('gseci-prev-${s.id}').textContent=this.value||'${s.defaultIcon}'">
+      <input style="width:100%;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 6px;border-radius:6px;font-size:12px;outline:none"
+        id="gseci-${s.id}" value="${cur}" placeholder="emoji o https://..."
+        oninput="previewGseci('${s.id}','${s.defaultIcon}',this.value)">
     </div>`;
   }).join('');
 }
@@ -1620,11 +1653,11 @@ function renderEvSectionIcons(ev) {
   const icons = getEvSectionIcons(ev);
   grid.innerHTML = EV_SECTIONS.map(s => `
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div style="font-size:20px" id="seci-prev-${s.id}">${icons[s.id]}</div>
+      <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center" id="seci-prev-${s.id}">${(icons[s.id]||"").startsWith('http')?`<img src="${icons[s.id]}" style="width:24px;height:24px;object-fit:contain">`:icons[s.id]}</div>
       <div style="font-size:10px;color:var(--muted);font-family:'Rajdhani',sans-serif;font-weight:600">${s.label}</div>
-      <input style="width:100%;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:3px 6px;border-radius:6px;font-size:13px;text-align:center;outline:none"
-        id="seci-input-${s.id}" value="${icons[s.id]}" maxlength="4"
-        oninput="document.getElementById('seci-prev-${s.id}').textContent=this.value||'${s.defaultIcon}'">
+      <input style="width:100%;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:4px 6px;border-radius:6px;font-size:12px;outline:none"
+        id="seci-input-${s.id}" value="${icons[s.id]}" placeholder="emoji o https://..."
+        oninput="previewGseci(null,'${s.defaultIcon}',this.value,'seci-prev-${s.id}')">
     </div>`).join('');
 }
 
@@ -1764,7 +1797,7 @@ function renderEventDetail(ev) {
 
   const tabBtns = TAB_DEFS.map(t=>`
     <button class="evd-tab-btn ${t.id===firstTab?'active':''}" data-tab="${t.id}" onclick="switchEvDetailTab('${t.id}')">
-      <span class="evd-tab-icon">${t.icon}</span>
+      <span class="evd-tab-icon">${(t.icon||'').startsWith('http')?`<img src="${t.icon}" style="width:22px;height:22px;object-fit:contain">`:t.icon}</span>
       <span class="evd-tab-label">${t.label}</span>
     </button>`).join('');
 
@@ -1778,14 +1811,25 @@ function renderEventDetail(ev) {
     <button class="evd-back" onclick="goBackToEvents()">← Volver a Eventos</button>
     <button class="share-link-btn" onclick="shareLink('event','${ev._id||ev.id}','${ev.name.replace(/'/g,"\\'")}')">🔗 Compartir</button>
     <div class="evd-hero">
-      ${hasBg?`<img class="evd-hero-img" src="${ev.img}" alt="${ev.name}">`:''}
-      <div class="evd-banner ${bannerClass}">
-        <div class="evd-banner-info">
-          <div class="evd-banner-type">${ev.type}</div>
-          <div class="evd-banner-title">${ev.name}</div>
-          <div class="evd-badges">${bH}</div>
-        </div>
-      </div>
+      ${hasBg
+        ? `<div class="evd-hero-img-wrap">
+             <img class="evd-hero-img" src="${ev.img}" alt="${ev.name}">
+             <div class="evd-banner ${bannerClass}">
+               <div class="evd-banner-info">
+                 <div class="evd-banner-type">${ev.type}</div>
+                 <div class="evd-banner-title">${ev.name}</div>
+                 <div class="evd-badges">${bH}</div>
+               </div>
+             </div>
+           </div>`
+        : `<div class="evd-banner no-img ${cc}">
+             <div class="evd-banner-info">
+               <div class="evd-banner-type">${ev.type}</div>
+               <div class="evd-banner-title">${ev.name}</div>
+               <div class="evd-badges">${bH}</div>
+             </div>
+           </div>`
+      }
       <div class="evd-dates-row">
         <div><div class="evd-date-lbl">Inicio</div><div class="evd-date-val">${ev.startStr}</div></div>
         <div><div class="evd-date-lbl">Fin</div><div class="evd-date-val">${ev.endStr}</div></div>
@@ -1984,8 +2028,8 @@ function renderProdDetail(p) {
     </div>` : '';
 
   const navBtns = imgs.length>1 ? `
-    <button class="gallery-nav prev" onclick="dtNav(-1)">‹</button>
-    <button class="gallery-nav next" onclick="dtNav(1)">›</button>` : '';
+    <button class="gallery-nav prev" onclick="event.stopPropagation();dtNav(-1)">‹</button>
+    <button class="gallery-nav next" onclick="event.stopPropagation();dtNav(1)">›</button>` : '';
 
   document.getElementById('prodDetailWrap').innerHTML = `
     <button class="prod-detail-back" onclick="closeProdDetail()">← Volver al catálogo</button>
@@ -2029,7 +2073,10 @@ window.closeProdDetail = () => {
 window.dtSetImg = (i) => {
   detailGalleryIdx = i;
   const img = document.getElementById('dtMainImg');
-  if(img){ img.src=detailGalleryImgs[i]||''; img.classList.remove('zoomed'); }
+  if(img){
+    img.src=detailGalleryImgs[i]||'';
+    img.classList.remove('zoomed'); // always reset zoom when switching
+  }
   document.querySelectorAll('#dtGalleryThumbs .gallery-thumb').forEach((t,ti)=>t.classList.toggle('active',ti===i));
 };
 window.dtNav = (dir) => {
@@ -2069,6 +2116,8 @@ window.saveProd = async () => {
     tag:document.getElementById('p-tag').value,
     event:document.getElementById('p-event').value.trim(),
     wa: document.getElementById('p-wa').value.replace(/\D/g,'').trim() || '',
+    stock: document.getElementById('p-stock').value !== '' ? parseInt(document.getElementById('p-stock').value)||0 : null,
+    soldOut: document.getElementById('p-soldout').checked,
     descShort, desc:document.getElementById('p-desc').value.trim(),
     img: imgMain,
     imgs: imgsAll
@@ -2083,7 +2132,8 @@ window.saveProd = async () => {
 
 window.cancelEditProd = clearProdForm;
 function clearProdForm() {
-  ['p-name','p-price','p-short','p-desc','p-event','p-wa'].forEach(id=>document.getElementById(id).value='');
+  ['p-name','p-price','p-short','p-desc','p-event','p-wa','p-stock'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-soldout').checked = false;
   document.getElementById('p-cat').value='pokemon';
   document.getElementById('p-tag').value='HOT';
   document.getElementById('p-edit-id').value='';
@@ -2101,6 +2151,8 @@ window.editProd = (id) => {
   document.getElementById('p-desc').value=p.desc||'';
   document.getElementById('p-event').value=p.event||'';
   document.getElementById('p-wa').value=p.wa||'';
+  document.getElementById('p-stock').value = p.stock != null ? p.stock : '';
+  document.getElementById('p-soldout').checked = !!p.soldOut;
   document.getElementById('p-cat').value=p.category||'pokemon';
   document.getElementById('p-tag').value=p.tag||'HOT';
   document.getElementById('p-edit-id').value=p._id;
