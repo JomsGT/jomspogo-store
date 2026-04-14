@@ -162,18 +162,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* Hero with background image */
 .evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
 .evd-hero-img-wrap{position:relative;width:100%;overflow:hidden;background:#0d0d1a}
-.evd-hero-img{width:100%;max-height:420px;object-fit:cover;object-position:center top;display:block}
-/* Title overlay — covers full image, content centered */
-.evd-banner{position:absolute;inset:0;z-index:2;padding:24px 28px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;background:linear-gradient(135deg,rgba(8,8,20,.6) 0%,rgba(8,8,20,.3) 60%,transparent 100%)}
+/* Imagen adaptada para cubrir el 100% */
+.evd-hero-img{width:100%;height:auto;min-height:350px;object-fit:cover;object-position:center;display:block}
+/* Title overlay — Contenido centrado y menos opacidad */
+.evd-banner{position:absolute;inset:0;z-index:2;padding:24px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,rgba(8,8,20,.3) 0%,rgba(8,8,20,.1) 60%,transparent 100%)}
 .evd-banner.no-img{position:relative;inset:auto;background:linear-gradient(120deg,#1a8fd1,#1dd6c0);padding:44px 28px;justify-content:flex-start}
 .evd-banner.no-img.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
 .evd-banner.no-img.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad)}
 .evd-banner.no-img.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020)}
 .evd-icon{font-size:72px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 16px rgba(0,0,0,.7))}
-.evd-banner-info{flex:1;min-width:0}
+.evd-banner-info{flex:none;width:100%;min-width:0}
 .evd-banner-type{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px}
 .evd-banner-title{font-family:'Orbitron',monospace;font-size:clamp(16px,3.5vw,28px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
-.evd-badges{display:flex;gap:7px;flex-wrap:wrap}
+/* Centrado de badges */
+.evd-badges{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
 .evd-badge{padding:3px 11px;border-radius:50px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .evd-badge.live{background:rgba(76,175,80,.25);color:var(--green);border:1px solid rgba(76,175,80,.5)}
 .evd-badge.upcoming{background:rgba(26,115,232,.2);color:#64b5f6;border:1px solid rgba(26,115,232,.4)}
