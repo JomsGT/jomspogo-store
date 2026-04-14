@@ -162,20 +162,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* Hero with background image */
 .evd-hero{border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
 .evd-hero-img-wrap{position:relative;width:100%;overflow:hidden;background:#0d0d1a}
-/* Imagen adaptada para cubrir el 100% */
 .evd-hero-img{width:100%;height:auto;min-height:350px;object-fit:cover;object-position:center;display:block}
-/* Title overlay — Contenido centrado y menos opacidad */
-.evd-banner{position:absolute;inset:0;z-index:2;padding:24px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,rgba(8,8,20,.3) 0%,rgba(8,8,20,.1) 60%,transparent 100%)}
+/* Title overlay — covers full image, content centered */
+.evd-banner{position:absolute;inset:0;z-index:2;padding:24px 28px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;background:linear-gradient(135deg,rgba(8,8,20,.6) 0%,rgba(8,8,20,.3) 60%,transparent 100%)}
 .evd-banner.no-img{position:relative;inset:auto;background:linear-gradient(120deg,#1a8fd1,#1dd6c0);padding:44px 28px;justify-content:flex-start}
 .evd-banner.no-img.ev-green{background:linear-gradient(120deg,#14a879,#1dd6c0)}
 .evd-banner.no-img.ev-purple{background:linear-gradient(120deg,#6b3fa0,#8e44ad)}
 .evd-banner.no-img.ev-orange{background:linear-gradient(120deg,#e07b1d,#f0c020)}
 .evd-icon{font-size:72px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 16px rgba(0,0,0,.7))}
-.evd-banner-info{flex:none;width:100%;min-width:0}
+.evd-banner-info{flex:1;min-width:0}
 .evd-banner-type{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:2px;margin-bottom:5px}
 .evd-banner-title{font-family:'Orbitron',monospace;font-size:clamp(16px,3.5vw,28px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
-/* Centrado de badges */
-.evd-badges{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+.evd-badges{display:flex;gap:7px;flex-wrap:wrap}
 .evd-badge{padding:3px 11px;border-radius:50px;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .evd-badge.live{background:rgba(76,175,80,.25);color:var(--green);border:1px solid rgba(76,175,80,.5)}
 .evd-badge.upcoming{background:rgba(26,115,232,.2);color:#64b5f6;border:1px solid rgba(26,115,232,.4)}
@@ -380,6 +378,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .stock-badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.75);color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;padding:2px 8px;border-radius:50px;z-index:3;border:1px solid rgba(245,197,24,.3)}
 .pcard.is-sold-out{opacity:.75}
 .pcard.is-sold-out .card-wa{opacity:.5;pointer-events:none;cursor:not-allowed}
+/* Admin quick actions on cards */
+.card-admin-bar{display:none;gap:4px;padding:6px 8px;background:rgba(13,13,26,.92);border-top:1px solid rgba(245,197,24,.15)}
+.is-admin-mode .card-admin-bar{display:flex}
+.card-admin-btn{flex:1;padding:5px;border-radius:6px;border:none;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.5px;transition:all .15s;text-transform:uppercase}
+.card-admin-btn.edit{background:rgba(245,197,24,.15);color:var(--gold)}
+.card-admin-btn.edit:hover{background:rgba(245,197,24,.28)}
+.card-admin-btn.del{background:rgba(227,53,13,.15);color:var(--red)}
+.card-admin-btn.del:hover{background:rgba(227,53,13,.3)}
+/* Ev card admin overlay */
+.ev-card-admin-bar{display:none;position:absolute;top:8px;right:8px;gap:5px;z-index:10}
+.is-admin-mode .ev-card-admin-bar{display:flex}
+.ev-admin-btn{padding:5px 10px;border-radius:6px;border:none;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.3px;transition:all .15s;text-transform:uppercase;backdrop-filter:blur(4px)}
+.ev-admin-btn.edit{background:rgba(245,197,24,.85);color:#000}
+.ev-admin-btn.del{background:rgba(227,53,13,.85);color:#fff}
+/* Admin search */
+.adm-search-wrap{position:relative;margin-bottom:10px}
+.adm-search-input{width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:8px 12px 8px 34px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.adm-search-input:focus{border-color:rgba(245,197,24,.5)}
+.adm-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .share-link-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(26,115,232,.12);border:1px solid rgba(26,115,232,.3);color:#64b5f6;padding:8px 14px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;margin-left:8px;letter-spacing:.5px;transition:all .2s}
 .share-link-btn:hover{background:rgba(26,115,232,.22)}
 /* ── PRODUCT DETAIL PAGE ── */
@@ -774,6 +791,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button class="adm-btn adm-btn-red" id="p-save-btn" onclick="saveProd()">🚀 Publicar Producto</button>
         </div>
         <div class="adm-list-title"><span>Productos publicados</span><span style="font-size:11px;color:var(--muted);font-weight:400" id="prod-list-count"></span></div>
+        <div class="adm-search-wrap"><span class="adm-search-icon">🔍</span><input class="adm-search-input" id="adm-prod-search" placeholder="Buscar producto..." oninput="filterAdmList('prod')"></div>
         <div class="adm-list" id="adm-prod-list"></div>
       </div>
 
@@ -837,6 +855,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button class="adm-btn adm-btn-red" id="ev-save-btn" onclick="saveEv()">🚀 Publicar Evento</button>
         </div>
         <div class="adm-list-title"><span>Eventos publicados</span><span style="font-size:11px;color:var(--muted);font-weight:400" id="ev-list-count"></span></div>
+        <div class="adm-search-wrap"><span class="adm-search-icon">🔍</span><input class="adm-search-input" id="adm-ev-search" placeholder="Buscar evento..." oninput="filterAdmList('ev')"></div>
         <div class="adm-list" id="adm-ev-list"></div>
       </div>
 
@@ -1234,6 +1253,7 @@ function renderProducts() {
   document.getElementById('countPill').innerHTML = '<span>'+f.length+'</span> producto'+(f.length!==1?'s':'');
   const grid = document.getElementById('prodGrid');
   if(!f.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><h3>Sin resultados</h3><p>Intenta con otra búsqueda</p></div>';return;}
+  if(isAdmin) grid.classList.add('is-admin-mode'); else grid.classList.remove('is-admin-mode');
   grid.innerHTML = f.map(p=>{
     const bc=BADGE_CLASS[p.tag]||'badge-hot', cl=CAT_LABEL[p.category]||p.category;
     const eb=p.event?`<span class="tag-event">${p.event}</span>`:'';
@@ -1254,6 +1274,10 @@ function renderProducts() {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
           Comprar por WhatsApp
         </button>
+      </div>
+      <div class="card-admin-bar" onclick="event.stopPropagation()">
+        <button class="card-admin-btn edit" onclick="showSection('admin','',document.getElementById('nav-admin'));switchAdminTab('prod');editProd('${pid}')">✏️ Editar</button>
+        <button class="card-admin-btn del" onclick="delProd('${pid}')">🗑️ Eliminar</button>
       </div></div>`;
   }).join('');
 }
@@ -1273,11 +1297,13 @@ function renderEvents() {
   document.getElementById('countPill').innerHTML='<span>'+f.length+'</span> evento'+(f.length!==1?'s':'');
   const list=document.getElementById('eventsList');
   if(!f.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div><h3>Sin eventos</h3></div>';return;}
+  if(isAdmin) list.classList.add('is-admin-mode'); else list.classList.remove('is-admin-mode');
   list.innerHTML=f.map(ev=>{
     const st=getStatus(ev),cc=ev.color||'',eid=ev._id||ev.id;
     const imgH=ev.img?`<img class="ev-img" src="${ev.img}" alt="${ev.name}">`:`<div class="ev-img-placeholder">${ev.icon||'📅'}</div>`;
     const rH=st==='live'?`<div class="ev-cd-lbl"><span class="live-dot"></span>EN VIVO — Finaliza en:</div><div class="ev-cd-val live" id="ecd-${eid}">–</div>`:st==='upcoming'?`<div class="ev-cd-lbl">Inicia en:</div><div class="ev-cd-val" id="ecd-${eid}">–</div>`:`<div class="ev-cd-lbl">Estado:</div><div class="ev-cd-val ended">Finalizado</div>`;
-    return `<div class="ev-card" onclick="openEventDetail('${eid}')">${imgH}<div class="ev-content"><div class="ev-header ${cc}"><span class="ev-type-badge">${ev.type}</span><span class="ev-title-text">${ev.name}</span></div><div class="ev-body"><div class="ev-dates"><div class="ev-date-row"><span class="ev-date-lbl">Inicio:</span><span class="ev-date-val">${ev.startStr}</span></div><div class="ev-date-row"><span class="ev-date-lbl">Fin:</span><span class="ev-date-val">${ev.endStr}</span></div></div><div class="ev-right">${rH}</div></div></div></div>`;
+    const adminBar = `<div class="ev-card-admin-bar" onclick="event.stopPropagation()"><button class="ev-admin-btn edit" onclick="showSection('admin','',document.getElementById('nav-admin'));switchAdminTab('ev');editEv('${eid}')">✏️</button><button class="ev-admin-btn del" onclick="delEv('${eid}')">🗑️</button></div>`;
+    return `<div class="ev-card" onclick="openEventDetail('${eid}')" style="position:relative">${imgH}<div class="ev-content"><div class="ev-header ${cc}"><span class="ev-type-badge">${ev.type}</span><span class="ev-title-text">${ev.name}</span></div><div class="ev-body"><div class="ev-dates"><div class="ev-date-row"><span class="ev-date-lbl">Inicio:</span><span class="ev-date-val">${ev.startStr}</span></div><div class="ev-date-row"><span class="ev-date-lbl">Fin:</span><span class="ev-date-val">${ev.endStr}</span></div></div><div class="ev-right">${rH}</div></div></div>${adminBar}</div>`;
   }).join('');
   f.forEach(ev=>{const st=getStatus(ev);if(st==='ended')return;const eid=ev._id||ev.id;const el=document.getElementById('ecd-'+eid);if(!el)return;const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const r=t-Date.now();el.textContent=r>0?fmtCd(r):'–';};tick();cdIntervals.push(setInterval(tick,1000));});
 }
@@ -2282,26 +2308,47 @@ window.delEv = async (id) => {
 };
 
 /* ── ADMIN LISTS ── */
+let _admProdItems = []; // full rendered items for search
+let _admEvItems   = [];
+
+function buildProdListItem(p) {
+  return `<div class="adm-list-item" data-name="${(p.name||'').toLowerCase()}">
+    ${p.img?`<img class="adm-list-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='.3'">`:`<div class="adm-list-img">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':p.category==='servicio'?'⚔️':'🎒'}</div>`}
+    <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price||0} · ${p.tag}${p.event?' · '+p.event:''}${p.soldOut?' · <span style="color:var(--red)">AGOTADO</span>':''}${p.stock!=null&&!p.soldOut?' · 📦'+p.stock:''}</div></div>
+    <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editProd('${p._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delProd('${p._id}')">🗑️</button></div>
+  </div>`;
+}
+
+function buildEvListItem(ev) {
+  return `<div class="adm-list-item" data-name="${(ev.name||'').toLowerCase()}">
+    <div class="adm-list-img">${ev.icon||'📅'}</div>
+    <div class="adm-list-info"><div class="adm-list-name">${ev.name}</div><div class="adm-list-meta">${ev.type} · ${ev.startStr||''}</div></div>
+    <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editEv('${ev._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delEv('${ev._id}')">🗑️</button></div>
+  </div>`;
+}
+
+window.filterAdmList = (type) => {
+  const q = (document.getElementById(`adm-${type}-search`)?.value||'').toLowerCase().trim();
+  const items = type==='prod' ? _admProdItems : _admEvItems;
+  const list  = document.getElementById(`adm-${type}-list`);
+  if (!list) return;
+  if (!q) { list.innerHTML = items.join('') || '<div style="color:var(--muted);font-size:13px;padding:16px 0">Sin resultados.</div>'; return; }
+  const filtered = items.filter(html => html.includes(`data-name=`) && html.split('data-name="')[1].split('"')[0].includes(q));
+  list.innerHTML = filtered.join('') || `<div style="color:var(--muted);font-size:13px;padding:12px 0">No se encontraron resultados para "<strong>${q}</strong>"</div>`;
+};
+
 function renderAdminLists() {
   // Products
   const pl=document.getElementById('adm-prod-list');
   document.getElementById('prod-list-count').textContent=products.length+' publicados';
-  pl.innerHTML=products.length?products.map(p=>`
-    <div class="adm-list-item">
-      ${p.img?`<img class="adm-list-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='.3'">`:`<div class="adm-list-img">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':p.category==='servicio'?'⚔️':'🎒'}</div>`}
-      <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price} · ${p.tag}${p.event?' · '+p.event:''}${p.wa?' · 📱 '+p.wa:''}</div></div>
-      <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editProd('${p._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delProd('${p._id}')">🗑️</button></div>
-    </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay productos publicados aún.</div>';
+  _admProdItems = products.map(buildProdListItem);
+  if(pl) pl.innerHTML=_admProdItems.length?_admProdItems.join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay productos publicados aún.</div>';
 
   // Events
   const el=document.getElementById('adm-ev-list');
   document.getElementById('ev-list-count').textContent=events.length+' publicados';
-  el.innerHTML=events.length?events.map(ev=>`
-    <div class="adm-list-item">
-      <div class="adm-list-img">${ev.icon||'📅'}</div>
-      <div class="adm-list-info"><div class="adm-list-name">${ev.name}</div><div class="adm-list-meta">${ev.type} · ${ev.startStr}</div></div>
-      <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editEv('${ev._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delEv('${ev._id}')">🗑️</button></div>
-    </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay eventos publicados aún.</div>';
+  _admEvItems = events.map(buildEvListItem);
+  if(el) el.innerHTML=_admEvItems.length?_admEvItems.join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay eventos publicados aún.</div>';
 
   // Banners
   const bl=document.getElementById('adm-ban-list');
