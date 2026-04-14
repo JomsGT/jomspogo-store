@@ -589,23 +589,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="pokeball"></div>
     <div class="brand">JOMS POGO<small>Digital Store GT</small></div>
   </div>
-  <div class="nav-section ni-label">Catálogo</div>
-  <div class="nav-item active" id="nav-all" onclick="showSection('catalog','all',this)"><span class="ni-icon" id="icon-all">🏠</span><span class="ni-label">Todos</span><span class="ni-count" id="count-all">0</span></div>
-  <div class="nav-section ni-label">Categorías</div>
-  <div class="nav-item" id="nav-pokemon" onclick="showSection('catalog','pokemon',this)"><span class="ni-icon" id="icon-pokemon">⚡</span><span class="ni-label">Pokémon</span><span class="ni-count" id="count-pokemon">0</span></div>
-  <div class="nav-item" id="nav-cuenta" onclick="showSection('catalog','cuenta',this)"><span class="ni-icon" id="icon-cuenta">🎮</span><span class="ni-label">Cuentas</span><span class="ni-count" id="count-cuenta">0</span></div>
-  <div class="nav-item" id="nav-servicio" onclick="showSection('catalog','servicio',this)"><span class="ni-icon" id="icon-servicio">⚔️</span><span class="ni-label">Servicios</span><span class="ni-count" id="count-servicio">0</span></div>
-  <div class="nav-section ni-label">Eventos</div>
-  <div class="nav-item" id="nav-ev-all" onclick="showSection('events','all',this)"><span class="ni-icon" id="icon-ev-all">📅</span><span class="ni-label">Todos los Eventos</span><span class="ni-count" id="count-ev-all">0</span></div>
+  <div class="nav-section ni-label" data-i18n="nav.catalog">Catálogo</div>
+  <div class="nav-item active" id="nav-all" onclick="showSection('catalog','all',this)"><span class="ni-icon" id="icon-all">🏠</span><span class="ni-label" data-i18n="nav.all">Todos</span><span class="ni-count" id="count-all">0</span></div>
+  <div class="nav-section ni-label" data-i18n="nav.categories">Categorías</div>
+  <div class="nav-item" id="nav-pokemon" onclick="showSection('catalog','pokemon',this)"><span class="ni-icon" id="icon-pokemon">⚡</span><span class="ni-label" data-i18n="nav.pokemon">Pokémon</span><span class="ni-count" id="count-pokemon">0</span></div>
+  <div class="nav-item" id="nav-cuenta" onclick="showSection('catalog','cuenta',this)"><span class="ni-icon" id="icon-cuenta">🎮</span><span class="ni-label" data-i18n="nav.accounts">Cuentas</span><span class="ni-count" id="count-cuenta">0</span></div>
+  <div class="nav-item" id="nav-servicio" onclick="showSection('catalog','servicio',this)"><span class="ni-icon" id="icon-servicio">⚔️</span><span class="ni-label" data-i18n="nav.store">Tienda</span><span class="ni-count" id="count-servicio">0</span></div>
+  <div class="nav-section ni-label" data-i18n="nav.events">Eventos</div>
+  <div class="nav-item" id="nav-ev-all" onclick="showSection('events','all',this)"><span class="ni-icon" id="icon-ev-all">📅</span><span class="ni-label" data-i18n="nav.allevents">Todos los Eventos</span><span class="ni-count" id="count-ev-all">0</span></div>
   <div class="nav-item" id="nav-ev-cd" onclick="showSection('events','Community Day',this)"><span class="ni-icon" id="icon-ev-cd">🦕</span><span class="ni-label">Community Day</span></div>
   <div class="nav-item" id="nav-ev-rh" onclick="showSection('events','Raid Hour',this)"><span class="ni-icon" id="icon-ev-rh">⚔️</span><span class="ni-label">Raid Hour</span></div>
   <div class="nav-item" id="nav-ev-gf" onclick="showSection('events','GO Fest',this)"><span class="ni-icon" id="icon-ev-gf">🎉</span><span class="ni-label">GO Fest</span></div>
   <div class="nav-item" id="nav-ev-gt" onclick="showSection('events','GO Tour',this)"><span class="ni-icon" id="icon-ev-gt">🌍</span><span class="ni-label">GO Tour</span></div>
   <div class="nav-item" id="nav-ev-wa" onclick="showSection('events','Wild Area',this)"><span class="ni-icon" id="icon-ev-wa">🌿</span><span class="ni-label">Wild Area</span></div>
   <div class="nav-item" id="nav-ev-sc" onclick="showSection('events','Safari City',this)"><span class="ni-icon" id="icon-ev-sc">🏙️</span><span class="ni-label">Safari City</span></div>
-  <div class="nav-section ni-label">Comunidad</div>
-  <div class="nav-item" id="nav-reviews" onclick="showSection('reviews','',this)"><span class="ni-icon" id="icon-reviews">⭐</span><span class="ni-label">Reviews</span><span class="ni-count" id="count-reviews">0</span></div>
-  <div class="nav-item admin-nav" id="nav-admin" style="display:none" onclick="showSection('admin','',this)"><span class="ni-icon" id="icon-admin">⚙️</span><span class="ni-label">Panel Admin</span></div>
+  <div class="nav-section ni-label" data-i18n="nav.community">Comunidad</div>
+  <div class="nav-item" id="nav-reviews" onclick="showSection('reviews','',this)"><span class="ni-icon" id="icon-reviews">⭐</span><span class="ni-label" data-i18n="nav.reviews">Reviews</span><span class="ni-count" id="count-reviews">0</span></div>
+  <div class="nav-item admin-nav" id="nav-admin" style="display:none" onclick="showSection('admin','',this)"><span class="ni-icon" id="icon-admin">⚙️</span><span class="ni-label" data-i18n="nav.admin">Panel Admin</span></div>
 </aside>
 <div class="sidebar-overlay" id="overlay" onclick="closeMobile()"></div>
 
@@ -619,18 +619,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="count-pill" id="countPill"><span>–</span> items</div>
     <div class="count-pill" id="visitPill" title="Visitas totales" style="display:none">👁 <span id="visitCount">–</span></div>
+    <button id="langToggle" onclick="toggleLang()" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:7px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">🌐 EN</button>
   </div>
 
   <div id="page-catalog" class="content">
     <div class="page-header">
       <div class="page-title" id="catTitle">🛒 Todos los Productos</div>
-      <div class="page-sub">Catálogo completo · Entrega inmediata vía WhatsApp</div>
+      <div class="page-sub" id="catSub" data-i18n="catalog.subtitle">Catálogo completo · Entrega inmediata vía WhatsApp</div>
     </div>
     <!-- TOP BANNER: own banner or AdSense -->
     <div id="top-banner-slot"></div>
     <!-- PAYMENT METHODS BAR -->
     <div class="payment-bar">
-      <div class="payment-bar-title">💳 Métodos de pago aceptados</div>
+      <div class="payment-bar-title" data-i18n="payment.title">💳 Métodos de pago aceptados</div>
       <div class="payment-methods" id="payment-methods-container">
         <!-- Loaded dynamically by loadPaymentMethods() -->
         <div class="pay-badge"><span class="pay-badge-icon">🅿️</span><div><div class="pay-badge-label">PayPal</div><div class="pay-badge-sub">paypal.me/jomspogo</div></div></div>
@@ -647,7 +648,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <button class="adm-btn adm-btn-ghost" onclick="clearShareSelection()" style="padding:7px 14px;font-size:12px">✕ Limpiar</button>
       <button class="adm-btn adm-btn-primary" onclick="generateShareImage()" id="shareGenBtn" style="padding:7px 16px;font-size:13px;opacity:.5;cursor:not-allowed" disabled>🖼️ Generar imagen</button>
     </div>
-    <div class="prod-grid" id="prodGrid"><div class="db-loading"><div class="spinner"></div><span>Cargando catálogo...</span></div></div>
+    <div id="featured-section" style="display:none;margin-bottom:24px">
+      <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <span>⭐</span><span data-i18n="featured.title">Destacados del día</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="featured-grid">
+        <!-- rendered dynamically -->
+      </div>
+    </div>
+    <div class="prod-grid" id="prodGrid"><div class="db-loading"><div class="spinner"></div><span data-i18n="loading.catalog">Cargando catálogo...</span></div></div>
     <!-- MID BANNER -->
     <div id="mid-banner-slot" style="margin-top:24px"></div>
     <!-- ADSENSE SLOT (activa cuando tengas el código) -->
@@ -659,7 +668,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-events" class="content" style="display:none">
     <div class="page-header">
       <div class="page-title" id="evTitle">📅 Todos los Eventos</div>
-      <div class="page-sub">Eventos activos y próximos de Pokémon GO</div>
+      <div class="page-sub" id="evSub" data-i18n="events.subtitle">Eventos activos y próximos de Pokémon GO</div>
     </div>
     <div class="events-list" id="eventsList"><div class="db-loading"><div class="spinner"></div><span>Cargando eventos...</span></div></div>
   </div>
@@ -775,7 +784,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             <div class="adm-group"><label class="adm-label">Precio (Q)</label><input class="adm-input" type="number" id="p-price" placeholder="75"></div>
           </div>
           <div class="adm-row">
-            <div class="adm-group"><label class="adm-label">Categoría</label><select class="adm-select" id="p-cat"><option value="pokemon">⚡ Pokémon</option><option value="cuenta">🎮 Cuenta</option><option value="servicio">⚔️ Servicio</option><option value="item">🎒 Item</option></select></div>
+            <div class="adm-group"><label class="adm-label">Categoría</label><select class="adm-select" id="p-cat"><option value="pokemon">⚡ Pokémon</option><option value="cuenta">🎮 Cuenta</option><option value="servicio" id="cat-opt-servicio">🏪 Tienda</option><option value="item" id="cat-opt-item">🎒 Item</option></select></div>
             <div class="adm-group"><label class="adm-label">Badge</label><select class="adm-select" id="p-tag"><option>HOT</option><option>NEW</option><option>SHINY</option><option>RARE</option><option>HUNDO</option><option>SALE</option></select></div>
           </div>
           <div class="adm-row">
@@ -801,6 +810,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="p-short" placeholder="CP 514 | Shiny | Team Valor"></div>
           <div class="adm-group"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="p-desc" placeholder="Descripción detallada..."></textarea></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:10px 0">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px">
+              <input type="checkbox" id="p-featured" style="width:16px;height:16px;cursor:pointer;accent-color:var(--gold)">
+              ⭐ Destacado del día
+            </label>
+            <span style="font-size:11px;color:var(--muted)">Aparece en la sección especial al inicio del catálogo</span>
+          </div>
           <input type="hidden" id="p-edit-id">
           <button class="adm-btn adm-btn-red" id="p-save-btn" onclick="saveProd()">🚀 Publicar Producto</button>
         </div>
@@ -993,12 +1009,22 @@ const auth = getAuth(app);
 
 /* ── CONFIG ── */
 const WA           = '50234431282';
-const ADMIN_UID    = 'bNZJtQwE1WOs0SqEaaOFrvD5IOk1';
+// ── Admin UIDs — add more UIDs here for sub-admins (vendors)
+// Format: { uid, name, since }
+const ADMIN_UIDS = [
+  { uid:'bNZJtQwE1WOs0SqEaaOFrvD5IOk1', name:'Joms (owner)', since:'2024-01-01' },
+  // Add vendors below — see guia-subadmin.md for instructions
+  // { uid:'VENDOR_UID_HERE', name:'Vendor Name', since:'YYYY-MM-DD' },
+];
+const ADMIN_UID = ADMIN_UIDS[0].uid; // owner UID (used for display)
+function isAdminUID(uid) { return ADMIN_UIDS.some(a => a.uid === uid); }
+function isOwner(uid) { return uid === ADMIN_UIDS[0].uid; }
 
 /* ── STATE ── */
 let products = [];
 let events   = [];
 let isAdmin  = false;
+let currentUserUid = null;
 let currentSection = 'catalog';
 let activeCat      = 'all';
 let activeEvType   = 'all';
@@ -1068,20 +1094,39 @@ function setFbStatus(s) {
 
 // Listen for auth state changes — fires on page load and after login/logout
 onAuthStateChanged(auth, (user) => {
-  if (user && user.uid === ADMIN_UID) {
+  currentUserUid = user ? user.uid : null;
+  if (user && isAdminUID(user.uid)) {
     isAdmin = true;
     document.getElementById('nav-admin').style.display = 'flex';
     if (window._pendingAdmin) { window._pendingAdmin = false; goAdmin(); }
     updateShareToolbar();
-    // Show visit counter
-    if (window._pendingVisitCount !== undefined) {
+    // Show visit counter (owner only)
+    if (isOwner(user.uid) && window._pendingVisitCount !== undefined) {
       const pill = document.getElementById('visitPill');
       const count = document.getElementById('visitCount');
       if (pill && count) { pill.style.display='flex'; count.textContent=window._pendingVisitCount.toLocaleString(); }
     }
+    // Restrict category options for non-owners
+    const serOpt = document.getElementById('cat-opt-servicio');
+    const itmOpt = document.getElementById('cat-opt-item');
+    if (serOpt) serOpt.style.display = isOwner(user.uid) ? '' : 'none';
+    if (itmOpt) itmOpt.style.display = isOwner(user.uid) ? '' : 'none';
+    // Show vendor name badge
+    const adminInfo = ADMIN_UIDS.find(a => a.uid === user.uid);
+    const existingBadge = document.getElementById('adminBadge');
+    if (existingBadge) existingBadge.remove();
+    const badge = document.createElement('div');
+    badge.id = 'adminBadge';
+    badge.style.cssText = 'background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.3);color:var(--gold);padding:4px 10px;border-radius:6px;font-family:\'Rajdhani\',sans-serif;font-weight:700;font-size:11px;white-space:nowrap;flex-shrink:0';
+    badge.textContent = (isOwner(user.uid) ? '👑 ' : '🏪 ') + (adminInfo?.name || 'Admin');
+    document.querySelector('.topbar').appendChild(badge);
   } else {
     isAdmin = false;
     document.getElementById('nav-admin').style.display = 'none';
+    const badge = document.getElementById('adminBadge');
+    if (badge) badge.remove();
+    const vPill = document.getElementById('visitPill');
+    if (vPill) vPill.style.display = 'none';
     shareSelection.clear();
     updateShareToolbar();
     if (currentSection === 'admin') {
@@ -1127,7 +1172,7 @@ window.doLogin = async () => {
   btn.disabled = true;
   try {
     const cred = await signInWithEmailAndPassword(auth, email, pass);
-    if (cred.user.uid !== ADMIN_UID) {
+    if (!isAdminUID(cred.user.uid)) {
       // Signed in but not the admin account — sign out immediately
       await signOut(auth);
       throw new Error('No autorizado');
@@ -1186,7 +1231,7 @@ window.showSection = (section, filter, navEl) => {
   cdIntervals.forEach(clearInterval); cdIntervals = [];
   if (section==='catalog') {
     activeCat = filter;
-    const t={all:'🛒 Todos los Productos',pokemon:'⚡ Pokémon',cuenta:'🎮 Cuentas',servicio:'⚔️ Servicios',item:'🎒 Items'};
+    const t={all:'🛒 Todos los Productos',pokemon:'⚡ Pokémon',cuenta:'🎮 Cuentas',servicio:'🏪 Tienda',item:'🎒 Items'};
     document.getElementById('catTitle').textContent = t[filter]||'🛒 Catálogo';
     renderProducts();
     updateShareToolbar();
@@ -1245,7 +1290,7 @@ function updateCounts() {
 }
 
 const BADGE_CLASS={SHINY:'badge-shiny',HOT:'badge-hot',NEW:'badge-new',RARE:'badge-rare',HUNDO:'badge-hundo',SALE:'badge-sale'};
-const CAT_LABEL={pokemon:'Pokémon',cuenta:'Cuenta',servicio:'Servicio',item:'Item'};
+const CAT_LABEL={pokemon:'Pokémon',cuenta:'Cuenta',servicio:'Tienda',item:'Item'};
 
 /* ── RENDER PRODUCTS ── */
 function renderProducts() {
@@ -2148,6 +2193,12 @@ window.dtToggleZoom = (e) => {
 window.saveProd = async () => {
   const name=document.getElementById('p-name').value.trim();
   if(!name){showToast('⚠️ El nombre es requerido','error');return;}
+  // Vendors can only post Pokémon and Cuentas
+  const cat = document.getElementById('p-cat').value;
+  if (!isOwner(currentUserUid) && (cat === 'servicio' || cat === 'item')) {
+    showToast('⛔ Solo el admin principal puede publicar en Tienda e Items','error');
+    return;
+  }
   const editId=document.getElementById('p-edit-id').value;
   let imgMain = document.getElementById('p-img-data').value;
   let imgsAll = [];
@@ -2158,8 +2209,11 @@ window.saveProd = async () => {
     if(ex){ imgMain=imgMain||ex.img||''; imgsAll=ex.imgs||[ex.img].filter(Boolean); }
   }
   if (!imgsAll.length && imgMain) imgsAll = [imgMain];
+  // On create: stamp ownerId. On edit: preserve existing ownerId
+  const existingProd = editId ? products.find(p=>p._id===editId) : null;
   const obj = {
     ...(editId && {_id: editId}),
+    ownerId: existingProd?.ownerId || currentUserUid || ADMIN_UIDS[0].uid,
     name, category:document.getElementById('p-cat').value,
     price:parseFloat(document.getElementById('p-price').value)||0,
     tag:document.getElementById('p-tag').value,
@@ -2167,6 +2221,7 @@ window.saveProd = async () => {
     wa: document.getElementById('p-wa').value.replace(/\D/g,'').trim() || '',
     stock: document.getElementById('p-stock').value !== '' ? parseInt(document.getElementById('p-stock').value)||0 : null,
     soldOut: document.getElementById('p-soldout').checked,
+    featured: document.getElementById('p-featured').checked,
     descShort: document.getElementById('p-short').value.trim(),
     desc:document.getElementById('p-desc').value.trim(),
     img: imgMain,
@@ -2184,6 +2239,7 @@ window.cancelEditProd = clearProdForm;
 function clearProdForm() {
   ['p-name','p-price','p-short','p-desc','p-event','p-wa','p-stock'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('p-soldout').checked = false;
+  document.getElementById('p-featured').checked = false;
   document.getElementById('p-cat').value='pokemon';
   document.getElementById('p-tag').value='HOT';
   document.getElementById('p-edit-id').value='';
@@ -2203,6 +2259,7 @@ window.editProd = (id) => {
   document.getElementById('p-wa').value=p.wa||'';
   document.getElementById('p-stock').value = p.stock != null ? p.stock : '';
   document.getElementById('p-soldout').checked = !!p.soldOut;
+  document.getElementById('p-featured').checked = !!p.featured;
   document.getElementById('p-cat').value=p.category||'pokemon';
   document.getElementById('p-tag').value=p.tag||'HOT';
   document.getElementById('p-edit-id').value=p._id;
@@ -2216,7 +2273,16 @@ window.editProd = (id) => {
   document.getElementById('apanel-prod').scrollIntoView({behavior:'smooth',block:'start'});
 };
 
+// canDelete: only owner (uid[0]) or the item's creator can delete
+function canDelete(item) {
+  if (!currentUserUid) return false;
+  if (isOwner(currentUserUid)) return true;  // main owner can delete anything
+  return item.ownerId === currentUserUid;     // vendor can only delete their own
+}
+
 window.delProd = async (id) => {
+  const prod = products.find(p=>p._id===id);
+  if (prod && !canDelete(prod)) { showToast('⛔ Solo puedes eliminar tus propios productos','error'); return; }
   if(!confirm('¿Eliminar este producto?')) return;
   try {
     await fbDel('products', id);
@@ -2253,8 +2319,10 @@ window.saveEv = async () => {
   const imgData=document.getElementById('ev-img-data').value;
   let existingImg='';
   if(editId){const ex=events.find(e=>e._id===editId);if(ex)existingImg=ex.img||'';}
+  const existingEv2 = editId ? events.find(e=>e._id===editId) : null;
   const obj={
     ...(editId && {_id: editId}),
+    ownerId: existingEv2?.ownerId || currentUserUid || ADMIN_UIDS[0].uid,
     name, type:document.getElementById('ev-type').value,
     color:document.getElementById('ev-color').value,
     icon:document.getElementById('ev-icon').value.trim()||'📅',
@@ -2339,6 +2407,8 @@ function _fillEvForm(ev, editId) {
 }
 
 window.delEv = async (id) => {
+  const ev2 = events.find(e=>e._id===id);
+  if (ev2 && !canDelete(ev2)) { showToast('⛔ Solo puedes eliminar tus propios eventos','error'); return; }
   if(!confirm('¿Eliminar este evento?')) return;
   try {
     await fbDel('events', id);
@@ -2352,19 +2422,34 @@ window.delEv = async (id) => {
 let _admProdItems = []; // full rendered items for search
 let _admEvItems   = [];
 
+function ownerLabel(ownerId) {
+  if (!ownerId || ownerId === ADMIN_UIDS[0].uid) return '';
+  const v = ADMIN_UIDS.find(a=>a.uid===ownerId);
+  return ` · <span style="color:var(--teal);font-size:10px">🏪 ${v?.name||'Vendedor'}</span>`;
+}
+
 function buildProdListItem(p) {
+  const canDel = canDelete(p);
   return `<div class="adm-list-item" data-name="${(p.name||'').toLowerCase()}">
-    ${p.img?`<img class="adm-list-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='.3'">`:`<div class="adm-list-img">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':p.category==='servicio'?'⚔️':'🎒'}</div>`}
-    <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price||0} · ${p.tag}${p.event?' · '+p.event:''}${p.soldOut?' · <span style="color:var(--red)">AGOTADO</span>':''}${p.stock!=null&&!p.soldOut?' · 📦'+p.stock:''}</div></div>
-    <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editProd('${p._id}')">✏️ Editar</button><button class="adm-btn-del" onclick="delProd('${p._id}')">🗑️</button></div>
+    ${p.img?`<img class="adm-list-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='.3'">`:`<div class="adm-list-img">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':p.category==='servicio'?'🏪':'🎒'}</div>`}
+    <div class="adm-list-info"><div class="adm-list-name">${p.name}</div><div class="adm-list-meta">${CAT_LABEL[p.category]||p.category} · Q${p.price||0} · ${p.tag}${p.event?' · '+p.event:''}${p.soldOut?' · <span style="color:var(--red)">AGOTADO</span>':''}${p.stock!=null&&!p.soldOut?' · 📦'+p.stock:''}${ownerLabel(p.ownerId)}</div></div>
+    <div class="adm-list-actions">
+      <button class="adm-btn-edit" onclick="editProd('${p._id}')">✏️ Editar</button>
+      ${canDel?`<button class="adm-btn-del" onclick="delProd('${p._id}')">🗑️</button>`:'<span style="font-size:16px;padding:0 4px" title="No puedes eliminar items de otros vendedores">🔒</span>'}
+    </div>
   </div>`;
 }
 
 function buildEvListItem(ev) {
+  const canDel = canDelete(ev);
   return `<div class="adm-list-item" data-name="${(ev.name||'').toLowerCase()}">
     <div class="adm-list-img">${ev.icon||'📅'}</div>
-    <div class="adm-list-info"><div class="adm-list-name">${ev.name}</div><div class="adm-list-meta">${ev.type} · ${ev.startStr||''}</div></div>
-    <div class="adm-list-actions"><button class="adm-btn-edit" onclick="editEv('${ev._id}')">✏️ Editar</button><button class="adm-btn-edit" style="background:rgba(0,180,160,.15);color:var(--teal)" onclick="duplicateEv('${ev._id}')">📋</button><button class="adm-btn-del" onclick="delEv('${ev._id}')">🗑️</button></div>
+    <div class="adm-list-info"><div class="adm-list-name">${ev.name}</div><div class="adm-list-meta">${ev.type} · ${ev.startStr||''}${ownerLabel(ev.ownerId)}</div></div>
+    <div class="adm-list-actions">
+      <button class="adm-btn-edit" onclick="editEv('${ev._id}')">✏️ Editar</button>
+      <button class="adm-btn-edit" style="background:rgba(0,180,160,.15);color:var(--teal)" onclick="duplicateEv('${ev._id}')">📋</button>
+      ${canDel?`<button class="adm-btn-del" onclick="delEv('${ev._id}')">🗑️</button>`:'<span style="font-size:16px;padding:0 4px" title="No puedes eliminar eventos de otros vendedores">🔒</span>'}
+    </div>
   </div>`;
 }
 
@@ -3033,8 +3118,148 @@ if (_startHash && _startHash !== '#admin') {
   checkHashForAdmin();
   loadAll();
 }
-// Track visit (count visible only to admin)
-trackVisit();
+/* ── i18n — Bilingual ES/EN ── */
+const TRANSLATIONS = {
+  es: {
+    'nav.catalog':'Catálogo','nav.categories':'Categorías','nav.all':'Todos',
+    'nav.pokemon':'Pokémon','nav.accounts':'Cuentas','nav.store':'Tienda',
+    'nav.items':'Items','nav.events':'Eventos','nav.allevents':'Todos los Eventos',
+    'nav.community':'Comunidad','nav.reviews':'Reviews','nav.admin':'Panel Admin',
+    'search.placeholder':'Buscar productos, eventos...',
+    'catalog.subtitle':'Catálogo completo · Entrega inmediata vía WhatsApp',
+    'catalog.title.all':'🛒 Todos los Productos','catalog.title.pokemon':'⚡ Pokémon',
+    'catalog.title.cuenta':'🎮 Cuentas','catalog.title.servicio':'🏪 Tienda',
+    'catalog.title.item':'🎒 Items',
+    'events.subtitle':'Eventos activos y próximos de Pokémon GO',
+    'events.title.all':'📅 Todos los Eventos',
+    'payment.title':'💳 Métodos de pago aceptados',
+    'featured.title':'⭐ Destacados del día',
+    'wa.btn':'Comprar por WhatsApp',
+    'back.events':'← Volver a Eventos','back.catalog':'← Volver al catálogo',
+    'share':'🔗 Compartir',
+    'loading.catalog':'Cargando catálogo...','loading.events':'Cargando eventos...',
+    'badge.soldout':'AGOTADO','badge.stock':'disponible','badge.stocks':'disponibles',
+    'dates.start':'Inicio','dates.end':'Fin','dates.starts':'Inicia en:','dates.live':'EN VIVO — Finaliza en:',
+    'dates.ended':'Finalizado','dates.upcoming':'Próximo',
+    'reviews.title':'⭐ Reviews de la comunidad',
+    'reviews.avg':'Promedio','reviews.submit':'Publicar Review',
+    'lang.toggle':'🌐 EN',
+  },
+  en: {
+    'nav.catalog':'Catalog','nav.categories':'Categories','nav.all':'All',
+    'nav.pokemon':'Pokémon','nav.accounts':'Accounts','nav.store':'Shop',
+    'nav.items':'Items','nav.events':'Events','nav.allevents':'All Events',
+    'nav.community':'Community','nav.reviews':'Reviews','nav.admin':'Admin Panel',
+    'search.placeholder':'Search products, events...',
+    'catalog.subtitle':'Full catalog · Instant delivery via WhatsApp',
+    'catalog.title.all':'🛒 All Products','catalog.title.pokemon':'⚡ Pokémon',
+    'catalog.title.cuenta':'🎮 Accounts','catalog.title.servicio':'🏪 Shop',
+    'catalog.title.item':'🎒 Items',
+    'events.subtitle':'Active and upcoming Pokémon GO events',
+    'events.title.all':'📅 All Events',
+    'payment.title':'💳 Accepted payment methods',
+    'featured.title':'⭐ Featured today',
+    'wa.btn':'Buy via WhatsApp',
+    'back.events':'← Back to Events','back.catalog':'← Back to catalog',
+    'share':'🔗 Share',
+    'loading.catalog':'Loading catalog...','loading.events':'Loading events...',
+    'badge.soldout':'SOLD OUT','badge.stock':'available','badge.stocks':'available',
+    'dates.start':'Start','dates.end':'End','dates.starts':'Starts in:','dates.live':'LIVE — Ends in:',
+    'dates.ended':'Ended','dates.upcoming':'Upcoming',
+    'reviews.title':'⭐ Community Reviews',
+    'reviews.avg':'Average','reviews.submit':'Post Review',
+    'lang.toggle':'🌐 ES',
+  }
+};
+
+let currentLang = localStorage.getItem('jp_lang') || 'es';
+
+function t(key) {
+  return (TRANSLATIONS[currentLang]||TRANSLATIONS.es)[key] || key;
+}
+
+window.toggleLang = () => {
+  currentLang = currentLang === 'es' ? 'en' : 'es';
+  localStorage.setItem('jp_lang', currentLang);
+  applyLang();
+};
+
+function applyLang() {
+  document.documentElement.lang = currentLang;
+  // Toggle button label
+  const btn = document.getElementById('langToggle');
+  if (btn) btn.textContent = t('lang.toggle');
+  // Apply to all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (val) el.textContent = val;
+  });
+  // Update search placeholder
+  const si = document.getElementById('searchInput');
+  if (si) si.placeholder = t('search.placeholder');
+  // Update page sub-titles
+  const catSub = document.getElementById('catSub');
+  if (catSub) catSub.textContent = t('catalog.subtitle');
+  const evSub = document.getElementById('evSub');
+  if (evSub) evSub.textContent = t('events.subtitle');
+  // Re-render to pick up language changes on dynamic content
+  if (currentSection === 'catalog') renderProducts();
+  if (currentSection === 'events') renderEvents();
+}
+
+/* ── Featured items ── */
+function renderFeatured() {
+  const sec = document.getElementById('featured-section');
+  const grid = document.getElementById('featured-grid');
+  if (!sec || !grid) return;
+
+  // One featured per category (pokemon, cuenta, servicio)
+  const cats = ['pokemon','cuenta','servicio'];
+  const featured = cats.map(cat => {
+    // First: explicitly marked featured in this category
+    const explicit = products.filter(p => p.category===cat && p.featured && !p.soldOut && p.stock!==0);
+    if (explicit.length) return explicit[Math.floor(Math.random()*explicit.length)];
+    return null;
+  }).filter(Boolean);
+
+  if (!featured.length) { sec.style.display='none'; return; }
+  sec.style.display = 'block';
+
+  // Update title
+  const titleEl = sec.querySelector('[data-i18n="featured.title"]');
+  if (titleEl) titleEl.textContent = t('featured.title');
+
+  const catLabel = {pokemon:'Pokémon', cuenta: currentLang==='en'?'Account':'Cuenta', servicio: currentLang==='en'?'Shop':'Tienda'};
+  grid.style.gridTemplateColumns = `repeat(${Math.min(featured.length,3)},1fr)`;
+
+  grid.innerHTML = featured.map(p => {
+    const pid = p._id||p.id;
+    const img = (p.imgs&&p.imgs[0])||p.img||'';
+    const cat = catLabel[p.category]||p.category;
+    return `<div onclick="openProdDetail('${pid}')" style="background:var(--card);border:1px solid rgba(245,197,24,.35);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
+      <div style="position:absolute;top:8px;left:8px;z-index:2;background:var(--gold);color:#000;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:10px;padding:2px 8px;border-radius:50px;text-transform:uppercase;letter-spacing:.5px">⭐ ${currentLang==='en'?'Featured':'Destacado'}</div>
+      ${img?`<img src="${img}" alt="${p.name}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block" onerror="this.style.display='none'">`:`<div style="width:100%;aspect-ratio:1;background:linear-gradient(135deg,var(--dark3),var(--dark));display:flex;align-items:center;justify-content:center;font-size:48px">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':'🏪'}</div>`}
+      <div style="padding:10px 12px">
+        <div style="font-size:10px;color:var(--teal);font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">${cat}</div>
+        <div style="font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        ${p.price?`<div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--gold);margin-top:4px">Q${p.price}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Call renderFeatured after products load
+const _origRenderProducts = renderProducts;
+renderProducts = function() {
+  _origRenderProducts();
+  renderFeatured();
+};
+
+// Init language on load
+applyLang();
+
+
 
 </script>
 </body>
