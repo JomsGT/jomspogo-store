@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Joms PoGo Store — Catálogo</title>
+<!-- Security headers -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src * data: blob:;
+  connect-src https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://identitytoolkit.googleapis.com;
+  frame-src 'none';
+  object-src 'none';
+  base-uri 'self';
+">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
 /* SIDEBAR — icon-only collapsed, expands on hover */
@@ -2577,24 +2591,50 @@ function renderReviews() {
 }
 
 window.submitReview = async () => {
-  const name = document.getElementById('rv-name').value.trim();
-  if(!name){showToast('⚠️ El nombre es requerido','error');return;}
-  const text = document.getElementById('rv-text').value.trim();
+  // ── Rate limiting: max 1 review per 5 minutes per browser ──
+  const lastReview = parseInt(localStorage.getItem('jp_last_review')||'0');
+  const cooldown = 5 * 60 * 1000; // 5 minutes
+  if (Date.now() - lastReview < cooldown) {
+    const remaining = Math.ceil((cooldown - (Date.now() - lastReview)) / 60000);
+    showToast(`⏱️ Espera ${remaining} min antes de enviar otra review`, 'error');
+    return;
+  }
+
+  // ── Sanitize & validate inputs ──
+  const sanitize = s => s.replace(/[<>"']/g, '').trim(); // strip HTML chars
+  const name = sanitize(document.getElementById('rv-name').value);
+  const text = sanitize(document.getElementById('rv-text').value);
+
+  if (!name) { showToast('⚠️ El nombre es requerido', 'error'); return; }
+  if (name.length > 60) { showToast('⚠️ Nombre demasiado largo (máx 60)', 'error'); return; }
+  if (text.length > 800) { showToast('⚠️ Texto demasiado largo (máx 800)', 'error'); return; }
+  if (rvStars < 1 || rvStars > 5) { showToast('⚠️ Selecciona entre 1 y 5 estrellas', 'error'); return; }
+
+  // ── Only allowed fields — no extra data ──
   const obj = {
-    name, stars:rvStars,
-    product: document.getElementById('rv-prod').value.trim(),
-    text
+    name,
+    text,
+    stars: parseInt(rvStars),
+    date: Date.now()
   };
+
   try {
     await fbSave('reviews', obj);
     reviews = await fbLoad('reviews');
     updateCounts(); renderReviews();
-    document.getElementById('rv-name').value='';
-    document.getElementById('rv-prod').value='';
-    document.getElementById('rv-text').value='';
-    rvStars=5; setRvStar(5);
+    document.getElementById('rv-name').value = '';
+    document.getElementById('rv-prod').value = '';
+    document.getElementById('rv-text').value = '';
+    rvStars = 5; setRvStar(5);
+    localStorage.setItem('jp_last_review', Date.now().toString());
     showToast('✅ ¡Review publicada! Gracias 🎉');
-  } catch(e){ showToast('❌ Error: '+e.message,'error'); }
+  } catch(e) {
+    if (e.code === 'permission-denied') {
+      showToast('❌ Review rechazada: contenido no válido', 'error');
+    } else {
+      showToast('❌ Error: ' + e.message, 'error');
+    }
+  }
 };
 
 window.delReview = async (id) => {
