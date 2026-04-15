@@ -1472,6 +1472,14 @@ function renderProducts() {
   // Update featured carousel
   setTimeout(renderFeatured, 0);
 }
+function getStatus(ev) {
+  const now = Date.now();
+  if (!ev.startUTC && !ev.endUTC) return 'upcoming';
+  if (ev.endUTC && now > ev.endUTC) return 'ended';
+  if (ev.startUTC && now < ev.startUTC) return 'upcoming';
+  return 'live';
+}
+
 function renderEvents() {
   cdIntervals.forEach(clearInterval); cdIntervals=[];
   const q=document.getElementById('searchInput').value.toLowerCase();
