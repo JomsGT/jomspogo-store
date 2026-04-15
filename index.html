@@ -3139,14 +3139,6 @@ if(pUrlInp) pUrlInp.addEventListener('keydown', e=>{ if(e.key==='Enter') addProd
 const evUrlInp = document.getElementById('ev-img-url-input');
 if(evUrlInp) evUrlInp.addEventListener('keydown', e=>{ if(e.key==='Enter') addEvImgUrl(); });
 
-// Handle deep links first (item/event hashes), then admin hash
-const _startHash = window.location.hash;
-if (_startHash && _startHash !== '#admin') {
-  loadAll().then(() => handleDeepLink());
-} else {
-  checkHashForAdmin();
-  loadAll();
-}
 /* ── i18n — Bilingual ES/EN ── */
 const TRANSLATIONS = {
   es: {
@@ -3367,6 +3359,15 @@ function applyLang() {
   }
 }
 
+
+// Handle deep links first (item/event hashes), then admin hash
+const _startHash = window.location.hash;
+if (_startHash && _startHash !== '#admin') {
+  loadAll().then(() => handleDeepLink());
+} else {
+  checkHashForAdmin();
+  loadAll();
+}
 /* ── Featured items carousel ── */
 function makeFeaturedCard(p, isFeatured) {
   const pid = p._id||p.id;
