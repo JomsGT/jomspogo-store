@@ -689,7 +689,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="page-title" id="evTitle">📅 Todos los Eventos</div>
       <div class="page-sub" id="evSub" data-i18n="events.subtitle">Eventos activos y próximos de Pokémon GO</div>
     </div>
-    <div class="events-list" id="eventsList"><div class="db-loading"><div class="spinner"></div><span>${_t('loading.events')}</span></div></div>
+    <div class="events-list" id="eventsList"><div class="db-loading"><div class="spinner"></div><span data-i18n="loading.events">Cargando eventos...</span></div></div>
   </div>
 
   <div id="page-evdetail" class="content" style="display:none">
@@ -1044,6 +1044,13 @@ let products = [];
 let events   = [];
 let isAdmin  = false;
 let currentUserUid = null;
+
+// i18n helper — hoisted so it works anywhere in the script
+// Falls back to ES until TRANSLATIONS is defined
+function _t(key) {
+  if (typeof TRANSLATIONS === 'undefined' || typeof currentLang === 'undefined') return key;
+  return (TRANSLATIONS[currentLang]||TRANSLATIONS.es||{})[key] || key;
+}
 let currentSection = 'catalog';
 let activeCat      = 'all';
 let activeEvType   = 'all';
@@ -3170,7 +3177,7 @@ const TRANSLATIONS = {
     'wa.btn':'Comprar por WhatsApp',
     'wa.msg.prefix':'Hola! Me interesa:',
     // Navigation buttons
-    'back.events':_t('ev.back'),'back.catalog':_t('back.catalog'),
+    'back.events':'← Volver a Eventos','back.catalog':'← Volver al catálogo',
     'share':'🔗 Compartir',
     // Loading states
     'loading.catalog':'Cargando catálogo...','loading.events':'Cargando eventos...',
@@ -3180,14 +3187,14 @@ const TRANSLATIONS = {
     'badge.soldout':'AGOTADO','badge.stock':'disponible','badge.stocks':'disponibles',
     // Dates
     'dates.start':'Inicio','dates.end':'Fin','dates.starts':'Inicia en:',
-    'dates.live':'EN VIVO — Finaliza en:','dates.ended':_t('dates.ended'),'dates.upcoming':'Próximo',
+    'dates.live':'EN VIVO — Finaliza en:','dates.ended':'Finalizado','dates.upcoming':'Próximo',
     'dates.status':'Estado:',
     // Event detail
-    'ev.back':_t('ev.back'),
+    'ev.back':'← Volver a Eventos',
     'ev.tab.tz':'Horarios',
-    'tz.copy':'${_t('tz.copy')}','tz.copied':'✅ Copiado',
+    'tz.copy':'📋 Copiar','tz.copied':'✅ Copiado',
     // Product detail
-    'prod.desc.title':_t('prod.desc.title'),
+    'prod.desc.title':'📋 Descripción',
     // Reviews
     'reviews.title':'⭐ Reviews de la comunidad',
     'reviews.avg':'Promedio','reviews.submit':'Publicar Review',
@@ -3309,7 +3316,6 @@ const TRANSLATIONS = {
 
 let currentLang = localStorage.getItem('jp_lang') || 'es';
 
-const _t = (key) => (TRANSLATIONS[currentLang]||TRANSLATIONS.es)[key] || key;
 function t(key) {
   return (TRANSLATIONS[currentLang]||TRANSLATIONS.es)[key] || key;
 }
@@ -3449,7 +3455,7 @@ renderProducts = function() {
 applyLang();
 
 
-
+  
 </script>
 </body>
 </html>
