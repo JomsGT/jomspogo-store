@@ -1045,81 +1045,53 @@ let events   = [];
 let isAdmin  = false;
 let currentUserUid = null;
 
-// i18n helper — hoisted so it works anywhere in the script
-// Falls back to ES until TRANSLATIONS is defined
-function _t(key) {
-  if (typeof TRANSLATIONS === 'undefined' || typeof currentLang === 'undefined') return key;
-  return (TRANSLATIONS[currentLang]||TRANSLATIONS.es||{})[key] || key;
+
+let currentSection = 'catalog';
+
+let activeCat      = 'all';
+let activeEvType   = 'all';
+let cdIntervals    = [];
+let shareSelection = new Set();
+
+function updateShareToolbar() {
+  // Share selection disabled for now
+  const toolbar = document.getElementById('shareToolbar');
+  if (toolbar) toolbar.classList.remove('visible');
 }
 
-/* ── i18n — Bilingual ES/EN ── */
+
+/* ── LANGUAGE ── */
+let currentLang = localStorage.getItem('jp_lang') || 'es';
+
 const TRANSLATIONS = {
   es: {
-    // Nav
     'nav.catalog':'Catálogo','nav.categories':'Categorías','nav.all':'Todos',
     'nav.pokemon':'Pokémon','nav.accounts':'Cuentas','nav.store':'Tienda',
     'nav.items':'Items','nav.events':'Eventos','nav.allevents':'Todos los Eventos',
     'nav.community':'Comunidad','nav.reviews':'Reviews','nav.admin':'Panel Admin',
-    // Topbar
     'search.placeholder':'Buscar productos, eventos...',
-    'count.items':'productos','count.events':'eventos',
-    // Page titles/subtitles
     'catalog.subtitle':'Catálogo completo · Entrega inmediata vía WhatsApp',
     'catalog.title.all':'🛒 Todos los Productos','catalog.title.pokemon':'⚡ Pokémon',
     'catalog.title.cuenta':'🎮 Cuentas','catalog.title.servicio':'🏪 Tienda','catalog.title.item':'🎒 Items',
     'events.subtitle':'Eventos activos y próximos de Pokémon GO',
     'events.title.all':'📅 Todos los Eventos',
-    // Payment
     'payment.title':'💳 Métodos de pago aceptados',
-    // Featured & Related
-    'featured.title':'⭐ Destacados del día',
+    'featured.title':'⭐ Destacados del día','featured.badge':'Destacado',
     'related.title':'✨ Podría interesarte',
-    'featured.badge':'Destacado',
-    // WhatsApp
-    'wa.btn':'Comprar por WhatsApp',
-    'wa.msg.prefix':'Hola! Me interesa:',
-    // Navigation buttons
+    'wa.btn':'Comprar por WhatsApp','wa.msg.prefix':'Hola! Me interesa:',
     'back.events':'← Volver a Eventos','back.catalog':'← Volver al catálogo',
     'share':'🔗 Compartir',
-    // Loading states
     'loading.catalog':'Cargando catálogo...','loading.events':'Cargando eventos...',
     'empty.search':'Sin resultados','empty.search.sub':'Intenta con otra búsqueda',
     'empty.events':'Sin eventos',
-    // Badges
     'badge.soldout':'AGOTADO','badge.stock':'disponible','badge.stocks':'disponibles',
-    // Dates
     'dates.start':'Inicio','dates.end':'Fin','dates.starts':'Inicia en:',
     'dates.live':'EN VIVO — Finaliza en:','dates.ended':'Finalizado','dates.upcoming':'Próximo',
-    'dates.status':'Estado:',
-    // Event detail
-    'ev.back':'← Volver a Eventos',
-    'ev.tab.tz':'Horarios',
-    'tz.copy':'📋 Copiar','tz.copied':'✅ Copiado',
-    // Product detail
+    'dates.status':'Estado:','ev.tab.tz':'Horarios',
     'prod.desc.title':'📋 Descripción',
-    // Reviews
     'reviews.title':'⭐ Reviews de la comunidad',
-    'reviews.avg':'Promedio','reviews.submit':'Publicar Review',
-    'reviews.name.placeholder':'TrainerGT99',
-    'reviews.text.placeholder':'Comparte tu experiencia con la tienda...',
-    'reviews.bought':'¿Qué compraste?',
-    'reviews.empty':'Sé el primero en dejar una review',
-    'reviews.write':'Escribe tu experiencia...',
-    // Admin (stays Spanish for owner, but translate for sub-admins)
-    'admin.save':'💾 Guardar Cambios','admin.publish.prod':'🚀 Publicar Producto',
-    'admin.publish.ev':'🚀 Publicar Evento','admin.publish.ban':'🚀 Publicar Banner',
-    'admin.cancel':'Cancelar','admin.edit':'✏️ Editar','admin.delete':'🗑️',
-    'admin.duplicate':'📋 Duplicar',
-    'admin.search.prod':'Buscar producto...','admin.search.ev':'Buscar evento...',
-    'admin.published':'publicados',
-    // Toasts
-    'toast.prod.saved':'✅ Producto actualizado!','toast.prod.new':'🚀 Producto publicado!',
-    'toast.ev.saved':'✅ Evento actualizado!','toast.ev.new':'🚀 Evento publicado!',
-    'toast.ban.saved':'✅ Banner actualizado!','toast.ban.new':'🚀 Banner publicado!',
-    'toast.deleted':'🗑️ Eliminado',
-    'toast.copied':'🔗 Link copiado!',
-    'toast.coords':'✅ Copiado',
-    'toast.icons':'✅ Iconos guardados',
+    'reviews.submit':'Publicar Review',
+    'count.items':'productos','count.events':'eventos',
     'confirm.delete.prod':'¿Eliminar este producto?',
     'confirm.delete.ev':'¿Eliminar este evento?',
     'confirm.delete.ban':'¿Eliminar este banner?',
@@ -1128,78 +1100,39 @@ const TRANSLATIONS = {
     'err.no.perm.delete':'⛔ Solo puedes eliminar tus propios productos',
     'err.no.perm.delete.ev':'⛔ Solo puedes eliminar tus propios eventos',
     'err.category':'⛔ Solo el admin principal puede publicar en Tienda e Items',
-    'err.review.wait':'⏱️ Espera {n} min antes de enviar otra review',
-    'err.review.denied':'❌ Review rechazada: contenido no válido',
-    'err.save':'❌ Error al guardar',
-    // Lang toggle
+    'toast.prod.saved':'✅ Producto actualizado!','toast.prod.new':'🚀 Producto publicado!',
+    'toast.ev.saved':'✅ Evento actualizado!','toast.ev.new':'🚀 Evento publicado!',
+    'toast.deleted':'🗑️ Eliminado','toast.copied':'🔗 Link copiado!','toast.icons':'✅ Iconos guardados',
     'lang.toggle':'🌐 EN',
   },
   en: {
-    // Nav
     'nav.catalog':'Catalog','nav.categories':'Categories','nav.all':'All',
     'nav.pokemon':'Pokémon','nav.accounts':'Accounts','nav.store':'Shop',
     'nav.items':'Items','nav.events':'Events','nav.allevents':'All Events',
     'nav.community':'Community','nav.reviews':'Reviews','nav.admin':'Admin Panel',
-    // Topbar
     'search.placeholder':'Search products, events...',
-    'count.items':'products','count.events':'events',
-    // Page titles/subtitles
     'catalog.subtitle':'Full catalog · Instant delivery via WhatsApp',
     'catalog.title.all':'🛒 All Products','catalog.title.pokemon':'⚡ Pokémon',
     'catalog.title.cuenta':'🎮 Accounts','catalog.title.servicio':'🏪 Shop','catalog.title.item':'🎒 Items',
     'events.subtitle':'Active and upcoming Pokémon GO events',
     'events.title.all':'📅 All Events',
-    // Payment
     'payment.title':'💳 Accepted payment methods',
-    // Featured & Related
-    'featured.title':'⭐ Featured today',
+    'featured.title':'⭐ Featured today','featured.badge':'Featured',
     'related.title':'✨ You might also like',
-    'featured.badge':'Featured',
-    // WhatsApp
-    'wa.btn':'Buy via WhatsApp',
-    'wa.msg.prefix':'Hi! I'm interested in:',
-    // Navigation buttons
+    'wa.btn':'Buy via WhatsApp','wa.msg.prefix':"Hi! I'm interested in:",
     'back.events':'← Back to Events','back.catalog':'← Back to catalog',
     'share':'🔗 Share',
-    // Loading states
     'loading.catalog':'Loading catalog...','loading.events':'Loading events...',
-    'empty.search':'No results found','empty.search.sub':'Try a different search',
+    'empty.search':'No results','empty.search.sub':'Try a different search',
     'empty.events':'No events found',
-    // Badges
     'badge.soldout':'SOLD OUT','badge.stock':'available','badge.stocks':'available',
-    // Dates
     'dates.start':'Start','dates.end':'End','dates.starts':'Starts in:',
     'dates.live':'LIVE — Ends in:','dates.ended':'Ended','dates.upcoming':'Upcoming',
-    'dates.status':'Status:',
-    // Event detail
-    'ev.back':'← Back to Events',
-    'ev.tab.tz':'Schedules',
-    'tz.copy':'📋 Copy','tz.copied':'✅ Copied',
-    // Product detail
+    'dates.status':'Status:','ev.tab.tz':'Schedules',
     'prod.desc.title':'📋 Description',
-    // Reviews
     'reviews.title':'⭐ Community Reviews',
-    'reviews.avg':'Average','reviews.submit':'Post Review',
-    'reviews.name.placeholder':'TrainerGT99',
-    'reviews.text.placeholder':'Share your experience with the store...',
-    'reviews.bought':'What did you buy?',
-    'reviews.empty':'Be the first to leave a review',
-    'reviews.write':'Write your experience...',
-    // Admin
-    'admin.save':'💾 Save Changes','admin.publish.prod':'🚀 Publish Product',
-    'admin.publish.ev':'🚀 Publish Event','admin.publish.ban':'🚀 Publish Banner',
-    'admin.cancel':'Cancel','admin.edit':'✏️ Edit','admin.delete':'🗑️',
-    'admin.duplicate':'📋 Duplicate',
-    'admin.search.prod':'Search product...','admin.search.ev':'Search event...',
-    'admin.published':'published',
-    // Toasts
-    'toast.prod.saved':'✅ Product updated!','toast.prod.new':'🚀 Product published!',
-    'toast.ev.saved':'✅ Event updated!','toast.ev.new':'🚀 Event published!',
-    'toast.ban.saved':'✅ Banner updated!','toast.ban.new':'🚀 Banner published!',
-    'toast.deleted':'🗑️ Deleted',
-    'toast.copied':'🔗 Link copied!',
-    'toast.coords':'✅ Copied',
-    'toast.icons':'✅ Icons saved',
+    'reviews.submit':'Post Review',
+    'count.items':'products','count.events':'events',
     'confirm.delete.prod':'Delete this product?',
     'confirm.delete.ev':'Delete this event?',
     'confirm.delete.ban':'Delete this banner?',
@@ -1208,17 +1141,14 @@ const TRANSLATIONS = {
     'err.no.perm.delete':'⛔ You can only delete your own products',
     'err.no.perm.delete.ev':'⛔ You can only delete your own events',
     'err.category':'⛔ Only the main admin can publish to Shop and Items',
-    'err.review.wait':'⏱️ Wait {n} min before submitting another review',
-    'err.review.denied':'❌ Review rejected: invalid content',
-    'err.save':'❌ Error saving',
-    // Lang toggle
+    'toast.prod.saved':'✅ Product updated!','toast.prod.new':'🚀 Product published!',
+    'toast.ev.saved':'✅ Event updated!','toast.ev.new':'🚀 Event published!',
+    'toast.deleted':'🗑️ Deleted','toast.copied':'🔗 Link copied!','toast.icons':'✅ Icons saved',
     'lang.toggle':'🌐 ES',
   }
 };
 
-let currentLang = localStorage.getItem('jp_lang') || 'es';
-
-function t(key) {
+function _t(key) {
   return (TRANSLATIONS[currentLang]||TRANSLATIONS.es)[key] || key;
 }
 
@@ -1230,68 +1160,20 @@ window.toggleLang = () => {
 
 function applyLang() {
   document.documentElement.lang = currentLang;
-  // Toggle button
   const btn = document.getElementById('langToggle');
-  if (btn) btn.textContent = t('lang.toggle');
-  // All data-i18n elements
+  if (btn) btn.textContent = _t('lang.toggle');
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const val = t(key);
+    const val = _t(el.getAttribute('data-i18n'));
     if (val) el.textContent = val;
   });
-  // Placeholders
   const si = document.getElementById('searchInput');
-  if (si) si.placeholder = t('search.placeholder');
-  const ps = document.getElementById('adm-prod-search');
-  if (ps) ps.placeholder = t('admin.search.prod');
-  const es = document.getElementById('adm-ev-search');
-  if (es) es.placeholder = t('admin.search.ev');
-  // Page subtitles
+  if (si) si.placeholder = _t('search.placeholder');
   const catSub = document.getElementById('catSub');
-  if (catSub) catSub.textContent = t('catalog.subtitle');
+  if (catSub) catSub.textContent = _t('catalog.subtitle');
   const evSub = document.getElementById('evSub');
-  if (evSub) evSub.textContent = t('events.subtitle');
-  // Back buttons & share — update if currently on those pages
-  document.querySelectorAll('.evd-back').forEach(b => { if(b.getAttribute('onclick')?.includes('goBackToEvents')) b.textContent = t('ev.back'); });
-  document.querySelectorAll('.prod-detail-back').forEach(b => b.textContent = t('back.catalog'));
-  document.querySelectorAll('.share-link-btn').forEach(b => b.textContent = t('share'));
-  // WA buttons
-  document.querySelectorAll('.card-wa, .pdi-wa').forEach(b => {
-    // preserve the SVG, only update the text node
-    const nodes = [...b.childNodes].filter(n=>n.nodeType===3);
-    nodes.forEach(n=>{ if(n.textContent.trim()) n.textContent = '\n          '+t('wa.btn')+'\n        '; });
-  });
-  // Re-render to pick up language changes in dynamic content
+  if (evSub) evSub.textContent = _t('events.subtitle');
   if (currentSection === 'catalog') renderProducts();
   else if (currentSection === 'events') renderEvents();
-  else if (currentSection === 'proddetail') {
-    const pid = document.querySelector('[id^="pcard-"]')?.id?.replace('pcard-','');
-    // just re-render related section title
-    document.querySelectorAll('.related-title').forEach(el => el.innerHTML = `<span>✨</span> ${t('related.title')}`);
-    document.querySelectorAll('.carousel-feat-badge').forEach(el => el.textContent = `⭐ ${t('featured.badge')}`);
-  }
-}
-
-
-// Handle deep links first (item/event hashes), then admin hash
-const _startHash = window.location.hash;
-if (_startHash && _startHash !== '#admin') {
-  loadAll().then(() => handleDeepLink());
-} else {
-  checkHashForAdmin();
-  loadAll();
-}
-
-let currentSection = 'catalog';
-let activeCat      = 'all';
-let activeEvType   = 'all';
-let cdIntervals    = [];
-let shareSelection = new Set();
-
-function updateShareToolbar() {
-  // Share selection disabled for now
-  const toolbar = document.getElementById('shareToolbar');
-  if (toolbar) toolbar.classList.remove('visible');
 }
 
 /* ── FIREBASE HELPERS ── */
@@ -3445,10 +3327,23 @@ function renderRelated(currentPid, category) {
 }
 
 // Init language on load
+
+
+
+
+
+// ── STARTUP ──
+// Apply language before loading data
 applyLang();
 
-
-
-</script>
+// Handle deep links first (item/event hashes), then admin hash
+const _startHash = window.location.hash;
+if (_startHash && _startHash !== '#admin') {
+  loadAll().then(() => handleDeepLink());
+} else {
+  checkHashForAdmin();
+  loadAll();
+}
+trackVisit();</script>
 </body>
 </html>
