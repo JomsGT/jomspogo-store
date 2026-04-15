@@ -392,7 +392,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .stock-badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.75);color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;padding:2px 8px;border-radius:50px;z-index:3;border:1px solid rgba(245,197,24,.3)}
 .pcard.is-sold-out{opacity:.75}
 .pcard.is-sold-out .card-wa{opacity:.5;pointer-events:none;cursor:not-allowed}
-/* Admin quick actions on cards */
+/* Carousels */
+@keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.carousel-wrap{position:relative;overflow:hidden}
+.carousel-wrap:hover .carousel-track{animation-play-state:paused}
+.carousel-track{display:flex;gap:12px;animation:scrollLeft 32s linear infinite;width:max-content}
+.carousel-card{flex-shrink:0;width:160px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .2s}
+.carousel-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.carousel-card img{width:100%;height:120px;object-fit:cover;display:block}
+.carousel-card-body{padding:8px 10px}
+.carousel-card-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.carousel-card-price{font-family:'Orbitron',monospace;font-size:11px;color:var(--gold);margin-top:2px}
+.carousel-card-cat{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+/* Featured badge on carousel card */
+.carousel-feat-badge{position:absolute;top:6px;left:6px;background:var(--gold);color:#000;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:9px;padding:2px 6px;border-radius:50px;text-transform:uppercase;letter-spacing:.3px;z-index:2}
+/* You might like section */
+.related-section{margin-top:28px}
+.related-title{font-family:'Orbitron',monospace;font-weight:700;font-size:13px;color:var(--text);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.related-title span{color:var(--teal)}
 .card-admin-bar{display:none;gap:4px;padding:6px 8px;background:rgba(13,13,26,.92);border-top:1px solid rgba(245,197,24,.15)}
 .is-admin-mode .card-admin-bar{display:flex}
 .card-admin-btn{flex:1;padding:5px;border-radius:6px;border:none;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.5px;transition:all .15s;text-transform:uppercase}
@@ -652,11 +669,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
         <span>⭐</span><span data-i18n="featured.title">Destacados del día</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="featured-grid">
-        <!-- rendered dynamically -->
+      <div style="position:relative;overflow:hidden" onmouseover="document.getElementById('featured-track').style.animationPlayState='paused'" onmouseout="document.getElementById('featured-track').style.animationPlayState='running'">
+        <div id="featured-track" style="display:flex;gap:12px;animation:scrollLeft 28s linear infinite;width:max-content">
+          <!-- filled by renderFeatured, duplicated for seamless loop -->
+        </div>
       </div>
     </div>
-    <div class="prod-grid" id="prodGrid"><div class="db-loading"><div class="spinner"></div><span data-i18n="loading.catalog">Cargando catálogo...</span></div></div>
+    <div class="prod-grid" id="prodGrid"><div class="db-loading"><div class="spinner"></div><span data-i18n="loading.catalog">${_t('loading.catalog')}</span></div></div>
     <!-- MID BANNER -->
     <div id="mid-banner-slot" style="margin-top:24px"></div>
     <!-- ADSENSE SLOT (activa cuando tengas el código) -->
@@ -670,7 +689,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="page-title" id="evTitle">📅 Todos los Eventos</div>
       <div class="page-sub" id="evSub" data-i18n="events.subtitle">Eventos activos y próximos de Pokémon GO</div>
     </div>
-    <div class="events-list" id="eventsList"><div class="db-loading"><div class="spinner"></div><span>Cargando eventos...</span></div></div>
+    <div class="events-list" id="eventsList"><div class="db-loading"><div class="spinner"></div><span data-i18n="loading.events">Cargando eventos...</span></div></div>
   </div>
 
   <div id="page-evdetail" class="content" style="display:none">
@@ -821,7 +840,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button class="adm-btn adm-btn-red" id="p-save-btn" onclick="saveProd()">🚀 Publicar Producto</button>
         </div>
         <div class="adm-list-title"><span>Productos publicados</span><span style="font-size:11px;color:var(--muted);font-weight:400" id="prod-list-count"></span></div>
-        <div class="adm-search-wrap"><span class="adm-search-icon">🔍</span><input class="adm-search-input" id="adm-prod-search" placeholder="Buscar producto..." oninput="filterAdmList('prod')"></div>
+        <div class="adm-search-wrap"><span class="adm-search-icon">🔍</span><input class="adm-search-input" id="adm-prod-search" id="adm-prod-search-placeholder" placeholder="Buscar producto..." oninput="filterAdmList('prod')"></div>
         <div class="adm-list" id="adm-prod-list"></div>
       </div>
 
@@ -876,7 +895,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button class="adm-btn adm-btn-red" id="ev-save-btn" onclick="saveEv()">🚀 Publicar Evento</button>
         </div>
         <div class="adm-list-title"><span>Eventos publicados</span><span style="font-size:11px;color:var(--muted);font-weight:400" id="ev-list-count"></span></div>
-        <div class="adm-search-wrap"><span class="adm-search-icon">🔍</span><input class="adm-search-input" id="adm-ev-search" placeholder="Buscar evento..." oninput="filterAdmList('ev')"></div>
+        <div class="adm-search-wrap"><span class="adm-search-icon">🔍</span><input class="adm-search-input" id="adm-ev-search" id="adm-ev-search-placeholder" placeholder="Buscar evento..." oninput="filterAdmList('ev')"></div>
         <div class="adm-list" id="adm-ev-list"></div>
       </div>
 
@@ -1025,6 +1044,13 @@ let products = [];
 let events   = [];
 let isAdmin  = false;
 let currentUserUid = null;
+
+// i18n helper — hoisted so it works anywhere in the script
+// Falls back to ES until TRANSLATIONS is defined
+function _t(key) {
+  if (typeof TRANSLATIONS === 'undefined' || typeof currentLang === 'undefined') return key;
+  return (TRANSLATIONS[currentLang]||TRANSLATIONS.es||{})[key] || key;
+}
 let currentSection = 'catalog';
 let activeCat      = 'all';
 let activeEvType   = 'all';
@@ -1231,7 +1257,7 @@ window.showSection = (section, filter, navEl) => {
   cdIntervals.forEach(clearInterval); cdIntervals = [];
   if (section==='catalog') {
     activeCat = filter;
-    const t={all:'🛒 Todos los Productos',pokemon:'⚡ Pokémon',cuenta:'🎮 Cuentas',servicio:'🏪 Tienda',item:'🎒 Items'};
+    const t={all:_t('catalog.title.all'),pokemon:_t('catalog.title.pokemon'),cuenta:_t('catalog.title.cuenta'),servicio:_t('catalog.title.servicio'),item:_t('catalog.title.item')};
     document.getElementById('catTitle').textContent = t[filter]||'🛒 Catálogo';
     renderProducts();
     updateShareToolbar();
@@ -1300,9 +1326,9 @@ function renderProducts() {
     const mq = !q||p.name.toLowerCase().includes(q)||(p.descShort||'').toLowerCase().includes(q)||(p.event||'').toLowerCase().includes(q);
     return mc&&mq;
   });
-  document.getElementById('countPill').innerHTML = '<span>'+f.length+'</span> producto'+(f.length!==1?'s':'');
+  document.getElementById('countPill').innerHTML = `<span>${f.length}</span> ${_t('count.items')}`;
   const grid = document.getElementById('prodGrid');
-  if(!f.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><h3>Sin resultados</h3><p>Intenta con otra búsqueda</p></div>';return;}
+  if(!f.length){grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><h3>${_t('empty.search')}</h3><p>${_t('empty.search.sub')}</p></div>`;return;}
   if(isAdmin) grid.classList.add('is-admin-mode'); else grid.classList.remove('is-admin-mode');
   grid.innerHTML = f.map(p=>{
     const bc=BADGE_CLASS[p.tag]||'badge-hot', cl=CAT_LABEL[p.category]||p.category;
@@ -1320,7 +1346,7 @@ function renderProducts() {
       <div class="card-body">
         <div class="card-name">${p.name}</div>
         <div class="card-tags"><span class="tag-cat">${cl}</span>${eb}</div>
-        <button class="card-wa" onclick="event.stopPropagation();openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}')">
+        <button class="card-wa" onclick="event.stopPropagation();openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}','${pid}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
           Comprar por WhatsApp
         </button>
@@ -1330,12 +1356,9 @@ function renderProducts() {
         <button class="card-admin-btn del" onclick="delProd('${pid}')">🗑️ Eliminar</button>
       </div></div>`;
   }).join('');
+  // Update featured carousel
+  setTimeout(renderFeatured, 0);
 }
-
-/* ── RENDER EVENTS ── */
-function getStatus(ev){const n=Date.now();if(n<ev.startUTC)return'upcoming';if(n<=ev.endUTC)return'live';return'ended';}
-function fmtCd(ms){if(ms<=0)return null;const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60),sec=s%60;let o='';if(d)o+=d+'d ';if(h||d)o+=h+'h ';if(m||h||d)o+=m+'m ';o+=sec+'s';return o.trim();}
-
 function renderEvents() {
   cdIntervals.forEach(clearInterval); cdIntervals=[];
   const q=document.getElementById('searchInput').value.toLowerCase();
@@ -1344,16 +1367,16 @@ function renderEvents() {
     const mq=!q||ev.name.toLowerCase().includes(q)||(ev.type||'').toLowerCase().includes(q)||(ev.descShort||'').toLowerCase().includes(q);
     return mt&&mq;
   });
-  document.getElementById('countPill').innerHTML='<span>'+f.length+'</span> evento'+(f.length!==1?'s':'');
+  document.getElementById('countPill').innerHTML=`<span>${f.length}</span> ${_t('count.events')}`;
   const list=document.getElementById('eventsList');
-  if(!f.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div><h3>Sin eventos</h3></div>';return;}
+  if(!f.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">📅</div><h3>${_t('empty.events')}</h3></div>`;return;}
   if(isAdmin) list.classList.add('is-admin-mode'); else list.classList.remove('is-admin-mode');
   list.innerHTML=f.map(ev=>{
     const st=getStatus(ev),cc=ev.color||'',eid=ev._id||ev.id;
     const imgH=ev.img?`<img class="ev-img" src="${ev.img}" alt="${ev.name}">`:`<div class="ev-img-placeholder">${ev.icon||'📅'}</div>`;
     const rH=st==='live'?`<div class="ev-cd-lbl"><span class="live-dot"></span>EN VIVO — Finaliza en:</div><div class="ev-cd-val live" id="ecd-${eid}">–</div>`:st==='upcoming'?`<div class="ev-cd-lbl">Inicia en:</div><div class="ev-cd-val" id="ecd-${eid}">–</div>`:`<div class="ev-cd-lbl">Estado:</div><div class="ev-cd-val ended">Finalizado</div>`;
     const adminBar = `<div class="ev-card-admin-bar" onclick="event.stopPropagation()"><button class="ev-admin-btn edit" onclick="showSection('admin','',document.getElementById('nav-admin'));switchAdminTab('ev');editEv('${eid}')">✏️</button><button class="ev-admin-btn" style="background:rgba(0,180,160,.85);color:#fff" onclick="duplicateEv('${eid}')">📋</button><button class="ev-admin-btn del" onclick="delEv('${eid}')">🗑️</button></div>`;
-    return `<div class="ev-card" onclick="openEventDetail('${eid}')" style="position:relative">${imgH}<div class="ev-content"><div class="ev-header ${cc}"><span class="ev-type-badge">${ev.type}</span><span class="ev-title-text">${ev.name}</span></div><div class="ev-body"><div class="ev-dates"><div class="ev-date-row"><span class="ev-date-lbl">Inicio:</span><span class="ev-date-val">${ev.startStr}</span></div><div class="ev-date-row"><span class="ev-date-lbl">Fin:</span><span class="ev-date-val">${ev.endStr}</span></div></div><div class="ev-right">${rH}</div></div></div>${adminBar}</div>`;
+    return `<div class="ev-card" onclick="openEventDetail('${eid}')" style="position:relative">${imgH}<div class="ev-content"><div class="ev-header ${cc}"><span class="ev-type-badge">${ev.type}</span><span class="ev-title-text">${ev.name}</span></div><div class="ev-body"><div class="ev-dates"><div class="ev-date-row"><span class="ev-date-lbl">${_t('dates.start')}:</span><span class="ev-date-val">${ev.startStr}</span></div><div class="ev-date-row"><span class="ev-date-lbl">${_t('dates.end')}:</span><span class="ev-date-val">${ev.endStr}</span></div></div><div class="ev-right">${rH}</div></div></div>${adminBar}</div>`;
   }).join('');
   f.forEach(ev=>{const st=getStatus(ev);if(st==='ended')return;const eid=ev._id||ev.id;const el=document.getElementById('ecd-'+eid);if(!el)return;const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const r=t-Date.now();el.textContent=r>0?fmtCd(r):'–';};tick();cdIntervals.push(setInterval(tick,1000));});
 }
@@ -1723,7 +1746,7 @@ window.saveEvSectionIconsGlobal = () => {
     if (inp && inp.value.trim()) icons[s.id] = inp.value.trim();
   });
   localStorage.setItem('jp_ev_section_icons', JSON.stringify(icons));
-  showToast('✅ Iconos de secciones guardados');
+  showToast(_t('toast.icons'));
 };
 
 function renderEvSectionIcons(ev) {
@@ -1802,8 +1825,8 @@ window.switchEvDetailTab = (tab) => {
 function renderEventDetail(ev) {
   const st=getStatus(ev),cc=ev.color||'';
   const bH={live:`<span class="evd-badge live"><span class="live-dot"></span> En Vivo</span>`,upcoming:`<span class="evd-badge upcoming">📅 Próximo</span>`,ended:`<span class="evd-badge ended">✓ Finalizado</span>`}[st];
-  const cdL=st==='live'?'Finaliza en:':st==='upcoming'?'Inicia en:':'Estado:';
-  const cdC=st==='live'?'live':st==='ended'?'ended':'',cdI=st==='ended'?'Finalizado':'–';
+  const cdL=st==='live'?_t('dates.live'):st==='upcoming'?_t('dates.starts'):_t('dates.status');
+  const cdC=st==='live'?'live':st==='ended'?'ended':'',cdI=st==='ended'?_t('dates.ended'):'–';
 
   // Background image hero
   const hasBg = !!ev.img;
@@ -1824,7 +1847,7 @@ function renderEventDetail(ev) {
             <div class="evd-tz-loc-place">${loc.place}</div>
             <div class="evd-tz-loc-coords">${loc.coords}</div>
           </div>
-          <button class="evd-tz-copy-btn" onclick="copyCoords('${loc.coords}',this)">📋 Copiar</button>
+          <button class="evd-tz-copy-btn" onclick="copyCoords('${loc.coords}',this)">${_t('tz.copy')}</button>
         </div>`).join('');
       return `<div class="evd-tz-country">
         <div class="evd-tz-country-name">${c.name}</div>
@@ -1871,7 +1894,7 @@ function renderEventDetail(ev) {
     {id:'research',show: hasResearch},
     {id:'extra1',  show: hasExtra1},
     {id:'extra2',  show: hasExtra2},
-    {id:'tz',      show: true, label:'Horarios', icon:'🌎'},
+    {id:'tz',      show: true, label:_t('ev.tab.tz'), icon:'🌎'},
   ].filter(t=>t.show).map(t=>{
     const sec = EV_SECTIONS.find(s=>s.id===t.id);
     return {
@@ -1900,7 +1923,7 @@ function renderEventDetail(ev) {
 
   document.getElementById('evdWrap').innerHTML=`
     <button class="evd-back" onclick="goBackToEvents()">← Volver a Eventos</button>
-    <button class="share-link-btn" onclick="shareLink('event','${ev._id||ev.id}','${ev.name.replace(/'/g,"\\'")}')">🔗 Compartir</button>
+    <button class="share-link-btn" onclick="shareLink('event','${ev._id||ev.id}','${ev.name.replace(/'/g,"\\'")}')">${_t('share')}</button>
     <div class="evd-hero">
       ${hasBg
         ? `<div class="evd-hero-img-wrap">
@@ -1940,7 +1963,7 @@ function renderEventDetail(ev) {
       <div class="evd-tab-panel ${firstTab==='tz'?'active':''}" id="evd-panel-tz"><div class="evd-tz-list">${tzR}</div></div>
     </div>`;
 
-  if(st!=='ended'){const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const el=document.getElementById('evd-cd');if(el){const r=t-Date.now();el.textContent=r>0?fmtCd(r):'Finalizado';}};tick();cdIntervals.push(setInterval(tick,1000));}
+  if(st!=='ended'){const t=st==='live'?ev.endUTC:ev.startUTC;const tick=()=>{const el=document.getElementById('evd-cd');if(el){const r=t-Date.now();el.textContent=r>0?fmtCd(r):_t('dates.ended');}};tick();cdIntervals.push(setInterval(tick,1000));}
   // TZ clocks
   TZ_GROUPS.forEach((g,gi)=>{
     const t=st==='live'?ev.endUTC:ev.startUTC;
@@ -1951,7 +1974,7 @@ function renderEventDetail(ev) {
       const tEl=document.getElementById('tzt-'+gi);
       if(tEl) tEl.textContent=`${h12}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;
       const cdEl=document.getElementById('tzcd-'+gi);
-      if(cdEl&&st!=='ended'){const r=t-now;cdEl.textContent=r>0?'· '+fmtCd(r):'· Finalizado';}
+      if(cdEl&&st!=='ended'){const r=t-now;cdEl.textContent=r>0?'· '+fmtCd(r):'· '+_t('dates.ended');}
     };
     tick();
     cdIntervals.push(setInterval(tick,1000));
@@ -2127,7 +2150,7 @@ function renderProdDetail(p) {
 
   document.getElementById('prodDetailWrap').innerHTML = `
     <button class="prod-detail-back" onclick="closeProdDetail()">← Volver al catálogo</button>
-    <button class="share-link-btn" onclick="shareLink('product','${p._id||p.id}','${(p.name||'').replace(/'/g,"\\'")}')">🔗 Compartir</button>
+    <button class="share-link-btn" onclick="shareLink('product','${p._id||p.id}','${(p.name||'').replace(/'/g,"\\'")}')">${_t('share')}</button>
     <div class="prod-detail-grid">
       <!-- Gallery -->
       <div class="prod-detail-gallery">
@@ -2146,7 +2169,7 @@ function renderProdDetail(p) {
         ${p.price ? `<div class="pdi-price">Q ${p.price}</div>` : ''}
         <hr class="pdi-divider">
         ${p.descShort ? `<div class="pdi-short">${p.descShort}</div>` : ''}
-        <button class="pdi-wa" onclick="openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}')">
+        <button class="pdi-wa" onclick="openWA('${(p.name||'').replace(/'/g,"\\'")}','${p.wa||''}','${p._id||p.id}')">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.365 0 0 5.365 0 11.995c0 2.093.543 4.062 1.49 5.773L0 24l6.393-1.676A11.943 11.943 0 0011.995 24C18.625 24 24 18.635 24 12.005 24 5.365 18.625 0 11.995 0zm.01 21.818a9.825 9.825 0 01-5.006-1.367l-.359-.214-3.72.976.993-3.632-.234-.373A9.818 9.818 0 012.18 12.005c0-5.415 4.4-9.823 9.823-9.823 5.416 0 9.815 4.408 9.815 9.823 0 5.423-4.399 9.813-9.815 9.813z"/></svg>
           Comprar por WhatsApp
         </button>
@@ -2156,7 +2179,8 @@ function renderProdDetail(p) {
     <div class="pdi-desc-card">
       <div class="pdi-desc-title">📋 Descripción</div>
       <div class="pdi-desc-text">${p.desc}</div>
-    </div>` : ''}`;
+    </div>` : ''}
+    ${renderRelated(p._id||p.id, p.category)}`;
 }
 
 window.closeProdDetail = () => {
@@ -2192,11 +2216,11 @@ window.dtToggleZoom = (e) => {
 /* ── ADMIN PRODUCTS CRUD ── */
 window.saveProd = async () => {
   const name=document.getElementById('p-name').value.trim();
-  if(!name){showToast('⚠️ El nombre es requerido','error');return;}
+  if(!name){showToast(_t('err.required.name'),'error');return;}
   // Vendors can only post Pokémon and Cuentas
   const cat = document.getElementById('p-cat').value;
   if (!isOwner(currentUserUid) && (cat === 'servicio' || cat === 'item')) {
-    showToast('⛔ Solo el admin principal puede publicar en Tienda e Items','error');
+    showToast(_t('err.category'),'error');
     return;
   }
   const editId=document.getElementById('p-edit-id').value;
@@ -2231,7 +2255,7 @@ window.saveProd = async () => {
     await fbSave('products', obj);
     products = await fbLoad('products');
     updateCounts(); clearProdForm(); renderProducts(); renderAdminLists();
-    showToast(editId?'✅ Producto actualizado!':'🚀 Producto publicado!');
+    showToast(editId?_t('toast.prod.saved'):_t('toast.prod.new'));
   } catch(e) { showToast('❌ Error al guardar: '+e.message,'error'); }
 };
 
@@ -2282,20 +2306,20 @@ function canDelete(item) {
 
 window.delProd = async (id) => {
   const prod = products.find(p=>p._id===id);
-  if (prod && !canDelete(prod)) { showToast('⛔ Solo puedes eliminar tus propios productos','error'); return; }
-  if(!confirm('¿Eliminar este producto?')) return;
+  if (prod && !canDelete(prod)) { showToast(_t('err.no.perm.delete'),'error'); return; }
+  if(!confirm(_t('confirm.delete.prod'))) return;
   try {
     await fbDel('products', id);
     products = await fbLoad('products');
     updateCounts(); renderProducts(); renderAdminLists();
-    showToast('🗑️ Producto eliminado');
+    showToast(_t('toast.deleted'));
   } catch(e) { showToast('❌ Error: '+e.message,'error'); }
 };
 
 /* ── ADMIN EVENTS CRUD ── */
 window.saveEv = async () => {
   const name=document.getElementById('ev-name').value.trim();
-  if(!name){showToast('⚠️ El nombre es requerido','error');return;}
+  if(!name){showToast(_t('err.required.name'),'error');return;}
   const descShort=document.getElementById('ev-desc-short').value.trim();
   const startStr=document.getElementById('ev-start-str').value.trim();
   const endStr=document.getElementById('ev-end-str').value.trim();
@@ -2335,7 +2359,7 @@ window.saveEv = async () => {
     await fbSave('events', obj);
     events = await fbLoad('events');
     updateCounts(); clearEvForm(); renderEvents(); renderAdminLists();
-    showToast(editId?'✅ Evento actualizado!':'🚀 Evento publicado!');
+    showToast(editId?_t('toast.ev.saved'):_t('toast.ev.new'));
   } catch(e) { showToast('❌ Error al guardar: '+e.message,'error'); }
 };
 
@@ -2408,13 +2432,13 @@ function _fillEvForm(ev, editId) {
 
 window.delEv = async (id) => {
   const ev2 = events.find(e=>e._id===id);
-  if (ev2 && !canDelete(ev2)) { showToast('⛔ Solo puedes eliminar tus propios eventos','error'); return; }
-  if(!confirm('¿Eliminar este evento?')) return;
+  if (ev2 && !canDelete(ev2)) { showToast(_t('err.no.perm.delete.ev'),'error'); return; }
+  if(!confirm(_t('confirm.delete.ev'))) return;
   try {
     await fbDel('events', id);
     events = await fbLoad('events');
     updateCounts(); renderEvents(); renderAdminLists();
-    showToast('🗑️ Evento eliminado');
+    showToast(_t('toast.deleted'));
   } catch(e) { showToast('❌ Error: '+e.message,'error'); }
 };
 
@@ -2466,20 +2490,20 @@ window.filterAdmList = (type) => {
 function renderAdminLists() {
   // Products
   const pl=document.getElementById('adm-prod-list');
-  document.getElementById('prod-list-count').textContent=products.length+' publicados';
+  document.getElementById('prod-list-count').textContent=products.length+' '+_t('admin.published');
   _admProdItems = products.map(buildProdListItem);
   if(pl) pl.innerHTML=_admProdItems.length?_admProdItems.join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay productos publicados aún.</div>';
 
   // Events
   const el=document.getElementById('adm-ev-list');
-  document.getElementById('ev-list-count').textContent=events.length+' publicados';
+  document.getElementById('ev-list-count').textContent=events.length+' '+_t('admin.published');
   _admEvItems = events.map(buildEvListItem);
   if(el) el.innerHTML=_admEvItems.length?_admEvItems.join(''):'<div style="color:var(--muted);font-size:13px;padding:16px 0">No hay eventos publicados aún.</div>';
 
   // Banners
   const bl=document.getElementById('adm-ban-list');
   if(bl){
-    document.getElementById('ban-list-count').textContent=banners.length+' publicados';
+    document.getElementById('ban-list-count').textContent=banners.length+' '+_t('admin.published');
     bl.innerHTML=banners.length?banners.map(b=>`
       <div class="adm-list-item">
         <div class="adm-list-img" style="background:var(--dark);font-size:20px;display:flex;align-items:center;justify-content:center">📢</div>
@@ -2565,7 +2589,7 @@ window.saveBanner = async () => {
     await fbSave('banners', obj);
     banners = await fbLoad('banners');
     renderBanners(); clearBannerForm(); renderAdminLists();
-    showToast(editId?'✅ Banner actualizado!':'🚀 Banner publicado!');
+    showToast(editId?_t('toast.ban.saved'):_t('toast.ban.new'));
   } catch(e) { showToast('❌ Error: '+e.message,'error'); }
 };
 window.cancelEditBanner = clearBannerForm;
@@ -2595,11 +2619,11 @@ window.editBanner = (id) => {
   document.getElementById('apanel-ban').scrollIntoView({behavior:'smooth',block:'start'});
 };
 window.delBanner = async (id) => {
-  if(!confirm('¿Eliminar este banner?')) return;
+  if(!confirm(_t('confirm.delete.ban'))) return;
   await fbDel('banners',id);
   banners = await fbLoad('banners');
   renderBanners(); renderAdminLists();
-  showToast('🗑️ Banner eliminado');
+  showToast(_t('toast.deleted'));
 };
 
 /* ── ADSENSE ── */
@@ -2681,7 +2705,7 @@ window.submitReview = async () => {
   const cooldown = 5 * 60 * 1000; // 5 minutes
   if (Date.now() - lastReview < cooldown) {
     const remaining = Math.ceil((cooldown - (Date.now() - lastReview)) / 60000);
-    showToast(`⏱️ Espera ${remaining} min antes de enviar otra review`, 'error');
+    showToast(_t('err.review.wait').replace('{n}', remaining), 'error');
     return;
   }
 
@@ -2723,11 +2747,11 @@ window.submitReview = async () => {
 };
 
 window.delReview = async (id) => {
-  if(!confirm('¿Eliminar esta review?')) return;
+  if(!confirm(_t('confirm.delete.review'))) return;
   await fbDel('reviews',id);
   reviews = await fbLoad('reviews');
   updateCounts(); renderReviews(); renderAdminLists();
-  showToast('🗑️ Review eliminada');
+  showToast(_t('toast.deleted'));
 };
 
 /* ── ICON EDITOR ── */
@@ -2806,7 +2830,7 @@ window.saveIcons = () => {
   });
   localStorage.setItem('jp_icons', JSON.stringify(existing));
   loadIcons();
-  showToast('✅ Iconos guardados');
+  showToast(_t('toast.icons'));
 };
 
 /* ── PAYMENT METHOD EDITOR ── */
@@ -3037,9 +3061,14 @@ async function trackVisit() {
 
 /* ── UTILS ── */
 window.onSearch = () => { if(currentSection==='catalog')renderProducts(); else if(currentSection==='events')renderEvents(); };
-window.openWA = (name, customNum) => {
+window.openWA = (name, customNum, itemId) => {
   const num = (customNum && customNum.trim()) ? customNum.trim() : WA;
-  window.open('https://wa.me/'+num+'?text='+encodeURIComponent('Hola! Me interesa: '+name+' 🎮'),'_blank');
+  const base = window.location.origin + window.location.pathname;
+  const link = itemId ? base + '#product=' + itemId : '';
+  const msg = link
+    ? _t('wa.msg.prefix')+' ' + name + ' 🎮\n' + link
+    : _t('wa.msg.prefix')+' ' + name + ' 🎮';
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
 };
 
 /* ── DEEP LINKS (shareable URLs via hash) ── */
@@ -3056,7 +3085,7 @@ window.shareLink = (type, id, name) => {
     }).catch(()=>{});
   } else if (navigator.clipboard) {
     navigator.clipboard.writeText(url).then(()=>{
-      showToast('🔗 Link copiado!');
+      showToast(_t('toast.copied'));
     }).catch(()=>{ prompt('Copia este link:', url); });
   } else {
     prompt('Copia este link:', url);
@@ -3121,53 +3150,163 @@ if (_startHash && _startHash !== '#admin') {
 /* ── i18n — Bilingual ES/EN ── */
 const TRANSLATIONS = {
   es: {
+    // Nav
     'nav.catalog':'Catálogo','nav.categories':'Categorías','nav.all':'Todos',
     'nav.pokemon':'Pokémon','nav.accounts':'Cuentas','nav.store':'Tienda',
     'nav.items':'Items','nav.events':'Eventos','nav.allevents':'Todos los Eventos',
     'nav.community':'Comunidad','nav.reviews':'Reviews','nav.admin':'Panel Admin',
+    // Topbar
     'search.placeholder':'Buscar productos, eventos...',
+    'count.items':'productos','count.events':'eventos',
+    // Page titles/subtitles
     'catalog.subtitle':'Catálogo completo · Entrega inmediata vía WhatsApp',
     'catalog.title.all':'🛒 Todos los Productos','catalog.title.pokemon':'⚡ Pokémon',
-    'catalog.title.cuenta':'🎮 Cuentas','catalog.title.servicio':'🏪 Tienda',
-    'catalog.title.item':'🎒 Items',
+    'catalog.title.cuenta':'🎮 Cuentas','catalog.title.servicio':'🏪 Tienda','catalog.title.item':'🎒 Items',
     'events.subtitle':'Eventos activos y próximos de Pokémon GO',
     'events.title.all':'📅 Todos los Eventos',
+    // Payment
     'payment.title':'💳 Métodos de pago aceptados',
+    // Featured & Related
     'featured.title':'⭐ Destacados del día',
+    'related.title':'✨ Podría interesarte',
+    'featured.badge':'Destacado',
+    // WhatsApp
     'wa.btn':'Comprar por WhatsApp',
+    'wa.msg.prefix':'Hola! Me interesa:',
+    // Navigation buttons
     'back.events':'← Volver a Eventos','back.catalog':'← Volver al catálogo',
     'share':'🔗 Compartir',
+    // Loading states
     'loading.catalog':'Cargando catálogo...','loading.events':'Cargando eventos...',
+    'empty.search':'Sin resultados','empty.search.sub':'Intenta con otra búsqueda',
+    'empty.events':'Sin eventos',
+    // Badges
     'badge.soldout':'AGOTADO','badge.stock':'disponible','badge.stocks':'disponibles',
-    'dates.start':'Inicio','dates.end':'Fin','dates.starts':'Inicia en:','dates.live':'EN VIVO — Finaliza en:',
-    'dates.ended':'Finalizado','dates.upcoming':'Próximo',
+    // Dates
+    'dates.start':'Inicio','dates.end':'Fin','dates.starts':'Inicia en:',
+    'dates.live':'EN VIVO — Finaliza en:','dates.ended':'Finalizado','dates.upcoming':'Próximo',
+    'dates.status':'Estado:',
+    // Event detail
+    'ev.back':'← Volver a Eventos',
+    'ev.tab.tz':'Horarios',
+    'tz.copy':'📋 Copiar','tz.copied':'✅ Copiado',
+    // Product detail
+    'prod.desc.title':'📋 Descripción',
+    // Reviews
     'reviews.title':'⭐ Reviews de la comunidad',
     'reviews.avg':'Promedio','reviews.submit':'Publicar Review',
+    'reviews.name.placeholder':'TrainerGT99',
+    'reviews.text.placeholder':'Comparte tu experiencia con la tienda...',
+    'reviews.bought':'¿Qué compraste?',
+    'reviews.empty':'Sé el primero en dejar una review',
+    'reviews.write':'Escribe tu experiencia...',
+    // Admin (stays Spanish for owner, but translate for sub-admins)
+    'admin.save':'💾 Guardar Cambios','admin.publish.prod':'🚀 Publicar Producto',
+    'admin.publish.ev':'🚀 Publicar Evento','admin.publish.ban':'🚀 Publicar Banner',
+    'admin.cancel':'Cancelar','admin.edit':'✏️ Editar','admin.delete':'🗑️',
+    'admin.duplicate':'📋 Duplicar',
+    'admin.search.prod':'Buscar producto...','admin.search.ev':'Buscar evento...',
+    'admin.published':'publicados',
+    // Toasts
+    'toast.prod.saved':'✅ Producto actualizado!','toast.prod.new':'🚀 Producto publicado!',
+    'toast.ev.saved':'✅ Evento actualizado!','toast.ev.new':'🚀 Evento publicado!',
+    'toast.ban.saved':'✅ Banner actualizado!','toast.ban.new':'🚀 Banner publicado!',
+    'toast.deleted':'🗑️ Eliminado',
+    'toast.copied':'🔗 Link copiado!',
+    'toast.coords':'✅ Copiado',
+    'toast.icons':'✅ Iconos guardados',
+    'confirm.delete.prod':'¿Eliminar este producto?',
+    'confirm.delete.ev':'¿Eliminar este evento?',
+    'confirm.delete.ban':'¿Eliminar este banner?',
+    'confirm.delete.review':'¿Eliminar esta review?',
+    'err.required.name':'⚠️ El nombre es requerido',
+    'err.no.perm.delete':'⛔ Solo puedes eliminar tus propios productos',
+    'err.no.perm.delete.ev':'⛔ Solo puedes eliminar tus propios eventos',
+    'err.category':'⛔ Solo el admin principal puede publicar en Tienda e Items',
+    'err.review.wait':'⏱️ Espera {n} min antes de enviar otra review',
+    'err.review.denied':'❌ Review rechazada: contenido no válido',
+    'err.save':'❌ Error al guardar',
+    // Lang toggle
     'lang.toggle':'🌐 EN',
   },
   en: {
+    // Nav
     'nav.catalog':'Catalog','nav.categories':'Categories','nav.all':'All',
     'nav.pokemon':'Pokémon','nav.accounts':'Accounts','nav.store':'Shop',
     'nav.items':'Items','nav.events':'Events','nav.allevents':'All Events',
     'nav.community':'Community','nav.reviews':'Reviews','nav.admin':'Admin Panel',
+    // Topbar
     'search.placeholder':'Search products, events...',
+    'count.items':'products','count.events':'events',
+    // Page titles/subtitles
     'catalog.subtitle':'Full catalog · Instant delivery via WhatsApp',
     'catalog.title.all':'🛒 All Products','catalog.title.pokemon':'⚡ Pokémon',
-    'catalog.title.cuenta':'🎮 Accounts','catalog.title.servicio':'🏪 Shop',
-    'catalog.title.item':'🎒 Items',
+    'catalog.title.cuenta':'🎮 Accounts','catalog.title.servicio':'🏪 Shop','catalog.title.item':'🎒 Items',
     'events.subtitle':'Active and upcoming Pokémon GO events',
     'events.title.all':'📅 All Events',
+    // Payment
     'payment.title':'💳 Accepted payment methods',
+    // Featured & Related
     'featured.title':'⭐ Featured today',
+    'related.title':'✨ You might also like',
+    'featured.badge':'Featured',
+    // WhatsApp
     'wa.btn':'Buy via WhatsApp',
+    'wa.msg.prefix':'Hi! I'm interested in:',
+    // Navigation buttons
     'back.events':'← Back to Events','back.catalog':'← Back to catalog',
     'share':'🔗 Share',
+    // Loading states
     'loading.catalog':'Loading catalog...','loading.events':'Loading events...',
+    'empty.search':'No results found','empty.search.sub':'Try a different search',
+    'empty.events':'No events found',
+    // Badges
     'badge.soldout':'SOLD OUT','badge.stock':'available','badge.stocks':'available',
-    'dates.start':'Start','dates.end':'End','dates.starts':'Starts in:','dates.live':'LIVE — Ends in:',
-    'dates.ended':'Ended','dates.upcoming':'Upcoming',
+    // Dates
+    'dates.start':'Start','dates.end':'End','dates.starts':'Starts in:',
+    'dates.live':'LIVE — Ends in:','dates.ended':'Ended','dates.upcoming':'Upcoming',
+    'dates.status':'Status:',
+    // Event detail
+    'ev.back':'← Back to Events',
+    'ev.tab.tz':'Schedules',
+    'tz.copy':'📋 Copy','tz.copied':'✅ Copied',
+    // Product detail
+    'prod.desc.title':'📋 Description',
+    // Reviews
     'reviews.title':'⭐ Community Reviews',
     'reviews.avg':'Average','reviews.submit':'Post Review',
+    'reviews.name.placeholder':'TrainerGT99',
+    'reviews.text.placeholder':'Share your experience with the store...',
+    'reviews.bought':'What did you buy?',
+    'reviews.empty':'Be the first to leave a review',
+    'reviews.write':'Write your experience...',
+    // Admin
+    'admin.save':'💾 Save Changes','admin.publish.prod':'🚀 Publish Product',
+    'admin.publish.ev':'🚀 Publish Event','admin.publish.ban':'🚀 Publish Banner',
+    'admin.cancel':'Cancel','admin.edit':'✏️ Edit','admin.delete':'🗑️',
+    'admin.duplicate':'📋 Duplicate',
+    'admin.search.prod':'Search product...','admin.search.ev':'Search event...',
+    'admin.published':'published',
+    // Toasts
+    'toast.prod.saved':'✅ Product updated!','toast.prod.new':'🚀 Product published!',
+    'toast.ev.saved':'✅ Event updated!','toast.ev.new':'🚀 Event published!',
+    'toast.ban.saved':'✅ Banner updated!','toast.ban.new':'🚀 Banner published!',
+    'toast.deleted':'🗑️ Deleted',
+    'toast.copied':'🔗 Link copied!',
+    'toast.coords':'✅ Copied',
+    'toast.icons':'✅ Icons saved',
+    'confirm.delete.prod':'Delete this product?',
+    'confirm.delete.ev':'Delete this event?',
+    'confirm.delete.ban':'Delete this banner?',
+    'confirm.delete.review':'Delete this review?',
+    'err.required.name':'⚠️ Name is required',
+    'err.no.perm.delete':'⛔ You can only delete your own products',
+    'err.no.perm.delete.ev':'⛔ You can only delete your own events',
+    'err.category':'⛔ Only the main admin can publish to Shop and Items',
+    'err.review.wait':'⏱️ Wait {n} min before submitting another review',
+    'err.review.denied':'❌ Review rejected: invalid content',
+    'err.save':'❌ Error saving',
+    // Lang toggle
     'lang.toggle':'🌐 ES',
   }
 };
@@ -3186,75 +3325,121 @@ window.toggleLang = () => {
 
 function applyLang() {
   document.documentElement.lang = currentLang;
-  // Toggle button label
+  // Toggle button
   const btn = document.getElementById('langToggle');
   if (btn) btn.textContent = t('lang.toggle');
-  // Apply to all data-i18n elements
+  // All data-i18n elements
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     const val = t(key);
     if (val) el.textContent = val;
   });
-  // Update search placeholder
+  // Placeholders
   const si = document.getElementById('searchInput');
   if (si) si.placeholder = t('search.placeholder');
-  // Update page sub-titles
+  const ps = document.getElementById('adm-prod-search');
+  if (ps) ps.placeholder = t('admin.search.prod');
+  const es = document.getElementById('adm-ev-search');
+  if (es) es.placeholder = t('admin.search.ev');
+  // Page subtitles
   const catSub = document.getElementById('catSub');
   if (catSub) catSub.textContent = t('catalog.subtitle');
   const evSub = document.getElementById('evSub');
   if (evSub) evSub.textContent = t('events.subtitle');
-  // Re-render to pick up language changes on dynamic content
+  // Back buttons & share — update if currently on those pages
+  document.querySelectorAll('.evd-back').forEach(b => { if(b.getAttribute('onclick')?.includes('goBackToEvents')) b.textContent = t('ev.back'); });
+  document.querySelectorAll('.prod-detail-back').forEach(b => b.textContent = t('back.catalog'));
+  document.querySelectorAll('.share-link-btn').forEach(b => b.textContent = t('share'));
+  // WA buttons
+  document.querySelectorAll('.card-wa, .pdi-wa').forEach(b => {
+    // preserve the SVG, only update the text node
+    const nodes = [...b.childNodes].filter(n=>n.nodeType===3);
+    nodes.forEach(n=>{ if(n.textContent.trim()) n.textContent = '\n          '+t('wa.btn')+'\n        '; });
+  });
+  // Re-render to pick up language changes in dynamic content
   if (currentSection === 'catalog') renderProducts();
-  if (currentSection === 'events') renderEvents();
+  else if (currentSection === 'events') renderEvents();
+  else if (currentSection === 'proddetail') {
+    const pid = document.querySelector('[id^="pcard-"]')?.id?.replace('pcard-','');
+    // just re-render related section title
+    document.querySelectorAll('.related-title').forEach(el => el.innerHTML = `<span>✨</span> ${t('related.title')}`);
+    document.querySelectorAll('.carousel-feat-badge').forEach(el => el.textContent = `⭐ ${t('featured.badge')}`);
+  }
 }
 
-/* ── Featured items ── */
+/* ── Featured items carousel ── */
+function makeFeaturedCard(p, isFeatured) {
+  const pid = p._id||p.id;
+  const img = (p.imgs&&p.imgs[0])||p.img||'';
+  const cat = CAT_LABEL[p.category]||p.category;
+  return `<div class="carousel-card" style="position:relative" onclick="openProdDetail('${pid}')">
+    ${isFeatured?`<div class="carousel-feat-badge">⭐ ${_t('featured.badge')}</div>`:''}
+    ${img
+      ? `<img src="${img}" alt="${p.name}" onerror="this.parentNode.querySelector('img').style.display='none'">`
+      : `<div style="width:100%;height:120px;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:40px">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':'🏪'}</div>`}
+    <div class="carousel-card-body">
+      <div class="carousel-card-cat">${cat}</div>
+      <div class="carousel-card-name">${p.name}</div>
+      ${p.price?`<div class="carousel-card-price">Q${p.price}</div>`:''}
+    </div>
+  </div>`;
+}
+
 function renderFeatured() {
-  const sec = document.getElementById('featured-section');
-  const grid = document.getElementById('featured-grid');
-  if (!sec || !grid) return;
+  const sec   = document.getElementById('featured-section');
+  const track = document.getElementById('featured-track');
+  if (!sec || !track) return;
 
-  // One featured per category (pokemon, cuenta, servicio)
-  const cats = ['pokemon','cuenta','servicio'];
-  const featured = cats.map(cat => {
-    // First: explicitly marked featured in this category
-    const explicit = products.filter(p => p.category===cat && p.featured && !p.soldOut && p.stock!==0);
-    if (explicit.length) return explicit[Math.floor(Math.random()*explicit.length)];
-    return null;
-  }).filter(Boolean);
+  const featuredItems = products.filter(p => p.featured && !p.soldOut && p.stock!==0);
+  if (!featuredItems.length) { sec.style.display='none'; return; }
 
-  if (!featured.length) { sec.style.display='none'; return; }
   sec.style.display = 'block';
-
-  // Update title
   const titleEl = sec.querySelector('[data-i18n="featured.title"]');
   if (titleEl) titleEl.textContent = t('featured.title');
 
-  const catLabel = {pokemon:'Pokémon', cuenta: currentLang==='en'?'Account':'Cuenta', servicio: currentLang==='en'?'Shop':'Tienda'};
-  grid.style.gridTemplateColumns = `repeat(${Math.min(featured.length,3)},1fr)`;
+  // Build cards — duplicate for seamless infinite scroll
+  const cards = featuredItems.map(p => makeFeaturedCard(p, true)).join('');
+  // Need enough cards to fill — pad with more random items if fewer than 6
+  let allCards = cards;
+  if (featuredItems.length < 6) {
+    const extra = products.filter(p=>!p.soldOut&&p.stock!==0&&!p.featured)
+      .sort(()=>Math.random()-.5).slice(0, 10-featuredItems.length);
+    allCards += extra.map(p => makeFeaturedCard(p, false)).join('');
+  }
+  // Duplicate for seamless loop
+  track.innerHTML = allCards + allCards;
 
-  grid.innerHTML = featured.map(p => {
-    const pid = p._id||p.id;
-    const img = (p.imgs&&p.imgs[0])||p.img||'';
-    const cat = catLabel[p.category]||p.category;
-    return `<div onclick="openProdDetail('${pid}')" style="background:var(--card);border:1px solid rgba(245,197,24,.35);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-      <div style="position:absolute;top:8px;left:8px;z-index:2;background:var(--gold);color:#000;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:10px;padding:2px 8px;border-radius:50px;text-transform:uppercase;letter-spacing:.5px">⭐ ${currentLang==='en'?'Featured':'Destacado'}</div>
-      ${img?`<img src="${img}" alt="${p.name}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block" onerror="this.style.display='none'">`:`<div style="width:100%;aspect-ratio:1;background:linear-gradient(135deg,var(--dark3),var(--dark));display:flex;align-items:center;justify-content:center;font-size:48px">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':'🏪'}</div>`}
-      <div style="padding:10px 12px">
-        <div style="font-size:10px;color:var(--teal);font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">${cat}</div>
-        <div style="font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
-        ${p.price?`<div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--gold);margin-top:4px">Q${p.price}</div>`:''}
-      </div>
-    </div>`;
-  }).join('');
+  // Adjust animation speed based on item count
+  const total = track.children.length;
+  track.style.animation = `scrollLeft ${Math.max(20, total*2.5)}s linear infinite`;
 }
 
-// Call renderFeatured after products load
-const _origRenderProducts = renderProducts;
-renderProducts = function() {
-  _origRenderProducts();
-  renderFeatured();
-};
+/* ── You might like — related items carousel ── */
+function renderRelated(currentPid, category) {
+  const related = products
+    .filter(p => (p._id||p.id) !== currentPid && !p.soldOut && p.stock!==0)
+    .sort((a,b) => {
+      // Same category first, then random
+      const ac = a.category===category ? 0 : 1;
+      const bc = b.category===category ? 0 : 1;
+      return ac - bc || Math.random()-.5;
+    })
+    .slice(0, 20);
+
+  if (!related.length) return '';
+
+  const cards = related.map(p => makeFeaturedCard(p, p.featured)).join('');
+  const speed = Math.max(25, related.length * 2.5);
+
+  return `<div class="related-section">
+    <div class="related-title"><span>✨</span> ${_t('related.title')}</div>
+    <div class="carousel-wrap" onmouseover="this.querySelector('.carousel-track').style.animationPlayState='paused'" onmouseout="this.querySelector('.carousel-track').style.animationPlayState='running'">
+      <div class="carousel-track" style="animation-duration:${speed}s">
+        ${cards}${cards}
+      </div>
+    </div>
+  </div>`;
+}
 
 // Init language on load
 applyLang();
