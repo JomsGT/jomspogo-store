@@ -1203,6 +1203,7 @@ let reviews  = [];
 
 async function loadAll() {
   try {
+    if (!db) { showToast('⚠️ Firebase no inicializado','error'); return; }
     [products, events, banners, reviews] = await Promise.all([
       fbLoad('products'), fbLoad('events'), fbLoad('banners'), fbLoad('reviews')
     ]);
@@ -1215,9 +1216,11 @@ async function loadAll() {
     if (isAdmin) renderAdminLists();
     setFbStatus('ok');
   } catch(e) {
-    console.error(e);
+    console.error('Firebase error:', e);
     setFbStatus('err');
-    showToast('⚠️ Error al conectar con Firebase','error');
+    // Show the actual error to help diagnose
+    const msg = e?.code || e?.message || String(e);
+    showToast('⚠️ Firebase: ' + msg, 'error');
   }
 }
 
