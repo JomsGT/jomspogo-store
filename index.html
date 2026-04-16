@@ -1464,7 +1464,8 @@ function renderProducts() {
       ? `<div class="stock-badge">📦 ${p.stock} disponible${p.stock>1?'s':''}</div>` : '';
     const soldOverlay = isSoldOut
       ? `<div class="sold-out-overlay"><div class="sold-out-label">AGOTADO</div></div>` : '';
-    return `<div class="pcard${isSoldOut?' is-sold-out':''}${selected?' selected':''}" onclick="${isAdmin?`toggleShareSelect('${pid}',event)`:`openProdDetail('${pid}')`}" id="pcard-${pid}">`
+    const onclickFn = isAdmin ? 'toggleShareSelect(\'' + pid + '\',event)' : 'openProdDetail(\'' + pid + '\')';
+    return `<div class="pcard${isSoldOut?' is-sold-out':''}${selected?' selected':''}" onclick="${onclickFn}" id="pcard-${pid}">``
       <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div>${soldOverlay}${stockBadge}</div>
       <div class="card-body">
         <div class="card-name">${p.name}</div>
@@ -1488,6 +1489,18 @@ function getStatus(ev) {
   if (ev.endUTC && now > ev.endUTC) return 'ended';
   if (ev.startUTC && now < ev.startUTC) return 'upcoming';
   return 'live';
+}
+
+function fmtCd(ms) {
+  if (ms <= 0) return '0s';
+  const d = Math.floor(ms/86400000);
+  const h = Math.floor((ms%86400000)/3600000);
+  const m = Math.floor((ms%3600000)/60000);
+  const s = Math.floor((ms%60000)/1000);
+  if (d > 0) return `${d}d ${h}h ${m}m ${s}s`;
+  if (h > 0) return `${h}h ${m}m ${s}s`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
 }
 
 function renderEvents() {
@@ -3326,17 +3339,12 @@ function makeFeaturedCard(p, isFeatured) {
   const pid = p._id||p.id;
   const img = (p.imgs&&p.imgs[0])||p.img||'';
   const cat = CAT_LABEL[p.category]||p.category;
-  return `<div class="carousel-card" style="position:relative" onclick="openProdDetail('${pid}')">
-    ${isFeatured?`<div class="carousel-feat-badge">⭐ ${_t('featured.badge')}</div>`:''}
-    ${img
-      ? `<img src="${img}" alt="${p.name}" onerror="this.parentNode.querySelector('img').style.display='none'">`
-      : `<div style="width:100%;height:120px;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:40px">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':'🏪'}</div>`}
-    <div class="carousel-card-body">
-      <div class="carousel-card-cat">${cat}</div>
-      <div class="carousel-card-name">${p.name}</div>
-      ${p.price?`<div class="carousel-card-price">Q${p.price}</div>`:''}
-    </div>
-  </div>`;
+  const badge = isFeatured ? `<div class="carousel-feat-badge">⭐ ${_t('featured.badge')}</div>` : '';
+  const imgEl = img
+    ? `<img src="${img}" alt="${p.name}" onerror="this.style.display='none'">`
+    : `<div style="width:100%;height:120px;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:40px">${p.category==='pokemon'?'⚡':p.category==='cuenta'?'🎮':'🏪'}</div>`;
+  const priceEl = p.price ? `<div class="carousel-card-price">Q${p.price}</div>` : '';
+  return `<div class="carousel-card" style="position:relative" onclick="openProdDetail('${pid}')">${badge}${imgEl}<div class="carousel-card-body"><div class="carousel-card-cat">${cat}</div><div class="carousel-card-name">${p.name}</div>${priceEl}</div></div>`;
 }
 
 function renderFeatured() {
@@ -3344,36 +3352,27 @@ function renderFeatured() {
   const track = document.getElementById('featured-track');
   if (!sec || !track) return;
 
-  const featuredItems = products.filter(p => p.featured && !p.soldOut && p.stock!==0);
-  if (!featuredItems.length) { sec.style.display='none'; return; }
+  const available = products.filter(p => !p.soldOut && p.stock !== 0);
+  if (!available.length) { sec.style.display='none'; return; }
 
   sec.style.display = 'block';
   const titleEl = sec.querySelector('[data-i18n="featured.title"]');
-  if (titleEl) titleEl.textContent = t('featured.title');
+  if (titleEl) titleEl.textContent = _t('featured.title');
 
-  // Build cards — duplicate for seamless infinite scroll
-  const cards = featuredItems.map(p => makeFeaturedCard(p, true)).join('');
-  // Need enough cards to fill — pad with more random items if fewer than 6
-  let allCards = cards;
-  if (featuredItems.length < 6) {
-    const extra = products.filter(p=>!p.soldOut&&p.stock!==0&&!p.featured)
-      .sort(()=>Math.random()-.5).slice(0, 10-featuredItems.length);
-    allCards += extra.map(p => makeFeaturedCard(p, false)).join('');
-  }
-  // Duplicate for seamless loop
-  track.innerHTML = allCards + allCards;
-
-  // Adjust animation speed based on item count
+  const featuredFirst = [
+    ...available.filter(p=>p.featured).sort(()=>Math.random()-.5),
+    ...available.filter(p=>!p.featured).sort(()=>Math.random()-.5)
+  ];
+  const cards = featuredFirst.slice(0, 12).map(p => makeFeaturedCard(p, !!p.featured)).join('');
+  track.innerHTML = cards + cards;
   const total = track.children.length;
   track.style.animation = `scrollLeft ${Math.max(20, total*2.5)}s linear infinite`;
 }
 
-/* ── You might like — related items carousel ── */
 function renderRelated(currentPid, category) {
   const related = products
-    .filter(p => (p._id||p.id) !== currentPid && !p.soldOut && p.stock!==0)
+    .filter(p => (p._id||p.id) !== currentPid && !p.soldOut && p.stock !== 0)
     .sort((a,b) => {
-      // Same category first, then random
       const ac = a.category===category ? 0 : 1;
       const bc = b.category===category ? 0 : 1;
       return ac - bc || Math.random()-.5;
@@ -3382,17 +3381,9 @@ function renderRelated(currentPid, category) {
 
   if (!related.length) return '';
 
-  const cards = related.map(p => makeFeaturedCard(p, p.featured)).join('');
+  const cards = related.map(p => makeFeaturedCard(p, !!p.featured)).join('');
   const speed = Math.max(25, related.length * 2.5);
-
-  return `<div class="related-section">
-    <div class="related-title"><span>✨</span> ${_t('related.title')}</div>
-    <div class="carousel-wrap" onmouseover="this.querySelector('.carousel-track').style.animationPlayState='paused'" onmouseout="this.querySelector('.carousel-track').style.animationPlayState='running'">
-      <div class="carousel-track" style="animation-duration:${speed}s">
-        ${cards}${cards}
-      </div>
-    </div>
-  </div>`;
+  return `<div class="related-section"><div class="related-title"><span>✨</span> ${_t('related.title')}</div><div class="carousel-wrap" onmouseover="this.querySelector('.carousel-track').style.animationPlayState='paused'" onmouseout="this.querySelector('.carousel-track').style.animationPlayState='running'"><div class="carousel-track" style="animation-duration:${speed}s">${cards}${cards}</div></div></div>`;
 }
 
 // Init language on load
