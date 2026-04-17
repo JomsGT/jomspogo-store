@@ -1457,7 +1457,7 @@ function renderProducts() {
     const soldOverlay = isSoldOut
       ? `<div class="sold-out-overlay"><div class="sold-out-label">AGOTADO</div></div>` : '';
     const onclickAttr = isAdmin ? ("toggleShareSelect('" + pid + "',event)") : ("openProdDetail('" + pid + "')");
-    return `<div class="pcard${isSoldOut?' is-sold-out':''}${selected?' selected':''}" onclick="${onclickAttr}" id="pcard-${pid}">`
+    return `<div class="pcard${isSoldOut?' is-sold-out':''}${selected?' selected':''}" onclick="${onclickAttr}" id="pcard-${pid}">
       <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div>${soldOverlay}${stockBadge}</div>
       <div class="card-body">
         <div class="card-name">${p.name}</div>
