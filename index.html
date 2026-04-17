@@ -641,6 +641,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="payment-methods" id="payment-methods-container">
         <!-- Loaded dynamically by loadPaymentMethods() -->
         <div class="pay-badge"><span class="pay-badge-icon">🅿️</span><div><div class="pay-badge-label">PayPal</div><div class="pay-badge-sub">paypal.me/jomspogo</div></div></div>
+        <div class="pay-badge"><span class="pay-badge-icon">🪙</span><div><div class="pay-badge-label">Binance</div><div class="pay-badge-sub">Crypto</div></div></div>
         <div class="pay-badge"><span class="pay-badge-icon">🟢</span><div><div class="pay-badge-label">Wise</div><div class="pay-badge-sub">Transferencia internacional</div></div></div>
         <div class="pay-badge"><span class="pay-badge-icon">🏦</span><div><div class="pay-badge-label">Transferencia</div><div class="pay-badge-sub">Bancaria local GT</div></div></div>
         <div class="pay-badge"><span class="pay-badge-icon">💬</span><div><div class="pay-badge-label">WhatsApp</div><div class="pay-badge-sub">Coordina el pago</div></div></div>
@@ -2960,6 +2961,7 @@ window.saveIcons = () => {
 /* ── PAYMENT METHOD EDITOR ── */
 const PAY_DEFAULTS = [
   {id:'paypal',   icon:'🅿️', label:'PayPal',        sub:'paypal.me/jomspogo'},
+  {id:'binance',   icon:'🪙', label:'Binance',        sub:'Bitcoin/USDT'},
   {id:'wise',     icon:'🟢', label:'Wise',           sub:'Transferencia internacional'},
   {id:'transfer', icon:'🏦', label:'Transferencia',  sub:'Bancaria local GT'},
   {id:'whatsapp', icon:'💬', label:'WhatsApp',        sub:'Coordina el pago'},
