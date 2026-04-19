@@ -383,7 +383,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .pcard.is-sold-out .card-wa{opacity:.5;pointer-events:none;cursor:not-allowed}
 /* Carousels */
 @keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.carousel-wrap{position:relative;overflow:hidden}
+.carousel-wrap{position:relative;overflow:hidden;max-width:100%;width:100%}
 .carousel-wrap:hover .carousel-track{animation-play-state:paused}
 .carousel-track{display:flex;gap:12px;animation:scrollLeft 32s linear infinite;width:max-content}
 .carousel-card{flex-shrink:0;width:160px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .2s}
@@ -396,9 +396,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* Featured badge on carousel card */
 .carousel-feat-badge{position:absolute;top:6px;left:6px;background:var(--gold);color:#000;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:9px;padding:2px 6px;border-radius:50px;text-transform:uppercase;letter-spacing:.3px;z-index:2}
 /* You might like section */
-.related-section{margin-top:28px}
+.related-section{margin-top:28px;max-width:100%;overflow:hidden}
 .related-title{font-family:'Orbitron',monospace;font-weight:700;font-size:13px;color:var(--text);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .related-title span{color:var(--teal)}
+/* Mobile: smaller carousel cards */
+@media(max-width:640px){
+  .carousel-card{width:130px}
+  .carousel-card img{height:100px}
+  .carousel-card-name{font-size:11px}
+}
 .card-admin-bar{display:none;gap:4px;padding:6px 8px;background:rgba(13,13,26,.92);border-top:1px solid rgba(245,197,24,.15)}
 .is-admin-mode .card-admin-bar{display:flex}
 .card-admin-btn{flex:1;padding:5px;border-radius:6px;border:none;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:.5px;transition:all .15s;text-transform:uppercase}
@@ -420,7 +426,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .share-link-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(26,115,232,.12);border:1px solid rgba(26,115,232,.3);color:#64b5f6;padding:8px 14px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;margin-left:8px;letter-spacing:.5px;transition:all .2s}
 .share-link-btn:hover{background:rgba(26,115,232,.22)}
 /* ── PRODUCT DETAIL PAGE ── */
-.prod-detail-wrap{max-width:900px;margin:0 auto;padding:28px}
+.prod-detail-wrap{max-width:900px;margin:0 auto;padding:28px;overflow:hidden}
 .prod-detail-back{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);color:var(--gold);padding:8px 16px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:22px;letter-spacing:.5px;transition:all .2s}
 .prod-detail-back:hover{background:rgba(245,197,24,.16)}
 .prod-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px}
@@ -641,7 +647,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="payment-methods" id="payment-methods-container">
         <!-- Loaded dynamically by loadPaymentMethods() -->
         <div class="pay-badge"><span class="pay-badge-icon">🅿️</span><div><div class="pay-badge-label">PayPal</div><div class="pay-badge-sub">paypal.me/jomspogo</div></div></div>
-        <div class="pay-badge"><span class="pay-badge-icon">🪙</span><div><div class="pay-badge-label">Binance</div><div class="pay-badge-sub">Crypto</div></div></div>
         <div class="pay-badge"><span class="pay-badge-icon">🟢</span><div><div class="pay-badge-label">Wise</div><div class="pay-badge-sub">Transferencia internacional</div></div></div>
         <div class="pay-badge"><span class="pay-badge-icon">🏦</span><div><div class="pay-badge-label">Transferencia</div><div class="pay-badge-sub">Bancaria local GT</div></div></div>
         <div class="pay-badge"><span class="pay-badge-icon">💬</span><div><div class="pay-badge-label">WhatsApp</div><div class="pay-badge-sub">Coordina el pago</div></div></div>
@@ -2961,7 +2966,6 @@ window.saveIcons = () => {
 /* ── PAYMENT METHOD EDITOR ── */
 const PAY_DEFAULTS = [
   {id:'paypal',   icon:'🅿️', label:'PayPal',        sub:'paypal.me/jomspogo'},
-  {id:'binance',   icon:'🪙', label:'Binance',        sub:'Bitcoin/USDT'},
   {id:'wise',     icon:'🟢', label:'Wise',           sub:'Transferencia internacional'},
   {id:'transfer', icon:'🏦', label:'Transferencia',  sub:'Bancaria local GT'},
   {id:'whatsapp', icon:'💬', label:'WhatsApp',        sub:'Coordina el pago'},
