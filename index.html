@@ -1200,6 +1200,59 @@ async function fbDel(col, id) {
   await deleteDoc(doc(db, col, id));
 }
 
+/* ── GLOBAL SETTINGS (icons, payment methods) — synced to Firestore ── */
+// In-memory cache — loaded once from Firestore, then used by all getters
+let GLOBAL_SETTINGS = { icons: {}, evIcons: {}, pay: {} };
+
+async function loadGlobalSettings() {
+  try {
+    const snap = await getDocs(collection(db, 'settings'));
+    const s = snap.docs.find(d => d.id === 'global');
+    if (s) {
+      const data = s.data();
+      GLOBAL_SETTINGS = {
+        icons:   data.icons   || {},
+        evIcons: data.evIcons || {},
+        pay:     data.pay     || {}
+      };
+      // Mirror to localStorage for quick access / offline
+      localStorage.setItem('jp_icons', JSON.stringify(GLOBAL_SETTINGS.icons));
+      localStorage.setItem('jp_ev_section_icons', JSON.stringify(GLOBAL_SETTINGS.evIcons));
+      localStorage.setItem('jp_pay', JSON.stringify(GLOBAL_SETTINGS.pay));
+    } else {
+      // First run — seed from localStorage (legacy) or empty
+      GLOBAL_SETTINGS = {
+        icons:   JSON.parse(localStorage.getItem('jp_icons')||'{}'),
+        evIcons: JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}'),
+        pay:     JSON.parse(localStorage.getItem('jp_pay')||'{}')
+      };
+    }
+  } catch(e) {
+    console.warn('loadGlobalSettings:', e);
+    // Fall back to localStorage
+    GLOBAL_SETTINGS = {
+      icons:   JSON.parse(localStorage.getItem('jp_icons')||'{}'),
+      evIcons: JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}'),
+      pay:     JSON.parse(localStorage.getItem('jp_pay')||'{}')
+    };
+  }
+}
+
+async function saveGlobalSettings() {
+  try {
+    await setDoc(doc(db, 'settings', 'global'), GLOBAL_SETTINGS, {merge:true});
+    // Also mirror to localStorage
+    localStorage.setItem('jp_icons', JSON.stringify(GLOBAL_SETTINGS.icons));
+    localStorage.setItem('jp_ev_section_icons', JSON.stringify(GLOBAL_SETTINGS.evIcons));
+    localStorage.setItem('jp_pay', JSON.stringify(GLOBAL_SETTINGS.pay));
+    return true;
+  } catch(e) {
+    console.error('saveGlobalSettings:', e);
+    showToast('❌ Error al guardar: '+(e.code||e.message),'error');
+    return false;
+  }
+}
+
 /* ── INIT DATA ── */
 let banners = [];
 let reviews  = [];
@@ -1210,6 +1263,9 @@ async function loadAll() {
     [products, events, banners, reviews] = await Promise.all([
       fbLoad('products'), fbLoad('events'), fbLoad('banners'), fbLoad('reviews')
     ]);
+    await loadGlobalSettings();
+    loadIcons();
+    loadPaymentMethods();
     updateCounts();
     renderBanners();
     loadAdsenseCode();
@@ -1836,7 +1892,7 @@ const EV_SECTIONS = [
 
 function getEvSectionIcons(ev) {
   // Only global icons — per-event customization removed
-  const global = JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}');
+  const global = GLOBAL_SETTINGS.evIcons || JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}');
   const result = {};
   EV_SECTIONS.forEach(s => {
     result[s.id] = global[s.id] || s.defaultIcon;
@@ -1847,7 +1903,7 @@ function getEvSectionIcons(ev) {
 // Load permanent global section icons (used in event detail tabs)
 function loadEvSectionIcons() {
   // Exposed so TAB_DEFS in renderEventDetail always gets current icons
-  return JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}');
+  return {...(GLOBAL_SETTINGS.evIcons||{}), ...JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}')};
 }
 
 window.previewGseci = (id, defaultIcon, val, customPreviewId) => {
@@ -1863,7 +1919,7 @@ window.previewGseci = (id, defaultIcon, val, customPreviewId) => {
 function renderGlobalEvSectionIcons() {
   const grid = document.getElementById('global-ev-section-icons-grid');
   if (!grid) return;
-  const saved = JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}');
+  const saved = GLOBAL_SETTINGS.evIcons || JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}');
   grid.innerHTML = EV_SECTIONS.map(s => {
     const cur = saved[s.id] || s.defaultIcon;
     return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
@@ -1876,14 +1932,15 @@ function renderGlobalEvSectionIcons() {
   }).join('');
 }
 
-window.saveEvSectionIconsGlobal = () => {
+window.saveEvSectionIconsGlobal = async () => {
   const icons = {};
   EV_SECTIONS.forEach(s => {
     const inp = document.getElementById('gseci-'+s.id);
     if (inp && inp.value.trim()) icons[s.id] = inp.value.trim();
   });
-  localStorage.setItem('jp_ev_section_icons', JSON.stringify(icons));
-  showToast(_t('toast.icons'));
+  GLOBAL_SETTINGS.evIcons = icons;
+  const ok = await saveGlobalSettings();
+  if (ok) showToast(_t('toast.icons'));
 };
 
 function renderEvSectionIcons(ev) {
@@ -2909,7 +2966,7 @@ const ICON_DEFS = [
 ];
 
 function loadIcons() {
-  const saved = JSON.parse(localStorage.getItem('jp_icons')||'{}');
+  const saved = GLOBAL_SETTINGS.icons || JSON.parse(localStorage.getItem('jp_icons')||'{}');
   ICON_DEFS.forEach(def => {
     const el = document.getElementById('icon-'+def.id);
     if (!el) return;
@@ -2926,7 +2983,7 @@ function loadIcons() {
 function renderIconEditor() {
   const grid = document.getElementById('icon-editor-grid');
   if (!grid) return;
-  const saved = JSON.parse(localStorage.getItem('jp_icons')||'{}');
+  const saved = GLOBAL_SETTINGS.icons || JSON.parse(localStorage.getItem('jp_icons')||'{}');
   grid.innerHTML = ICON_DEFS.map(def => {
     const raw = saved[def.id] || '';
     const isUrl = raw.startsWith('http')||raw.startsWith('data:');
@@ -2955,8 +3012,8 @@ window.previewIconEdit = (id, val) => {
   }
 };
 
-window.saveIcons = () => {
-  const existing = JSON.parse(localStorage.getItem('jp_icons')||'{}');
+window.saveIcons = async () => {
+  const existing = {...(GLOBAL_SETTINGS.icons||{})};
   ICON_DEFS.forEach(def => {
     const inp = document.getElementById('iinput-'+def.id);
     if (inp) {
@@ -2965,9 +3022,12 @@ window.saveIcons = () => {
       else delete existing[def.id]; // empty = reset to default
     }
   });
-  localStorage.setItem('jp_icons', JSON.stringify(existing));
-  loadIcons();
-  showToast(_t('toast.icons'));
+  GLOBAL_SETTINGS.icons = existing;
+  const ok = await saveGlobalSettings();
+  if (ok) {
+    loadIcons();
+    showToast(_t('toast.icons'));
+  }
 };
 
 /* ── PAYMENT METHOD EDITOR ── */
@@ -2979,7 +3039,7 @@ const PAY_DEFAULTS = [
 ];
 
 function loadPaymentMethods() {
-  const saved = JSON.parse(localStorage.getItem('jp_pay')||'{}');
+  const saved = GLOBAL_SETTINGS.pay || JSON.parse(localStorage.getItem('jp_pay')||'{}');
   const container = document.getElementById('payment-methods-container');
   if (!container) return;
   container.innerHTML = PAY_DEFAULTS.map(p => {
@@ -3002,7 +3062,7 @@ function loadPaymentMethods() {
 function renderPayEditor() {
   const grid = document.getElementById('pay-editor-grid');
   if(!grid) return;
-  const saved = JSON.parse(localStorage.getItem('jp_pay')||'{}');
+  const saved = GLOBAL_SETTINGS.pay || JSON.parse(localStorage.getItem('jp_pay')||'{}');
   grid.innerHTML = PAY_DEFAULTS.map(p => {
     const data = saved[p.id] || p;
     return `<div style="background:var(--dark3);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:7px">
@@ -3026,7 +3086,7 @@ function renderPayEditor() {
   }).join('');
 }
 
-window.savePaymentMethods = () => {
+window.savePaymentMethods = async () => {
   const pay = {};
   PAY_DEFAULTS.forEach(p => {
     pay[p.id] = {
@@ -3035,9 +3095,12 @@ window.savePaymentMethods = () => {
       sub:   document.getElementById('pay-sub-'+p.id)?.value.trim()   || p.sub,
     };
   });
-  localStorage.setItem('jp_pay', JSON.stringify(pay));
-  loadPaymentMethods();
-  showToast('✅ Métodos de pago guardados');
+  GLOBAL_SETTINGS.pay = pay;
+  const ok = await saveGlobalSettings();
+  if (ok) {
+    loadPaymentMethods();
+    showToast('✅ Métodos de pago guardados');
+  }
 };
 
 /* ── ADMIN CATALOG SHARE ── */
