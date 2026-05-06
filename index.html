@@ -821,12 +821,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </div>
           <div class="adm-group"><label class="adm-label">Descripción corta</label><input class="adm-input" id="p-short" placeholder="CP 514 | Shiny | Team Valor"></div>
           <div class="adm-group"><label class="adm-label">Descripción completa</label><textarea class="adm-textarea" id="p-desc" placeholder="Descripción detallada..."></textarea></div>
-          <div style="display:flex;align-items:center;gap:16px;padding:10px 0">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:10px 0">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px">
               <input type="checkbox" id="p-featured" style="width:16px;height:16px;cursor:pointer;accent-color:var(--gold)">
               ⭐ Destacado del día
             </label>
-            <span style="font-size:11px;color:var(--muted)">Aparece en la sección especial al inicio del catálogo</span>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--red);text-transform:uppercase;letter-spacing:.5px">
+              <input type="checkbox" id="p-favorite" style="width:16px;height:16px;cursor:pointer;accent-color:var(--red)" onchange="document.getElementById('p-favorite-order').style.display=this.checked?'block':'none'">
+              💖 Favorito (aparece primero en el catálogo)
+            </label>
+            <input class="adm-input" id="p-favorite-order" type="number" placeholder="Orden de favoritos (1, 2, 3...)" style="display:none;width:200px;font-size:12px">
+          </div>
+          <!-- Admin-only: account where this Pokémon is stored -->
+          <div class="adm-group" id="p-account-group" style="background:rgba(245,197,24,.05);border:1px dashed rgba(245,197,24,.3);border-radius:10px;padding:12px;margin-bottom:10px">
+            <label class="adm-label" style="color:var(--gold)">🔒 Cuenta donde está disponible (solo admin)</label>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <select class="adm-select" id="p-account" style="flex:1;min-width:180px"></select>
+              <button class="adm-btn adm-btn-ghost" type="button" onclick="addNewAccount()" style="padding:6px 10px;font-size:11px">➕ Nueva cuenta</button>
+            </div>
+            <div class="adm-hint" style="margin-top:4px;color:var(--muted);font-size:11px">Privado · Solo tú lo ves para saber dónde buscar al hacer una venta</div>
           </div>
           <input type="hidden" id="p-edit-id">
           <button class="adm-btn adm-btn-red" id="p-save-btn" onclick="saveProd()">🚀 Publicar Producto</button>
@@ -1086,7 +1099,7 @@ const TRANSLATIONS = {
     'loading.catalog':'Cargando catálogo...','loading.events':'Cargando eventos...',
     'empty.search':'Sin resultados','empty.search.sub':'Intenta con otra búsqueda',
     'empty.events':'Sin eventos',
-    'badge.soldout':'SOLD OUT / AGOTADO','badge.stock':'disponible','badge.stocks':'disponibles',
+    'badge.soldout':'AGOTADO','badge.stock':'disponible','badge.stocks':'disponibles',
     'dates.start':'Inicio','dates.end':'Fin','dates.starts':'Inicia en:',
     'dates.live':'EN VIVO — Finaliza en:','dates.ended':'Finalizado','dates.upcoming':'Próximo',
     'dates.status':'Estado:','ev.tab.tz':'Horarios',
@@ -1202,7 +1215,54 @@ async function fbDel(col, id) {
 
 /* ── GLOBAL SETTINGS (icons, payment methods) — synced to Firestore ── */
 // In-memory cache — loaded once from Firestore, then used by all getters
-let GLOBAL_SETTINGS = { icons: {}, evIcons: {}, pay: {} };
+let GLOBAL_SETTINGS = { icons: {}, evIcons: {}, pay: {}, accounts: [] };
+
+const DEFAULT_ACCOUNTS = ['JomsGT', 'JackyTR', 'LunaSuperior', 'Jkej', 'Wesli', 'ShadowRogue0NE'];
+
+function getAccounts() {
+  return GLOBAL_SETTINGS.accounts && GLOBAL_SETTINGS.accounts.length
+    ? GLOBAL_SETTINGS.accounts
+    : DEFAULT_ACCOUNTS;
+}
+
+function renderAccountDropdown() {
+  const sel = document.getElementById('p-account');
+  if (!sel) return;
+  const accounts = getAccounts();
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— Sin asignar —</option>' +
+    accounts.map(a => `<option value="${a}">${a}</option>`).join('');
+  sel.value = current;
+}
+
+window.addNewAccount = async () => {
+  const name = prompt('Nombre de la nueva cuenta:');
+  if (!name || !name.trim()) return;
+  const trimmed = name.trim();
+  const accounts = [...getAccounts()];
+  if (accounts.includes(trimmed)) {
+    showToast('⚠️ Esa cuenta ya existe', 'error');
+    return;
+  }
+  accounts.push(trimmed);
+  GLOBAL_SETTINGS.accounts = accounts;
+  const ok = await saveGlobalSettings();
+  if (ok) {
+    renderAccountDropdown();
+    document.getElementById('p-account').value = trimmed;
+    showToast('✅ Cuenta agregada: ' + trimmed);
+  }
+};
+
+window.removeAccount = async (name) => {
+  if (!confirm(`¿Eliminar la cuenta "${name}"?`)) return;
+  GLOBAL_SETTINGS.accounts = getAccounts().filter(a => a !== name);
+  const ok = await saveGlobalSettings();
+  if (ok) {
+    renderAccountDropdown();
+    showToast('🗑️ Cuenta eliminada');
+  }
+};
 
 async function loadGlobalSettings() {
   try {
@@ -1211,9 +1271,10 @@ async function loadGlobalSettings() {
     if (s) {
       const data = s.data();
       GLOBAL_SETTINGS = {
-        icons:   data.icons   || {},
-        evIcons: data.evIcons || {},
-        pay:     data.pay     || {}
+        icons:    data.icons    || {},
+        evIcons:  data.evIcons  || {},
+        pay:      data.pay      || {},
+        accounts: data.accounts || []
       };
       // Mirror to localStorage for quick access / offline
       localStorage.setItem('jp_icons', JSON.stringify(GLOBAL_SETTINGS.icons));
@@ -1222,9 +1283,10 @@ async function loadGlobalSettings() {
     } else {
       // First run — seed from localStorage (legacy) or empty
       GLOBAL_SETTINGS = {
-        icons:   JSON.parse(localStorage.getItem('jp_icons')||'{}'),
-        evIcons: JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}'),
-        pay:     JSON.parse(localStorage.getItem('jp_pay')||'{}')
+        icons:    JSON.parse(localStorage.getItem('jp_icons')||'{}'),
+        evIcons:  JSON.parse(localStorage.getItem('jp_ev_section_icons')||'{}'),
+        pay:      JSON.parse(localStorage.getItem('jp_pay')||'{}'),
+        accounts: []
       };
     }
   } catch(e) {
@@ -1266,6 +1328,7 @@ async function loadAll() {
     await loadGlobalSettings();
     loadIcons();
     loadPaymentMethods();
+    renderAccountDropdown();
     updateCounts();
     renderBanners();
     loadAdsenseCode();
@@ -1495,11 +1558,17 @@ const CAT_LABEL={pokemon:'Pokémon',cuenta:'Cuenta',servicio:'Tienda',item:'Item
 /* ── RENDER PRODUCTS ── */
 function renderProducts() {
   const q = document.getElementById('searchInput').value.toLowerCase();
-  const f = products.filter(p=>{
+  let f = products.filter(p=>{
     const mc = activeCat==='all'||p.category===activeCat;
     const mq = !q||p.name.toLowerCase().includes(q)||(p.descShort||'').toLowerCase().includes(q)||(p.event||'').toLowerCase().includes(q);
     return mc&&mq;
   });
+  // Sort: favorites first (in order), rest randomized — only when not searching
+  if (!q) {
+    const favs = f.filter(p => p.favorite).sort((a,b) => (a.favoriteOrder||999) - (b.favoriteOrder||999));
+    const rest = f.filter(p => !p.favorite).sort(() => Math.random() - 0.5);
+    f = [...favs, ...rest];
+  }
   document.getElementById('countPill').innerHTML = `<span>${f.length}</span> ${_t('count.items')}`;
   const grid = document.getElementById('prodGrid');
   if(!f.length){grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><h3>${_t('empty.search')}</h3><p>${_t('empty.search.sub')}</p></div>`;return;}
@@ -1517,7 +1586,7 @@ function renderProducts() {
       ? `<div class="sold-out-overlay"><div class="sold-out-label">AGOTADO</div></div>` : '';
     const onclickAttr = isAdmin ? ("toggleShareSelect('" + pid + "',event)") : ("openProdDetail('" + pid + "')");
     return `<div class="pcard${isSoldOut?' is-sold-out':''}${selected?' selected':''}" onclick="${onclickAttr}" id="pcard-${pid}">
-      <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div>${soldOverlay}${stockBadge}</div>
+      <div class="card-img-wrap"><img src="${mainImg}" alt="${p.name}" onerror="this.style.display='none'"><div class="card-badge ${bc}">${p.tag||'NEW'}</div>${p.favorite?'<div class="card-fav-badge">💖 TOP</div>':''}${soldOverlay}${stockBadge}</div>
       <div class="card-body">
         <div class="card-name">${p.name}</div>
         <div class="card-tags"><span class="tag-cat">${cl}</span>${eb}</div>
@@ -1538,6 +1607,15 @@ function getStatus(ev) {
   if (ev.endUTC && now > ev.endUTC) return 'ended';
   if (ev.startUTC && now < ev.startUTC) return 'upcoming';
   return 'live';
+}
+
+function maskName(name) {
+  if (!name || name.length <= 2) return name + '***';
+  // Show first 2 chars + last char with *** between (TrainerGT99 → Tr********9)
+  const first = name.slice(0, 2);
+  const last = name.slice(-1);
+  const stars = '*'.repeat(Math.max(3, name.length - 3));
+  return first + stars + last;
 }
 
 function fmtCd(ms) {
@@ -2440,6 +2518,9 @@ window.saveProd = async () => {
     stock: document.getElementById('p-stock').value !== '' ? parseInt(document.getElementById('p-stock').value)||0 : null,
     soldOut: document.getElementById('p-soldout').checked,
     featured: document.getElementById('p-featured').checked,
+    favorite: document.getElementById('p-favorite').checked,
+    favoriteOrder: parseInt(document.getElementById('p-favorite-order').value) || null,
+    account: document.getElementById('p-account').value || null,
     descShort: document.getElementById('p-short').value.trim(),
     desc:document.getElementById('p-desc').value.trim(),
     img: imgMain,
@@ -2458,6 +2539,9 @@ function clearProdForm() {
   ['p-name','p-price','p-short','p-desc','p-event','p-wa','p-stock'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('p-soldout').checked = false;
   document.getElementById('p-featured').checked = false;
+  document.getElementById('p-favorite').checked = false;
+  const fo = document.getElementById('p-favorite-order'); if (fo) { fo.value = ''; fo.style.display = 'none'; }
+  const acc = document.getElementById('p-account'); if (acc) acc.value = '';
   document.getElementById('p-cat').value='pokemon';
   document.getElementById('p-tag').value='HOT';
   document.getElementById('p-edit-id').value='';
@@ -2478,6 +2562,11 @@ window.editProd = (id) => {
   document.getElementById('p-stock').value = p.stock != null ? p.stock : '';
   document.getElementById('p-soldout').checked = !!p.soldOut;
   document.getElementById('p-featured').checked = !!p.featured;
+  document.getElementById('p-favorite').checked = !!p.favorite;
+  const fo = document.getElementById('p-favorite-order');
+  if (fo) { fo.value = p.favoriteOrder || ''; fo.style.display = p.favorite ? 'block' : 'none'; }
+  const acc = document.getElementById('p-account');
+  if (acc) acc.value = p.account || '';
   document.getElementById('p-cat').value=p.category||'pokemon';
   document.getElementById('p-tag').value=p.tag||'HOT';
   document.getElementById('p-edit-id').value=p._id;
@@ -2881,7 +2970,7 @@ function renderReviews() {
     return `<div class="review-card">
       <div class="review-top">
         <div class="review-avatar" style="background:${color}">${initials}</div>
-        <div><div class="review-name">${r.name||'Trainer'}</div><div class="review-meta">${r.product||''}${date?' · '+date:''}</div></div>
+        <div><div class="review-name">${maskName(r.name||'Trainer')}</div><div class="review-meta">${r.product||''}${date?' · '+date:''}</div></div>
       </div>
       <div class="review-stars">${stars}</div>
       <div class="review-text">${r.text||''}</div>
@@ -3035,6 +3124,7 @@ const PAY_DEFAULTS = [
   {id:'paypal',   icon:'🅿️', label:'PayPal',        sub:'paypal.me/jomspogo'},
   {id:'wise',     icon:'🟢', label:'Wise',           sub:'Transferencia internacional'},
   {id:'transfer', icon:'🏦', label:'Transferencia',  sub:'Bancaria local GT'},
+  {id:'binance',  icon:'🟡', label:'Binance Pay',    sub:'Crypto / USDT'},
   {id:'whatsapp', icon:'💬', label:'WhatsApp',        sub:'Coordina el pago'},
 ];
 
