@@ -662,7 +662,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <!-- ADMIN share toolbar — visible only when admin is logged in -->
     <div class="share-toolbar" id="shareToolbar">
       <div class="share-toolbar-info">
-        <strong id="shareCount">0</strong> / 9 items · Click en cards para seleccionar
+        <strong id="shareCount">0</strong> / 12 items · Click en cards para seleccionar
       </div>
       <button class="adm-btn adm-btn-ghost" onclick="clearShareSelection()" style="padding:7px 14px;font-size:12px">✕ Limpiar</button>
       <button class="adm-btn adm-btn-primary" onclick="generateShareImage()" id="shareGenBtn" style="padding:7px 16px;font-size:13px;opacity:.5;cursor:not-allowed" disabled>🖼️ Generar imagen</button>
@@ -832,14 +832,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
             </label>
             <input class="adm-input" id="p-favorite-order" type="number" placeholder="Orden de favoritos (1, 2, 3...)" style="display:none;width:200px;font-size:12px">
           </div>
-          <!-- Admin-only: account where this Pokémon is stored -->
+          <!-- Admin-only: accounts where this Pokémon is stored (multi-select) -->
           <div class="adm-group" id="p-account-group" style="background:rgba(245,197,24,.05);border:1px dashed rgba(245,197,24,.3);border-radius:10px;padding:12px;margin-bottom:10px">
-            <label class="adm-label" style="color:var(--gold)">🔒 Cuenta donde está disponible (solo admin)</label>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <select class="adm-select" id="p-account" style="flex:1;min-width:180px"></select>
-              <button class="adm-btn adm-btn-ghost" type="button" onclick="addNewAccount()" style="padding:6px 10px;font-size:11px">➕ Nueva cuenta</button>
-            </div>
-            <div class="adm-hint" style="margin-top:4px;color:var(--muted);font-size:11px">Privado · Solo tú lo ves para saber dónde buscar al hacer una venta</div>
+            <label class="adm-label" style="color:var(--gold)">🔒 Cuentas donde está disponible (solo admin)</label>
+            <div id="p-accounts-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin:6px 0"></div>
+            <button class="adm-btn adm-btn-ghost" type="button" onclick="addNewAccount()" style="padding:6px 10px;font-size:11px;margin-top:4px">➕ Nueva cuenta</button>
+            <div class="adm-hint" style="margin-top:6px;color:var(--muted);font-size:11px">Marca todas las cuentas donde tengas este item · Solo tú lo ves</div>
           </div>
           <input type="hidden" id="p-edit-id">
           <button class="adm-btn adm-btn-red" id="p-save-btn" onclick="saveProd()">🚀 Publicar Producto</button>
@@ -1067,7 +1065,7 @@ function updateShareToolbar() {
   else toolbar.classList.remove('visible');
   if (count) count.textContent = shareSelection.size;
   if (btn) {
-    const ok = shareSelection.size > 0 && shareSelection.size <= 9;
+    const ok = shareSelection.size > 0 && shareSelection.size <= 12;
     btn.disabled = !ok;
     btn.style.opacity  = ok ? '1' : '.5';
     btn.style.cursor   = ok ? 'pointer' : 'not-allowed';
@@ -1225,14 +1223,21 @@ function getAccounts() {
     : DEFAULT_ACCOUNTS;
 }
 
-function renderAccountDropdown() {
-  const sel = document.getElementById('p-account');
-  if (!sel) return;
+function renderAccountCheckboxes(selectedAccounts) {
+  const grid = document.getElementById('p-accounts-grid');
+  if (!grid) return;
   const accounts = getAccounts();
-  const current = sel.value;
-  sel.innerHTML = '<option value="">— Sin asignar —</option>' +
-    accounts.map(a => `<option value="${a}">${a}</option>`).join('');
-  sel.value = current;
+  const selected = new Set(selectedAccounts || []);
+  grid.innerHTML = accounts.map(a => `
+    <label style="display:flex;align-items:center;gap:6px;background:var(--dark2);border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:600;transition:all .15s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+      <input type="checkbox" class="p-account-cb" value="${a}" ${selected.has(a)?'checked':''} style="cursor:pointer;accent-color:var(--gold)">
+      <span style="color:var(--text)">${a}</span>
+    </label>
+  `).join('');
+}
+
+function getSelectedAccounts() {
+  return [...document.querySelectorAll('.p-account-cb:checked')].map(cb => cb.value);
 }
 
 window.addNewAccount = async () => {
@@ -1248,8 +1253,10 @@ window.addNewAccount = async () => {
   GLOBAL_SETTINGS.accounts = accounts;
   const ok = await saveGlobalSettings();
   if (ok) {
-    renderAccountDropdown();
-    document.getElementById('p-account').value = trimmed;
+    // Preserve current selection and add new account as checked
+    const current = getSelectedAccounts();
+    current.push(trimmed);
+    renderAccountCheckboxes(current);
     showToast('✅ Cuenta agregada: ' + trimmed);
   }
 };
@@ -1328,7 +1335,7 @@ async function loadAll() {
     await loadGlobalSettings();
     loadIcons();
     loadPaymentMethods();
-    renderAccountDropdown();
+    renderAccountCheckboxes([]);
     updateCounts();
     renderBanners();
     loadAdsenseCode();
@@ -2520,7 +2527,7 @@ window.saveProd = async () => {
     featured: document.getElementById('p-featured').checked,
     favorite: document.getElementById('p-favorite').checked,
     favoriteOrder: parseInt(document.getElementById('p-favorite-order').value) || null,
-    account: document.getElementById('p-account').value || null,
+    accounts: getSelectedAccounts(),
     descShort: document.getElementById('p-short').value.trim(),
     desc:document.getElementById('p-desc').value.trim(),
     img: imgMain,
@@ -2541,7 +2548,7 @@ function clearProdForm() {
   document.getElementById('p-featured').checked = false;
   document.getElementById('p-favorite').checked = false;
   const fo = document.getElementById('p-favorite-order'); if (fo) { fo.value = ''; fo.style.display = 'none'; }
-  const acc = document.getElementById('p-account'); if (acc) acc.value = '';
+  renderAccountCheckboxes([]);
   document.getElementById('p-cat').value='pokemon';
   document.getElementById('p-tag').value='HOT';
   document.getElementById('p-edit-id').value='';
@@ -2565,8 +2572,9 @@ window.editProd = (id) => {
   document.getElementById('p-favorite').checked = !!p.favorite;
   const fo = document.getElementById('p-favorite-order');
   if (fo) { fo.value = p.favoriteOrder || ''; fo.style.display = p.favorite ? 'block' : 'none'; }
-  const acc = document.getElementById('p-account');
-  if (acc) acc.value = p.account || '';
+  // Support both legacy 'account' (string) and new 'accounts' (array)
+  const accs = Array.isArray(p.accounts) ? p.accounts : (p.account ? [p.account] : []);
+  renderAccountCheckboxes(accs);
   document.getElementById('p-cat').value=p.category||'pokemon';
   document.getElementById('p-tag').value=p.tag||'HOT';
   document.getElementById('p-edit-id').value=p._id;
@@ -3220,16 +3228,18 @@ window.clearShareSelection = () => {
 
 window.generateShareImage = async () => {
   if (!shareSelection.size) return;
-  const selected = products.filter(p => shareSelection.has(p._id||p.id)).slice(0, 9);
+  const selected = products.filter(p => shareSelection.has(p._id||p.id)).slice(0, 12);
   showToast('⏳ Generando imagen...');
 
   // ── Smart grid layout based on item count ──
   //  1 → 1×1   2 → 2×1   3 → 3×1   4 → 2×2
   //  5 → 3×2   6 → 3×2   7 → 4×2   8 → 4×2   9 → 3×3
+  // 10 → 5×2  11 → 4×3  12 → 4×3
   const n = selected.length;
   const layouts = {
     1: [1,1], 2: [2,1], 3: [3,1], 4: [2,2],
-    5: [3,2], 6: [3,2], 7: [4,2], 8: [4,2], 9: [3,3]
+    5: [3,2], 6: [3,2], 7: [4,2], 8: [4,2], 9: [3,3],
+    10: [5,2], 11: [4,3], 12: [4,3]
   };
   const [COLS, ROWS] = layouts[n] || [Math.ceil(Math.sqrt(n)), Math.ceil(n/Math.ceil(Math.sqrt(n)))];
   const TOTAL_SLOTS = COLS * ROWS;
